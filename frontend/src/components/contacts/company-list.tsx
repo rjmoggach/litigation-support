@@ -52,26 +52,21 @@ export function CompanyList({
                                 <div
                                     key={company.id}
                                     onClick={() => onCompanySelect(company)}
-                                    className={`group px-4 py-2 border-b cursor-pointer transition-colors hover:bg-accent/35 ${
+                                    className={`group px-4 py-1 border-b cursor-pointer transition-colors hover:bg-accent/45 ${
                                         (selected.type === 'company' &&
                                             selected.item?.id === company.id) ||
                                         (selected.type === 'person' &&
                                             selected.companyContext?.id ===
                                                 company.id)
-                                            ? 'bg-accent/55 hover:bg-accent/55 border-l-4 border-l-primary'
+                                            ? 'bg-accent/55 hover:bg-accent/55 border-l-4 border-l-accent-foreground'
                                             : ''
                                     }`}
                                 >
                                     <div className="flex justify-between items-center">
                                         <div className="flex-1 min-w-0">
-                                            <div className="font-medium truncate">
+                                            <div className="text-sm font-medium truncate">
                                                 {company.name}
                                             </div>
-                                            {company.email && (
-                                                <div className="text-sm text-muted-foreground truncate">
-                                                    {company.email}
-                                                </div>
-                                            )}
                                         </div>
                                         <Button
                                             variant="ghost"

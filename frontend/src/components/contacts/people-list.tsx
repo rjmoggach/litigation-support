@@ -29,7 +29,7 @@ export function PeopleList({
     onAddPerson,
 }: PeopleListProps) {
     return (
-        <div className="h-full flex flex-col border rounded-sm flex-1 min-h-full">
+        <div className="h-full flex flex-col border rounded-sm bg-card">
             <div className="p-4 border-b">
                 <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                     <Users className="h-5 w-5" />
@@ -74,7 +74,7 @@ export function PeopleList({
                                     className={`group px-4 py-2 border-b cursor-pointer transition-colors  hover:bg-accent/35 ${
                                         selected.type === 'person' &&
                                         selected.item?.id === person.id
-                                            ? 'bg-accent/55 hover:bg-accent/55 border-l-4 border-l-primary'
+                                            ? 'bg-accent/55 hover:bg-accent/55 border-l-4 border-l-accent-foreground'
                                             : ''
                                     }`}
                                 >

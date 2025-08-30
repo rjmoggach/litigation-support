@@ -84,7 +84,7 @@ export function DetailForm({
                     phone: '',
                     website: '',
                     is_active: true,
-                    is_public: false,
+                    is_public: true,
                 })
             } else if (selected.type === 'person') {
                 setFormData({
@@ -93,7 +93,7 @@ export function DetailForm({
                     email: '',
                     phone: '',
                     is_active: true,
-                    is_public: false,
+                    is_public: true,
                 })
             }
         } else if (selected.item) {
@@ -170,10 +170,18 @@ export function DetailForm({
 
             setSaving(true)
             try {
+                // Clean the data before sending
+                const updateData = { ...formData, [field]: value }
+                
+                // Convert empty strings to null for optional fields
+                if (updateData.email === '') updateData.email = null
+                if (updateData.phone === '') updateData.phone = null
+                if (updateData.website === '') updateData.website = null
+                
                 if (selected.type === 'company' && selected.item) {
                     await updateCompanyApiV1ContactsCompaniesCompanyIdPut({
                         path: { company_id: selected.item.id },
-                        body: { ...formData, [field]: value },
+                        body: updateData,
                         headers: {
                             Authorization: `Bearer ${session.accessToken}`,
                         },
@@ -181,7 +189,7 @@ export function DetailForm({
                 } else if (selected.type === 'person' && selected.item) {
                     await updatePersonApiV1ContactsPeoplePersonIdPut({
                         path: { person_id: selected.item.id },
-                        body: { ...formData, [field]: value },
+                        body: updateData,
                         headers: {
                             Authorization: `Bearer ${session.accessToken}`,
                         },
@@ -221,6 +229,11 @@ export function DetailForm({
             delete cleanedData.updated_at
             delete cleanedData.slug
             delete cleanedData.full_name // This is typically auto-generated from first_name + last_name
+            
+            // Convert empty strings to null for optional fields
+            if (cleanedData.email === '') cleanedData.email = null
+            if (cleanedData.phone === '') cleanedData.phone = null
+            if (cleanedData.website === '') cleanedData.website = null
 
             console.log('Sending cleaned data to backend:', cleanedData)
 
@@ -238,16 +251,30 @@ export function DetailForm({
                 toast.success('Person created')
             }
             onUpdate()
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to create:', error)
             console.error(
                 'Error details:',
                 error?.response?.data || error?.message || error,
             )
-            const errorMessage =
-                error?.response?.data?.detail ||
-                error?.message ||
-                'Failed to create'
+            console.error('Full error object:', JSON.stringify(error, null, 2))
+            
+            // Try to extract detailed validation errors
+            let errorMessage = 'Failed to create'
+            if (error?.response?.data?.detail) {
+                if (Array.isArray(error.response.data.detail)) {
+                    // Pydantic validation errors
+                    const validationErrors = error.response.data.detail.map(
+                        (err: any) => `${err.loc.join('.')}: ${err.msg}`
+                    ).join(', ')
+                    errorMessage = `Validation error: ${validationErrors}`
+                } else {
+                    errorMessage = error.response.data.detail
+                }
+            } else if (error?.message) {
+                errorMessage = error.message
+            }
+            
             toast.error(errorMessage)
         } finally {
             setSaving(false)
@@ -344,7 +371,7 @@ export function DetailForm({
                                 />
                             ) : (
                                 <div className="p-2 text-sm">
-                                    {formData.name || 'Not specified'}
+                                    {formData.name || <span className="text-muted-foreground">Not specified</span>}
                                 </div>
                             )}
                         </div>
@@ -374,7 +401,7 @@ export function DetailForm({
                                             {formData.email}
                                         </a>
                                     ) : (
-                                        'Not specified'
+                                        <span className="text-muted-foreground">Not specified</span>
                                     )}
                                 </div>
                             )}
@@ -404,7 +431,7 @@ export function DetailForm({
                                             {formData.phone}
                                         </a>
                                     ) : (
-                                        'Not specified'
+                                        <span className="text-muted-foreground">Not specified</span>
                                     )}
                                 </div>
                             )}
@@ -436,7 +463,7 @@ export function DetailForm({
                                             {formData.website}
                                         </a>
                                     ) : (
-                                        'Not specified'
+                                        <span className="text-muted-foreground">Not specified</span>
                                     )}
                                 </div>
                             )}
@@ -595,7 +622,7 @@ export function DetailForm({
                                 />
                             ) : (
                                 <div className="p-2 text-sm">
-                                    {formData.first_name || 'Not specified'}
+                                    {formData.first_name || <span className="text-muted-foreground">Not specified</span>}
                                 </div>
                             )}
                         </div>
@@ -616,7 +643,7 @@ export function DetailForm({
                                 />
                             ) : (
                                 <div className="p-2 text-sm">
-                                    {formData.last_name || 'Not specified'}
+                                    {formData.last_name || <span className="text-muted-foreground">Not specified</span>}
                                 </div>
                             )}
                         </div>
@@ -646,7 +673,7 @@ export function DetailForm({
                                             {formData.email}
                                         </a>
                                     ) : (
-                                        'Not specified'
+                                        <span className="text-muted-foreground">Not specified</span>
                                     )}
                                 </div>
                             )}
@@ -676,7 +703,7 @@ export function DetailForm({
                                             {formData.phone}
                                         </a>
                                     ) : (
-                                        'Not specified'
+                                        <span className="text-muted-foreground">Not specified</span>
                                     )}
                                 </div>
                             )}
