@@ -29,6 +29,7 @@ class User(Base):
     # Relationships
     profile = relationship("UserProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
     refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    email_connections = relationship("EmailConnection", back_populates="user", cascade="all, delete-orphan")
     
     def has_role(self, role: str) -> bool:
         """Check if user has a specific role"""

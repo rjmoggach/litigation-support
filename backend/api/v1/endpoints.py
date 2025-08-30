@@ -1,4 +1,5 @@
 from contacts.api import router as contacts_router
+from email_connections.api import router as email_connections_router
 from fastapi import APIRouter
 from images.api import router as images_router
 from storage.api import router as storage_router
@@ -22,3 +23,6 @@ api_router.include_router(tags_router, prefix="/tags", tags=["tags"])
 
 # images endpoints
 api_router.include_router(images_router, prefix="/images", tags=["images"])
+
+# email connections endpoints
+api_router.include_router(email_connections_router, prefix="/email-connections", tags=["email-connections"])

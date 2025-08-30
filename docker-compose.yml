@@ -64,9 +64,7 @@ services:
       # Email (use Mailjet API - configured in .env)
       # SMTP settings will be loaded from backend/.env
       
-      # OAuth (use test credentials)
-      GOOGLE_CLIENT_ID: test-client-id
-      GOOGLE_CLIENT_SECRET: test-client-secret
+      # OAuth (loaded from backend/.env via env_file)
       
       # Storage
       STORAGE_BACKEND: local
@@ -123,9 +121,6 @@ services:
       AUTH_TRUST_HOST: true
       NEXTAUTH_URL_INTERNAL: http://frontend:3000
       
-      # OAuth
-      GOOGLE_CLIENT_ID: test-client-id
-      GOOGLE_CLIENT_SECRET: test-client-secret
       
       # Feature flags (enable all for testing)
       NEXT_PUBLIC_FEATURE_SIGNUP: true

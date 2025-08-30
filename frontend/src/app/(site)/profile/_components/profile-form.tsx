@@ -2,6 +2,7 @@
 
 import { AvatarUploadDialog } from '@/app/(site)/profile/_components/avatar-upload-dialog'
 import { ProfileHeader } from '@/components/blocks/profile-header'
+import { EmailConnectionsManager } from '@/components/profile/email-connections-manager'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -25,7 +26,7 @@ export function ProfileForm() {
 
     // Form state
     const [fullName, setFullName] = useState('')
-    const [email] = useState(user?.email || '')
+    const [email, setEmail] = useState('')
     const [currentAvatarUrl, setCurrentAvatarUrl] = useState(
         (user as any)?.avatar_url || null,
     )
@@ -42,12 +43,17 @@ export function ProfileForm() {
         }
     }, [user, currentAvatarUrl])
 
-    // Update fullName when user data loads (only once)
+    // Update fullName and email when user data loads (only once)
     useEffect(() => {
         if (user && !lastSavedNameRef.current) {
             const userName = (user as any)?.full_name || user?.name || ''
             setFullName(userName)
             lastSavedNameRef.current = userName
+            
+            // Also set email when user data is available
+            if (user.email) {
+                setEmail(user.email)
+            }
         }
     }, [user])
 
@@ -189,7 +195,7 @@ export function ProfileForm() {
         .toUpperCase()
 
     return (
-        <div className="space-y-6 max-w-2xl">
+        <>
             <ProfileHeader
                 title={(user as any)?.full_name || user?.name || 'User Profile'}
                 subtitle="Update your personal information and account settings"
@@ -197,178 +203,183 @@ export function ProfileForm() {
                 userInitials={userInitials}
                 onAvatarClick={() => setAvatarDialogOpen(true)}
             />
-
-            {/* Profile Form */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Profile Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="fullName">Full Name</Label>
-                            <Input
-                                id="fullName"
-                                value={fullName}
-                                onChange={handleFullNameChange}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Enter your full name"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email Address</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={email}
-                                disabled={true}
-                            />
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Password Reset */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Security</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="font-medium">Password</p>
-                            <p className="text-muted-foreground text-sm">
-                                Reset your password via email
-                            </p>
-                        </div>
-                        <Button
-                            variant="outline"
-                            onClick={handlePasswordReset}
-                            disabled={isLoading}
-                        >
-                            Reset Password
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Account Information */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Account Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <Label className="text-sm font-medium">
-                                Account Status
-                            </Label>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                {(user as any)?.is_active
-                                    ? 'Active'
-                                    : 'Inactive'}
-                            </p>
-                        </div>
-                        <div>
-                            <Label className="text-sm font-medium">
-                                Account Type
-                            </Label>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                {(user as any)?.is_superuser
-                                    ? 'Administrator'
-                                    : 'User'}
-                            </p>
-                        </div>
-                        <div>
-                            <Label className="text-sm font-medium">
-                                Email Status
-                            </Label>
-                            <div className="flex items-center gap-2 mt-1">
-                                {(user as any)?.is_verified ? (
-                                    <>
-                                        <CheckCircle className="size-4 text-green-600" />
-                                        <span className="text-sm text-green-600">
-                                            Verified
-                                        </span>
-                                    </>
-                                ) : (
-                                    <span className="text-sm text-muted-foreground">
-                                        Unverified
-                                    </span>
-                                )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Profile Form */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Profile Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="fullName">Full Name</Label>
+                                <Input
+                                    id="fullName"
+                                    value={fullName}
+                                    onChange={handleFullNameChange}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder="Enter your full name"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    disabled={true}
+                                />
                             </div>
                         </div>
-                        <div>
-                            <Label className="text-sm font-medium">
-                                Member Since
-                            </Label>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                {(user as any)?.created_at
-                                    ? new Date(
-                                          (user as any).created_at,
-                                      ).toLocaleDateString()
-                                    : 'N/A'}
-                            </p>
+                    </CardContent>
+                </Card>
+                {/* Account Information */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Account Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <Label className="text-sm font-medium">
+                                    Account Status
+                                </Label>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    {(user as any)?.is_active
+                                        ? 'Active'
+                                        : 'Inactive'}
+                                </p>
+                            </div>
+                            <div>
+                                <Label className="text-sm font-medium">
+                                    Account Type
+                                </Label>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    {(user as any)?.is_superuser
+                                        ? 'Administrator'
+                                        : 'User'}
+                                </p>
+                            </div>
+                            <div>
+                                <Label className="text-sm font-medium">
+                                    Email Status
+                                </Label>
+                                <div className="flex items-center gap-2 mt-1">
+                                    {(user as any)?.is_verified ? (
+                                        <>
+                                            <CheckCircle className="size-4 text-green-600" />
+                                            <span className="text-sm text-green-600">
+                                                Verified
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <span className="text-sm text-muted-foreground">
+                                            Unverified
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                <Label className="text-sm font-medium">
+                                    Member Since
+                                </Label>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    {(user as any)?.created_at
+                                        ? new Date(
+                                              (user as any).created_at,
+                                          ).toLocaleDateString()
+                                        : 'N/A'}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+                {/* Password Reset */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Security</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="font-medium">Password</p>
+                                <p className="text-muted-foreground text-sm">
+                                    Reset your password via email
+                                </p>
+                            </div>
+                            <Button
+                                variant="destructive"
+                                onClick={handlePasswordReset}
+                                disabled={isLoading}
+                            >
+                                Reset Password
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
 
-            <AvatarUploadDialog
-                open={avatarDialogOpen}
-                onOpenChange={setAvatarDialogOpen}
-                currentAvatarUrl={currentAvatarUrl || (user as any)?.avatar_url}
-                userName={(user as any)?.full_name || user?.name || ''}
-                onAvatarUpdated={async (newAvatarUrl) => {
-                    // Update local state first for immediate UI update
-                    setCurrentAvatarUrl(newAvatarUrl)
+                {/* Email Connections */}
+                <EmailConnectionsManager />
 
-                    // Fetch fresh user data from backend to get updated session
-                    try {
-                        const accessToken =
-                            session &&
-                            typeof session === 'object' &&
-                            'accessToken' in session
-                                ? String(session.accessToken)
-                                : ''
-
-                        if (accessToken) {
-                            // Configure client with auth token
-                            client.setConfig({
-                                headers: {
-                                    Authorization: `Bearer ${accessToken}`,
-                                },
-                            })
-
-                            // Use the generated API client
-                            const response = await readUsersMeApiV1UsersMeGet({
-                                client,
-                            })
-
-                            if (response.data) {
-                                const userData = response.data
-                                // Update NextAuth session with fresh user data including new avatar
-                                await update({
-                                    avatar_url: userData.avatar_url,
-                                    image: userData.avatar_url,
-                                    full_name: userData.full_name,
-                                    name: userData.full_name,
-                                })
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Failed to refresh user data:', error)
-                        // Fallback to just updating avatar URL
-                        await update({ avatar_url: newAvatarUrl })
+                <AvatarUploadDialog
+                    open={avatarDialogOpen}
+                    onOpenChange={setAvatarDialogOpen}
+                    currentAvatarUrl={
+                        currentAvatarUrl || (user as any)?.avatar_url
                     }
+                    userName={(user as any)?.full_name || user?.name || ''}
+                    onAvatarUpdated={async (newAvatarUrl) => {
+                        // Update local state first for immediate UI update
+                        setCurrentAvatarUrl(newAvatarUrl)
 
-                    toast.success('Profile picture updated successfully')
-                    // Reload to update session across all components
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 500)
-                }}
-            />
-        </div>
+                        // Fetch fresh user data from backend to get updated session
+                        try {
+                            const accessToken =
+                                session &&
+                                typeof session === 'object' &&
+                                'accessToken' in session
+                                    ? String(session.accessToken)
+                                    : ''
+
+                            if (accessToken) {
+                                // Configure client with auth token
+                                client.setConfig({
+                                    headers: {
+                                        Authorization: `Bearer ${accessToken}`,
+                                    },
+                                })
+
+                                // Use the generated API client
+                                const response =
+                                    await readUsersMeApiV1UsersMeGet({
+                                        client,
+                                    })
+
+                                if (response.data) {
+                                    const userData = response.data
+                                    // Update NextAuth session with fresh user data including new avatar
+                                    await update({
+                                        avatar_url: userData.avatar_url,
+                                        image: userData.avatar_url,
+                                        full_name: userData.full_name,
+                                        name: userData.full_name,
+                                    })
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Failed to refresh user data:', error)
+                            // Fallback to just updating avatar URL
+                            await update({ avatar_url: newAvatarUrl })
+                        }
+
+                        toast.success('Profile picture updated successfully')
+                        // Reload to update session across all components
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 500)
+                    }}
+                />
+            </div>
+        </>
     )
 }

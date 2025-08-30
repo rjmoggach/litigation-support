@@ -21,6 +21,7 @@ from core.security import (
 from core.storage import get_storage_instance
 from storage.models import StoredFile
 from users import deps, models, schemas
+from images.utils import get_cloudfront_url
 from users.models import User
 from users.services import (
     check_storage_quota,
@@ -1001,14 +1002,14 @@ async def upload_profile_picture(
         if not check_storage_quota(user_profile, len(file_content)):
             raise HTTPException(status_code=413, detail="Storage quota exceeded")
 
-        # Upload to storage backend
+        # Upload to S3 storage backend
         file_extension = file.filename.split(".")[-1].lower() if "." in file.filename else "jpg"
-        # Simple structure: users/{email-slug}/avatar.{ext} - replaces existing avatar
+        # Structure: /users/{email-slug}/avatar.{ext} - replaces existing avatar
         email_slug = current_user.email.replace("@", "-").replace(".", "-")
         clean_filename = f"avatar.{file_extension}"
         storage_path = f"/users/{email_slug}/{clean_filename}"
 
-        # Upload to storage
+        # Upload to S3 storage
         storage = get_storage_instance()
         stored_file_info = await storage.put(storage_path, file_content)
 
@@ -1043,22 +1044,29 @@ async def upload_profile_picture(
 
         user_profile.profile_picture_file_id = db_file.id
 
-        # Don't store the S3 presigned URL anymore - we'll generate CloudFront URLs on demand
-        # Clear the old S3 URL if it exists
-        user_profile.avatar_url = None
+        # Generate CloudFront URL for the avatar with cache busting
+        base_cloudfront_url = get_cloudfront_url(storage_path)
+        # Add timestamp for cache busting
+        import time
+        timestamp = int(time.time())
+        avatar_cloudfront_url = f"{base_cloudfront_url}?v={timestamp}"
+        
+        # Store the CloudFront URL with cache buster
+        user_profile.avatar_url = avatar_cloudfront_url
 
         # Update storage usage
         update_storage_usage(db, user_profile, len(file_content))
 
         db.commit()
         db.refresh(db_file)
+        db.refresh(user_profile)
 
         return schemas.ProfilePictureUploadResponse(
             id=db_file.id,
             filename=db_file.filename,
             file_size=db_file.file_size,
-            avatar_url=user_profile.avatar_url,
-            message="Profile picture uploaded successfully to Dropbox",
+            avatar_url=avatar_cloudfront_url,
+            message="Profile picture uploaded successfully to S3",
         )
 
     except HTTPException:

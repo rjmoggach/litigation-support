@@ -85,6 +85,37 @@ export type BodyUploadProfilePictureApiV1UsersMeProfilePicturePost = {
 };
 
 /**
+ * BulkConnectionStatus
+ * Schema for bulk connection status
+ */
+export type BulkConnectionStatus = {
+    /**
+     * User Id
+     */
+    user_id: number;
+    /**
+     * Total Connections
+     */
+    total_connections: number;
+    /**
+     * Active Connections
+     */
+    active_connections: number;
+    /**
+     * Expired Connections
+     */
+    expired_connections: number;
+    /**
+     * Error Connections
+     */
+    error_connections: number;
+    /**
+     * Connections
+     */
+    connections: Array<ConnectionStatus>;
+};
+
+/**
  * BulkTagRequest
  * Schema for bulk tag operations
  */
@@ -412,6 +443,192 @@ export type CompanyUpdate = {
 };
 
 /**
+ * ConnectionDeleteResponse
+ * Schema for connection deletion response
+ */
+export type ConnectionDeleteResponse = {
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Connection Id
+     */
+    connection_id: number;
+    /**
+     * Email Address
+     */
+    email_address: string;
+};
+
+/**
+ * ConnectionHealthCheck
+ * Schema for connection health check results
+ */
+export type ConnectionHealthCheck = {
+    /**
+     * Connection Id
+     */
+    connection_id: number;
+    /**
+     * Is Healthy
+     */
+    is_healthy: boolean;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Last Checked
+     */
+    last_checked: string;
+    /**
+     * Error Details
+     */
+    error_details?: string | null;
+    /**
+     * Token Expires At
+     */
+    token_expires_at?: string | null;
+    /**
+     * Needs Reauth
+     */
+    needs_reauth?: boolean;
+};
+
+/**
+ * ConnectionListResponse
+ * Schema for listing user connections
+ */
+export type ConnectionListResponse = {
+    /**
+     * Connections
+     */
+    connections: Array<EmailConnectionResponse>;
+    /**
+     * Total
+     */
+    total: number;
+    /**
+     * Active
+     */
+    active: number;
+    /**
+     * Expired
+     */
+    expired: number;
+    /**
+     * Error
+     */
+    error: number;
+};
+
+/**
+ * ConnectionStatus
+ * Schema for connection status information
+ */
+export type ConnectionStatus = {
+    /**
+     * Connection Id
+     */
+    connection_id: number;
+    /**
+     * Email Address
+     */
+    email_address: string;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Is Expired
+     */
+    is_expired: boolean;
+    /**
+     * Last Sync At
+     */
+    last_sync_at?: string | null;
+    /**
+     * Error Message
+     */
+    error_message?: string | null;
+};
+
+/**
+ * EmailConnectionResponse
+ * Schema for email connection responses
+ */
+export type EmailConnectionResponse = {
+    /**
+     * Email Address
+     */
+    email_address: string;
+    /**
+     * Provider
+     */
+    provider?: string;
+    /**
+     * Connection Name
+     */
+    connection_name?: string | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * User Id
+     */
+    user_id: number;
+    /**
+     * Provider Account Id
+     */
+    provider_account_id: string;
+    /**
+     * Connection Status
+     */
+    connection_status: string;
+    /**
+     * Last Sync At
+     */
+    last_sync_at?: string | null;
+    /**
+     * Error Message
+     */
+    error_message?: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Scopes Granted
+     */
+    scopes_granted: Array<string>;
+};
+
+/**
+ * EmailConnectionUpdate
+ * Schema for updating an email connection
+ */
+export type EmailConnectionUpdate = {
+    /**
+     * Connection Name
+     */
+    connection_name?: string | null;
+    /**
+     * Connection Status
+     */
+    connection_status?: string | null;
+};
+
+/**
  * EmailVerification
  */
 export type EmailVerification = {
@@ -683,6 +900,94 @@ export type Message = {
      * Message
      */
     message: string;
+};
+
+/**
+ * OAuthCallbackRequest
+ * Schema for OAuth callback processing
+ */
+export type OAuthCallbackRequest = {
+    /**
+     * Code
+     */
+    code: string;
+    /**
+     * State
+     */
+    state: string;
+    /**
+     * Provider
+     */
+    provider?: string;
+    /**
+     * Redirect Uri
+     */
+    redirect_uri?: string | null;
+};
+
+/**
+ * OAuthCallbackResponse
+ * Schema for OAuth callback response
+ */
+export type OAuthCallbackResponse = {
+    /**
+     * Connection Id
+     */
+    connection_id: number;
+    /**
+     * Email Address
+     */
+    email_address: string;
+    /**
+     * Connection Name
+     */
+    connection_name: string;
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Message
+     */
+    message: string;
+};
+
+/**
+ * OAuthInitiateRequest
+ * Schema for initiating OAuth flow
+ */
+export type OAuthInitiateRequest = {
+    /**
+     * Provider
+     */
+    provider?: string;
+    /**
+     * Scopes
+     */
+    scopes?: Array<string>;
+    /**
+     * Redirect Uri
+     */
+    redirect_uri?: string | null;
+};
+
+/**
+ * OAuthInitiateResponse
+ * Schema for OAuth initiation response
+ */
+export type OAuthInitiateResponse = {
+    /**
+     * Authorization Url
+     */
+    authorization_url: string;
+    /**
+     * State
+     */
+    state: string;
+    /**
+     * Provider
+     */
+    provider: string;
 };
 
 /**
@@ -1283,29 +1588,6 @@ export type TokenRefreshRequest = {
 };
 
 /**
- * TokenRefreshResponse
- * Response schema for token refresh endpoint
- */
-export type TokenRefreshResponse = {
-    /**
-     * Access Token
-     */
-    access_token: string;
-    /**
-     * Refresh Token
-     */
-    refresh_token: string;
-    /**
-     * Token Type
-     */
-    token_type?: string;
-    /**
-     * Expires In
-     */
-    expires_in: number;
-};
-
-/**
  * TokenWithRefresh
  * Token response that includes refresh token (for login endpoints)
  */
@@ -1663,6 +1945,52 @@ export type ValidationError = {
     type: string;
 };
 
+/**
+ * TokenRefreshResponse
+ * Schema for token refresh responses
+ */
+export type EmailConnectionsSchemasTokenRefreshResponse = {
+    /**
+     * Connection Id
+     */
+    connection_id: number;
+    /**
+     * Success
+     */
+    success: boolean;
+    /**
+     * New Expires At
+     */
+    new_expires_at?: string | null;
+    /**
+     * Error Message
+     */
+    error_message?: string | null;
+};
+
+/**
+ * TokenRefreshResponse
+ * Response schema for token refresh endpoint
+ */
+export type UsersSchemasTokenRefreshResponse = {
+    /**
+     * Access Token
+     */
+    access_token: string;
+    /**
+     * Refresh Token
+     */
+    refresh_token: string;
+    /**
+     * Token Type
+     */
+    token_type?: string;
+    /**
+     * Expires In
+     */
+    expires_in: number;
+};
+
 export type RegisterApiV1AuthRegisterPostData = {
     body: UserCreate;
     path?: never;
@@ -1833,7 +2161,7 @@ export type RefreshTokenApiV1AuthRefreshPostResponses = {
     /**
      * Successful Response
      */
-    200: TokenRefreshResponse;
+    200: UsersSchemasTokenRefreshResponse;
 };
 
 export type RefreshTokenApiV1AuthRefreshPostResponse = RefreshTokenApiV1AuthRefreshPostResponses[keyof RefreshTokenApiV1AuthRefreshPostResponses];
@@ -4289,6 +4617,266 @@ export type GetImageStatsApiV1ImagesAdminStatsGetData = {
 };
 
 export type GetImageStatsApiV1ImagesAdminStatsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ListConnectionsApiV1EmailConnectionsConnectionsGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/email-connections/connections';
+};
+
+export type ListConnectionsApiV1EmailConnectionsConnectionsGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConnectionListResponse;
+};
+
+export type ListConnectionsApiV1EmailConnectionsConnectionsGetResponse = ListConnectionsApiV1EmailConnectionsConnectionsGetResponses[keyof ListConnectionsApiV1EmailConnectionsConnectionsGetResponses];
+
+export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/connections/{connection_id}';
+};
+
+export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteError = DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteErrors[keyof DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteErrors];
+
+export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConnectionDeleteResponse;
+};
+
+export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponse = DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponses[keyof DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponses];
+
+export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/connections/{connection_id}';
+};
+
+export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetError = GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetErrors[keyof GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetErrors];
+
+export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: EmailConnectionResponse;
+};
+
+export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponse = GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponses[keyof GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponses];
+
+export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutData = {
+    body: EmailConnectionUpdate;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/connections/{connection_id}';
+};
+
+export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutError = UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutErrors[keyof UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutErrors];
+
+export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: EmailConnectionResponse;
+};
+
+export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponse = UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponses[keyof UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponses];
+
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetData = {
+    body?: never;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/connections/{connection_id}/health';
+};
+
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetError = CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetErrors[keyof CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetErrors];
+
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: ConnectionHealthCheck;
+};
+
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponse = CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponses[keyof CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponses];
+
+export type GetConnectionStatusApiV1EmailConnectionsStatusGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/email-connections/status';
+};
+
+export type GetConnectionStatusApiV1EmailConnectionsStatusGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: BulkConnectionStatus;
+};
+
+export type GetConnectionStatusApiV1EmailConnectionsStatusGetResponse = GetConnectionStatusApiV1EmailConnectionsStatusGetResponses[keyof GetConnectionStatusApiV1EmailConnectionsStatusGetResponses];
+
+export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostData = {
+    body: OAuthInitiateRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/email-connections/oauth/initiate';
+};
+
+export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostError = InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostErrors[keyof InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostErrors];
+
+export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses = {
+    /**
+     * Successful Response
+     */
+    200: OAuthInitiateResponse;
+};
+
+export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponse = InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses[keyof InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses];
+
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostData = {
+    body: OAuthCallbackRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/email-connections/oauth/callback';
+};
+
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostError = HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostErrors[keyof HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostErrors];
+
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: OAuthCallbackResponse;
+};
+
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponse = HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponses[keyof HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponses];
+
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostData = {
+    body?: never;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/connections/{connection_id}/refresh';
+};
+
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostError = RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostErrors[keyof RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostErrors];
+
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: EmailConnectionsSchemasTokenRefreshResponse;
+};
+
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponse = RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponses[keyof RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponses];
+
+export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostData = {
+    body?: never;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/connections/{connection_id}/test';
+};
+
+export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostError = TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostErrors[keyof TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostErrors];
+
+export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostResponses = {
     /**
      * Successful Response
      */
