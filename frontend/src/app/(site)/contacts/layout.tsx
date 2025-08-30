@@ -6,6 +6,8 @@ export default function PeoplePagesLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="flex flex-1 flex-col overflow-hidden">{children}</div>
+        <div className="flex flex-1 flex-col overflow-hidden h-full">
+            {children}
+        </div>
     )
 }

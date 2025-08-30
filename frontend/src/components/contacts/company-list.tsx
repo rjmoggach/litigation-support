@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { CompanyResponse } from '@/lib/api'
@@ -28,12 +27,12 @@ export function CompanyList({
     onAddCompany,
 }: CompanyListProps) {
     return (
-        <Card className="w-80 flex flex-col pt-4 pb-0">
-            <CardHeader className="px-2 my-0">
-                <CardTitle className="flex items-center gap-2 text-lg px-2">
+        <div className="flex flex-col border rounded-sm bg-card flex-1">
+            <div className="p-4 border-b">
+                <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                     <Building2 className="h-5 w-5" />
                     Companies
-                </CardTitle>
+                </div>
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -42,9 +41,9 @@ export function CompanyList({
                         onChange={onSearchChange}
                     />
                 </div>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col p-0">
-                <ScrollArea className="flex-1 border-t border-border">
+            </div>
+            <div className="flex-1 flex flex-col">
+                <ScrollArea className="flex-1 ">
                     <div>
                         {loading ? (
                             <div className="p-4">Loading...</div>
@@ -101,7 +100,7 @@ export function CompanyList({
                         Add Company
                     </Button>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }

@@ -1,12 +1,12 @@
 'use client'
 
-import { CompanyList } from '@/components/dashboard/contacts/company-list'
+import { CompanyList } from '@/components/contacts/company-list'
 import {
     DetailForm,
     SelectedItem,
     SelectedType,
-} from '@/components/dashboard/contacts/detail-form'
-import { PeopleList } from '@/components/dashboard/contacts/people-list'
+} from '@/components/contacts/detail-form'
+import { PeopleList } from '@/components/contacts/people-list'
 import { PageHeader } from '@/components/dashboard/page-header'
 import {
     AlertDialog,
@@ -18,7 +18,6 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Card, CardContent } from '@/components/ui/card'
 import type { CompanyResponse, PersonResponse } from '@/lib/api'
 import {
     deleteCompanyApiV1ContactsCompaniesCompanyIdDelete,
@@ -351,16 +350,17 @@ export default function ContactsPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-full">
+        <div className="flex flex-col flex-1 h-full">
             <PageHeader
                 title="Contacts"
                 subtitle="Contacts Management"
                 icon={Users}
             />
 
-            <div className="flex h-full gap-2">
-                {/* Column 1: Companies */}
-                <CompanyList
+            <div className="grid grid-cols-4 gap-2 flex-1 min-h-0">
+                {/* Column 1: Companies - 1/4 width */}
+                <div className="col-span-1 flex flex-col">
+                    <CompanyList
                     companies={filteredCompanies}
                     loading={loading}
                     selected={selected}
@@ -380,10 +380,12 @@ export default function ContactsPage() {
                             mode: 'create',
                         })
                     }
-                />
+                    />
+                </div>
 
-                {/* Column 2: People */}
-                <PeopleList
+                {/* Column 2: People - 1/4 width */}
+                <div className="col-span-1 flex flex-col">
+                    <PeopleList
                     people={filteredPeople}
                     loading={loading}
                     selected={selected}
@@ -404,11 +406,12 @@ export default function ContactsPage() {
                             mode: 'create',
                         })
                     }
-                />
+                    />
+                </div>
 
-                {/* Column 3: Detail Panel */}
-                <Card className="flex-1 flex flex-col">
-                    <CardContent className="flex-1">
+                {/* Column 3: Detail Panel - 1/2 width */}
+                <div className="col-span-2 flex flex-col border rounded-lg bg-card">
+                    <div className="flex-1 p-6">
                         {!selected.type ? (
                             <div className="h-full flex items-center justify-center text-muted-foreground">
                                 <div className="text-center">
@@ -429,8 +432,8 @@ export default function ContactsPage() {
                                 session={session}
                             />
                         )}
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
                 {/* Delete Confirmation Dialog */}
                 <AlertDialog

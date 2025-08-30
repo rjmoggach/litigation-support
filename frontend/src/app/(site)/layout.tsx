@@ -6,15 +6,19 @@ export default function AuthLayout({
     children: React.ReactNode
 }) {
     return (
-        <div>
-            {/* Defaults provided via Next.js Metadata API */}
+        <div className="min-h-screen flex flex-col">
+            {/* Fixed Navbar */}
             <Navbar />
-            <div className="h-8 mt-16 flex items-center">
+
+            {/* Breadcrumb section */}
+            <div className="h-8 mt-16 flex items-center flex-shrink-0">
                 <div className="container max-w-8xl mx-auto max-lg:px-6">
                     <DynamicBreadcrumb />
                 </div>
             </div>
-            <div className="container max-w-8xl mx-auto max-lg:px-6 space-y-6 pt-4">
+
+            {/* Main content area - fills remaining space */}
+            <div className="flex-1 flex flex-col container max-w-8xl mx-auto max-lg:px-6 pt-4 pb-6">
                 {children}
             </div>
         </div>

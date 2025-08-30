@@ -758,7 +758,7 @@ export function DetailForm({
                                         return (
                                             <div
                                                 key={`${association.company_id}-${association.person_id}`}
-                                                className="group border rounded-lg p-3"
+                                                className="group border rounded-sm p-3"
                                             >
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">

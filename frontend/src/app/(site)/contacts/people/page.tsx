@@ -4,8 +4,8 @@ import {
     createPersonColumns,
     personStatusOptions,
     personVisibilityOptions,
-} from '@/components/dashboard/contacts/people/person-columns'
-import { PersonEditDialog } from '@/components/dashboard/contacts/people/person-edit-dialog'
+} from '@/components/contacts/people/person-columns'
+import { PersonEditDialog } from '@/components/contacts/people/person-edit-dialog'
 import { PageHeader } from '@/components/dashboard/page-header'
 import { FlexibleDataTable } from '@/components/data-table/flexible-data-table'
 import { Button } from '@/components/ui/button'

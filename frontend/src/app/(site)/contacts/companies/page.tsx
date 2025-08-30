@@ -4,8 +4,8 @@ import {
     companyStatusOptions,
     companyVisibilityOptions,
     createCompanyColumns,
-} from '@/components/dashboard/contacts/companies/company-columns'
-import { CompanyEditDialog } from '@/components/dashboard/contacts/companies/company-edit-dialog'
+} from '@/components/contacts/companies/company-columns'
+import { CompanyEditDialog } from '@/components/contacts/companies/company-edit-dialog'
 import { PageHeader } from '@/components/dashboard/page-header'
 import { FlexibleDataTable } from '@/components/data-table/flexible-data-table'
 import { Button } from '@/components/ui/button'
