@@ -2,8 +2,8 @@ import { Block, Section } from '@/components/blocks'
 import { FooterNavigation } from '@/components/blocks-footer/footer-navigation'
 import { Mantra } from '@/components/navigation/mantra'
 import { footerNavItems } from '@/content/navigation/data'
-
 import { cn } from '@/lib/utils'
+import { Scale } from 'lucide-react'
 
 export const FooterContent = () => {
     return (
@@ -32,7 +32,8 @@ export const FooterContent = () => {
                     'max-sm:flex-col max-sm:gap-1 max-sm:text-center',
                 )}
             >
-                <div className="w-1/2 relative max-sm:text-xl text-2xl font-medium">
+                <div className="w-1/2 relative max-sm:text-xl text-2xl font-medium flex items-center gap-2">
+                    <Scale className="size-8" />
                     Litigation Support
                 </div>
 
@@ -43,8 +44,7 @@ export const FooterContent = () => {
                         'justify-center md:justify-end',
                     )}
                 >
-                    &copy;{new Date().getFullYear()} robertmoggach.com. All
-                    rights reserved.
+                    &copy;{new Date().getFullYear()}. All rights reserved.
                 </div>
             </Block>
         </Section>

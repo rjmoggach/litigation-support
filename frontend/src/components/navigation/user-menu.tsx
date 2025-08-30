@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleDot, LogOut, Settings, Settings2, User } from 'lucide-react'
+import { LogOut, Scale, Settings, Settings2, User } from 'lucide-react'
 import { Session } from 'next-auth'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -43,7 +43,7 @@ export function UserMenu() {
     const handleLogout = () => {
         signOut({ callbackUrl: '/' })
     }
-    
+
     // Debug session data
     React.useEffect(() => {
         if (session?.user) {
@@ -53,7 +53,7 @@ export function UserMenu() {
                 avatar_url: user.avatar_url,
                 avatar_cloudfront_url: user.avatar_cloudfront_url,
                 avatar_file_id: user.avatar_file_id,
-                image: user.image
+                image: user.image,
             })
         }
     }, [session])
@@ -76,7 +76,7 @@ export function UserMenu() {
     if (status === 'loading') {
         return (
             <div className="h-6 w-6 animate-pulse rounded-lg">
-                <CircleDot className="size-5" />
+                <Scale className="size-5" />
             </div>
         )
     }
@@ -91,7 +91,7 @@ export function UserMenu() {
                     className="after:hidden hover:after:border-0"
                 >
                     <Link href="/login">
-                        <CircleDot className="size-5" />
+                        <Scale className="size-5" />
                     </Link>
                 </Button>
             </div>
@@ -109,7 +109,8 @@ export function UserMenu() {
                     <Avatar className="h-7 w-7">
                         <AvatarImage
                             src={
-                                (session.user as ExtendedUser).avatar_cloudfront_url ||
+                                (session.user as ExtendedUser)
+                                    .avatar_cloudfront_url ||
                                 (session.user as ExtendedUser).avatar_url ||
                                 undefined
                             }
@@ -120,20 +121,28 @@ export function UserMenu() {
                             }
                             onError={(error) => {
                                 const user = session.user as ExtendedUser
-                                const attemptedSrc = user.avatar_cloudfront_url || user.avatar_url
+                                const attemptedSrc =
+                                    user.avatar_cloudfront_url ||
+                                    user.avatar_url
                                 console.warn('Avatar image failed to load:', {
                                     attempted_src: attemptedSrc,
-                                    avatar_cloudfront_url: user.avatar_cloudfront_url,
+                                    avatar_cloudfront_url:
+                                        user.avatar_cloudfront_url,
                                     avatar_url: user.avatar_url,
                                     avatar_file_id: user.avatar_file_id,
-                                    error: error
+                                    error: error,
                                 })
                             }}
                             onLoad={() => {
                                 const user = session.user as ExtendedUser
-                                console.log('Avatar image loaded successfully:', {
-                                    src: user.avatar_cloudfront_url || user.avatar_url
-                                })
+                                console.log(
+                                    'Avatar image loaded successfully:',
+                                    {
+                                        src:
+                                            user.avatar_cloudfront_url ||
+                                            user.avatar_url,
+                                    },
+                                )
                             }}
                         />
                         <AvatarFallback className="text-xs">

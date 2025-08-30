@@ -1,17 +1,17 @@
 'use client'
 
-import { CircleDot, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Scale } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { resetPasswordApiV1AuthResetPasswordPost } from '@/lib/api/sdk.gen'
 import { client } from '@/lib/api/client.gen'
+import { resetPasswordApiV1AuthResetPasswordPost } from '@/lib/api/sdk.gen'
 import { cn } from '@/lib/utils'
 
 export function ResetPasswordForm({
@@ -21,7 +21,7 @@ export function ResetPasswordForm({
     const router = useRouter()
     const searchParams = useSearchParams()
     const token = searchParams.get('token')
-    
+
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [password, setPassword] = useState('')
@@ -33,13 +33,18 @@ export function ResetPasswordForm({
         return (
             <div className={cn('flex flex-col gap-6', className)} {...props}>
                 <div className="flex flex-col items-center gap-4">
-                    <Link href="/" className="flex flex-col items-center gap-2 font-medium">
+                    <Link
+                        href="/"
+                        className="flex flex-col items-center gap-2 font-medium"
+                    >
                         <div className="flex size-8 items-center justify-center rounded-md">
-                            <CircleDot className="size-6" />
+                            <Scale className="size-6" />
                         </div>
                         <span className="sr-only">Home</span>
                     </Link>
-                    <h1 className="text-xl font-bold text-destructive">Invalid Reset Link</h1>
+                    <h1 className="text-xl font-bold text-destructive">
+                        Invalid Reset Link
+                    </h1>
                     <p className="text-center text-sm text-muted-foreground">
                         This password reset link is invalid or has expired.
                     </p>
@@ -53,7 +58,7 @@ export function ResetPasswordForm({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        
+
         if (password !== confirmPassword) {
             toast.error('Passwords do not match')
             return
@@ -72,32 +77,33 @@ export function ResetPasswordForm({
                     token,
                     new_password: password,
                 },
-                client
+                client,
             })
 
             if (response.data) {
-                toast.success('Password reset successfully! Please sign in with your new password.')
-                
+                toast.success(
+                    'Password reset successfully! Please sign in with your new password.',
+                )
+
                 // Sign out any existing session
                 await signOut({ redirect: false })
-                
+
                 // Redirect to login
                 router.push('/login')
             } else {
                 throw new Error('Failed to reset password')
             }
-            
         } catch (error: any) {
             console.error('Password reset error:', error)
             let errorMessage = 'Failed to reset password'
-            
+
             // Handle API error responses
             if (error?.body?.detail) {
                 errorMessage = error.body.detail
             } else if (error?.message) {
                 errorMessage = error.message
             }
-            
+
             toast.error(errorMessage)
         } finally {
             setIsLoading(false)
@@ -114,7 +120,7 @@ export function ResetPasswordForm({
                             className="flex flex-col items-center gap-2 font-medium"
                         >
                             <div className="flex size-8 items-center justify-center rounded-md">
-                                <CircleDot className="size-6" />
+                                <Scale className="size-6" />
                             </div>
                             <span className="sr-only">Home</span>
                         </Link>
@@ -135,7 +141,9 @@ export function ResetPasswordForm({
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="••••••••"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                     required
                                     minLength={8}
                                     disabled={isLoading}
@@ -175,7 +183,9 @@ export function ResetPasswordForm({
                                     }
                                     placeholder="••••••••"
                                     value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onChange={(e) =>
+                                        setConfirmPassword(e.target.value)
+                                    }
                                     required
                                     minLength={8}
                                     disabled={isLoading}
@@ -203,8 +213,14 @@ export function ResetPasswordForm({
                                 </button>
                             </div>
                         </div>
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? 'Resetting Password...' : 'Reset Password'}
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={isLoading}
+                        >
+                            {isLoading
+                                ? 'Resetting Password...'
+                                : 'Reset Password'}
                         </Button>
                         <div className="text-center text-sm">
                             Remember your password?{' '}

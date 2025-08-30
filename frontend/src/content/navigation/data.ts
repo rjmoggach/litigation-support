@@ -7,13 +7,6 @@ export const mainNavItems: NavItem[] = [
         disabled: false,
         hidden: false,
     },
-
-    {
-        title: 'Contact',
-        url: '/contact',
-        disabled: false,
-        hidden: false,
-    },
 ]
 
 export const footerNavItems: NavItem[] = [

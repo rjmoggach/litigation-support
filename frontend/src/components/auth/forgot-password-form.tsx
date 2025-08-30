@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft, CircleDot, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Scale } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -56,7 +56,14 @@ export function ForgotPasswordForm({
             console.error('Forgot password error:', err)
             let errorMessage = 'Failed to send reset email. Please try again.'
 
-            if (err && typeof err === 'object' && 'body' in err && err.body && typeof err.body === 'object' && 'detail' in err.body) {
+            if (
+                err &&
+                typeof err === 'object' &&
+                'body' in err &&
+                err.body &&
+                typeof err.body === 'object' &&
+                'detail' in err.body
+            ) {
                 errorMessage = String(err.body.detail)
             } else if (err && typeof err === 'object' && 'message' in err) {
                 errorMessage = String(err.message)
@@ -78,7 +85,7 @@ export function ForgotPasswordForm({
                                 className="flex items-center gap-2 font-medium"
                             >
                                 <div className="flex size-8 items-center justify-center rounded-md">
-                                    <CircleDot className="size-6" />
+                                    <Scale className="size-6" />
                                 </div>
                             </Link>
                             <Link
@@ -91,8 +98,8 @@ export function ForgotPasswordForm({
                         </div>
                         <h1 className="text-xl font-bold">Forgot Password?</h1>
                         <div className="text-center text-sm text-muted-foreground">
-                            Enter your email address and we&apos;ll send you a link
-                            to reset your password.
+                            Enter your email address and we&apos;ll send you a
+                            link to reset your password.
                         </div>
                     </div>
 

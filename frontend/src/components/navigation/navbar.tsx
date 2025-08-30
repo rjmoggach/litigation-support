@@ -8,6 +8,7 @@ import BurgerMenu from '@/components/navigation/burger-menu'
 import type { NavItem } from '@/components/navigation/burger-menu-item'
 import { UserMenu } from '@/components/navigation/user-menu'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
+import { Scale } from 'lucide-react'
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
@@ -20,8 +21,9 @@ export function Navbar() {
             <div className="container mx-auto max-lg:px-6 flex h-16 justify-between items-center">
                 <Link
                     href="/"
-                    className="mr-6 flex items-center w-3/6 font-medium text-lg text-primary-foreground"
+                    className="mr-6 flex items-center w-3/6 font-medium text-lg text-primary-foreground gap-2"
                 >
+                    <Scale className="size-6" />
                     Litigation Support
                 </Link>
 

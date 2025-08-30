@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleDot, Mail } from 'lucide-react'
+import { Mail, Scale } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -25,7 +25,7 @@ export function VerifyEmailForm({
                             className="flex flex-col items-center gap-2 font-medium"
                         >
                             <div className="flex size-8 items-center justify-center rounded-md">
-                                <CircleDot className="size-6" />
+                                <Scale className="size-6" />
                             </div>
                             <span className="sr-only">Home</span>
                         </Link>

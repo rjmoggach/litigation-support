@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleDot, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Scale } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -30,7 +30,7 @@ const signupSchema = z
             .refine((val) => val === true, 'You must agree to the terms'),
     })
     .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords don&apos;t match",
+        message: 'Passwords don&apos;t match',
         path: ['confirmPassword'],
     })
 
@@ -102,21 +102,45 @@ export function SignupForm({
 
             let errorMessage = 'Registration failed. Please try again.'
 
-            if (err && typeof err === 'object' && 'body' in err && err.body && typeof err.body === 'object' && 'detail' in err.body) {
+            if (
+                err &&
+                typeof err === 'object' &&
+                'body' in err &&
+                err.body &&
+                typeof err.body === 'object' &&
+                'detail' in err.body
+            ) {
                 if (typeof err.body.detail === 'string') {
                     errorMessage = err.body.detail
                 } else if (Array.isArray(err.body.detail)) {
                     errorMessage = err.body.detail
                         .map((e: unknown) => {
-                            if (e && typeof e === 'object' && 'loc' in e && 'msg' in e) {
-                                const loc = Array.isArray(e.loc) ? e.loc.join('.') : String(e.loc || '')
+                            if (
+                                e &&
+                                typeof e === 'object' &&
+                                'loc' in e &&
+                                'msg' in e
+                            ) {
+                                const loc = Array.isArray(e.loc)
+                                    ? e.loc.join('.')
+                                    : String(e.loc || '')
                                 return `${loc}: ${String(e.msg)}`
                             }
                             return String(e)
                         })
                         .join(', ')
                 }
-            } else if (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'detail' in err.response.data) {
+            } else if (
+                err &&
+                typeof err === 'object' &&
+                'response' in err &&
+                err.response &&
+                typeof err.response === 'object' &&
+                'data' in err.response &&
+                err.response.data &&
+                typeof err.response.data === 'object' &&
+                'detail' in err.response.data
+            ) {
                 errorMessage = String(err.response.data.detail)
             } else if (err && typeof err === 'object' && 'message' in err) {
                 errorMessage = String(err.message)
@@ -139,7 +163,7 @@ export function SignupForm({
                             className="flex flex-col items-center gap-2 font-medium"
                         >
                             <div className="flex size-8 items-center justify-center rounded-md">
-                                <CircleDot className="size-6" />
+                                <Scale className="size-6" />
                             </div>
                             <span className="sr-only">Home</span>
                         </Link>

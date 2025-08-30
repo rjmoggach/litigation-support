@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleDot, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Scale } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -45,7 +45,7 @@ export function LoginForm({
         try {
             setError('')
             console.log('Attempting login for:', data.email)
-            
+
             const result = await signIn('credentials', {
                 email: data.email,
                 password: data.password,
@@ -59,7 +59,9 @@ export function LoginForm({
                 if (result.error.includes('verified')) {
                     setError('Please verify your email before logging in')
                 } else if (result.error.includes('inactive')) {
-                    setError('Your account is inactive. Please contact support.')
+                    setError(
+                        'Your account is inactive. Please contact support.',
+                    )
                 } else {
                     setError('Invalid email or password')
                 }
@@ -67,7 +69,7 @@ export function LoginForm({
                 // Get callback URL from query params or default to home
                 const params = new URLSearchParams(window.location.search)
                 const callbackUrl = params.get('callbackUrl') || '/'
-                
+
                 console.log('Login successful, redirecting to:', callbackUrl)
                 router.push(callbackUrl)
                 router.refresh() // Ensure the page reloads with new session
@@ -88,11 +90,11 @@ export function LoginForm({
                             className="flex flex-col items-center gap-2 font-medium"
                         >
                             <div className="flex size-8 items-center justify-center rounded-md">
-                                <CircleDot className="size-6" />
+                                <Scale className="size-6" />
                             </div>
                             <span className="sr-only">Home</span>
                         </Link>
-                        <h1 className="text-xl font-bold">Welcome.</h1>
+                        <h1 className="text-xl font-bold">You got this.</h1>
                         <div className="text-center text-sm">
                             Don&apos;t have an account?{' '}
                             <Link

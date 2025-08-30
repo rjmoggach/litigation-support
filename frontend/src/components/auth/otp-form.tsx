@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleDot, Shield } from 'lucide-react'
+import { Scale, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -19,7 +19,7 @@ interface OTPFormProps extends React.ComponentProps<'div'> {
 export function OTPForm({
     className,
     title = 'Enter Verification Code',
-    description = "We&apos;ve sent a verification code to your device",
+    description = 'We&apos;ve sent a verification code to your device',
     icon,
     email,
     length = 6,
@@ -37,7 +37,7 @@ export function OTPForm({
                             className="flex flex-col items-center gap-2 font-medium"
                         >
                             <div className="flex size-8 items-center justify-center rounded-md">
-                                <CircleDot className="size-6" />
+                                <Scale className="size-6" />
                             </div>
                             <span className="sr-only">Home</span>
                         </Link>

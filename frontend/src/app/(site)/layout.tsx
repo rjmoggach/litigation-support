@@ -1,4 +1,3 @@
-import { Footer } from '@/components/blocks-footer/footer'
 import { Navbar } from '@/components/navigation/navbar'
 
 export default function AuthLayout({
@@ -11,7 +10,6 @@ export default function AuthLayout({
             {/* Defaults provided via Next.js Metadata API */}
             <Navbar />
             <div className="min-h-screen pt-24">{children}</div>
-            <Footer />
         </div>
     )
 }
