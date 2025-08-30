@@ -2,6 +2,16 @@ import type { NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 
+// Determine backend URL based on environment
+const getBackendUrl = () => {
+    // Server-side: use Docker service name
+    if (typeof window === 'undefined') {
+        return process.env.BACKEND_URL || 'http://backend:8000'
+    }
+    // Client-side: use public API URL
+    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+}
+
 export const config = {
     trustHost: true,
     providers: [
@@ -24,8 +34,10 @@ export const config = {
                     )
 
                     // Call your FastAPI login endpoint
+                    const backendUrl = getBackendUrl()
+                    
                     const response = await fetch(
-                        'http://backend:8000/api/v1/auth/login',
+                        `${backendUrl}/api/v1/auth/login`,
                         {
                             method: 'POST',
                             headers: {
@@ -41,7 +53,12 @@ export const config = {
                     )
 
                     if (!response.ok) {
-                        console.log('NextAuth: Login failed', response.status)
+                        const errorText = await response.text()
+                        console.error('NextAuth: Login failed', {
+                            status: response.status,
+                            error: errorText,
+                            url: `${backendUrl}/api/v1/auth/login`
+                        })
                         return null
                     }
 
@@ -50,7 +67,7 @@ export const config = {
 
                     // Fetch user profile with the token
                     const userResponse = await fetch(
-                        'http://backend:8000/api/v1/users/me',
+                        `${backendUrl}/api/v1/users/me`,
                         {
                             headers: {
                                 Authorization: `Bearer ${tokenData.access_token}`,
@@ -96,8 +113,10 @@ export const config = {
                 try {
                     // Try to login with the OAuth user's email to get their data from FastAPI
                     // We'll use a special OAuth endpoint that validates by email only
+                    const backendUrl = getBackendUrl()
+                    
                     const loginResponse = await fetch(
-                        'http://backend:8000/api/v1/auth/oauth-login',
+                        `${backendUrl}/api/v1/auth/oauth-login`,
                         {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -112,6 +131,8 @@ export const config = {
 
                     if (loginResponse.ok) {
                         const data = await loginResponse.json()
+                        console.log('NextAuth: OAuth login successful for', user.email)
+                        
                         // Store the access token, refresh token and user data for later use
                         user.accessToken = data.access_token
                         user.refreshToken = data.refresh_token
@@ -125,15 +146,23 @@ export const config = {
                         user.avatar_url = data.user.avatar_url || null
                         user.image = data.user.avatar_url || null
                     } else {
-                        console.error(
-                            'OAuth login failed:',
-                            await loginResponse.text(),
-                        )
+                        const errorText = await loginResponse.text()
+                        console.error('NextAuth: OAuth login failed', {
+                            status: loginResponse.status,
+                            error: errorText,
+                            email: user.email,
+                            url: `${backendUrl}/api/v1/auth/oauth-login`
+                        })
                         return false
                     }
                 } catch (error) {
-                    console.error('Error during OAuth sign in:', error)
-                    return false
+                    console.error('NextAuth: OAuth sign in error', {
+                        error: error instanceof Error ? error.message : error,
+                        provider: account.provider,
+                        email: user.email
+                    })
+                    // Don't block sign-in on network errors - let Next-Auth handle it
+                    return true
                 }
             }
             return true
@@ -183,88 +212,114 @@ export const config = {
                 token.accessTokenExpires - currentTime < 300 && 
                 token.refreshToken) {
                 
-                try {
-                    console.log('NextAuth: Refreshing expired access token')
-                    
-                    // Call the refresh endpoint
-                    const refreshResponse = await fetch(
-                        'http://backend:8000/api/v1/auth/refresh',
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                refresh_token: token.refreshToken,
-                            }),
-                        },
-                    )
-
-                    if (refreshResponse.ok) {
-                        const refreshData = await refreshResponse.json()
+                console.log('NextAuth: Token expiring soon, refreshing...', {
+                    expiresIn: token.accessTokenExpires - currentTime,
+                    currentTime: new Date(currentTime * 1000).toISOString()
+                })
+                
+                // Retry logic for token refresh
+                let retries = 3
+                let refreshSuccess = false
+                
+                while (retries > 0 && !refreshSuccess) {
+                    try {
+                        // Call the refresh endpoint
+                        const backendUrl = getBackendUrl()
                         
-                        // Update tokens with new values
-                        token.accessToken = refreshData.access_token
-                        token.refreshToken = refreshData.refresh_token
-                        
-                        // Update expiry time
-                        try {
-                            const payload = JSON.parse(
-                                Buffer.from(
-                                    refreshData.access_token.split('.')[1],
-                                    'base64',
-                                ).toString(),
-                            )
-                            token.accessTokenExpires = payload.exp
-                        } catch (error) {
-                            console.error('Error parsing new access token:', error)
-                            token.accessTokenExpires = currentTime + 3600 // Default 1 hour
-                        }
-                        
-                        // Fetch updated user data with the new token
-                        try {
-                            const userResponse = await fetch(
-                                'http://backend:8000/api/v1/users/me',
-                                {
-                                    headers: {
-                                        Authorization: `Bearer ${refreshData.access_token}`,
-                                    },
+                        const refreshResponse = await fetch(
+                            `${backendUrl}/api/v1/auth/refresh`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
                                 },
-                            )
+                                body: JSON.stringify({
+                                    refresh_token: token.refreshToken,
+                                }),
+                            },
+                        )
+
+                        if (refreshResponse.ok) {
+                            const refreshData = await refreshResponse.json()
                             
-                            if (userResponse.ok) {
-                                const userData = await userResponse.json()
-                                // Update user data in token
-                                token.user = {
-                                    ...token.user,
-                                    id: userData.id.toString(),
-                                    email: userData.email,
-                                    name: userData.full_name,
-                                    image: userData.avatar_url || null,
-                                    is_verified: userData.is_verified,
-                                    is_superuser: userData.is_superuser,
-                                    is_active: userData.is_active,
-                                    roles: userData.roles || ['user'],
-                                    avatar_url: userData.avatar_url || null,
-                                }
-                                console.log('NextAuth: User data refreshed with avatar_url:', userData.avatar_url ? 'present' : 'absent')
+                            // Update tokens with new values
+                            token.accessToken = refreshData.access_token
+                            token.refreshToken = refreshData.refresh_token
+                            
+                            // Update expiry time
+                            try {
+                                const payload = JSON.parse(
+                                    Buffer.from(
+                                        refreshData.access_token.split('.')[1],
+                                        'base64',
+                                    ).toString(),
+                                )
+                                token.accessTokenExpires = payload.exp
+                            } catch (error) {
+                                console.error('Error parsing new access token:', error)
+                                token.accessTokenExpires = currentTime + 3600 // Default 1 hour
                             }
-                        } catch (error) {
-                            console.error('Error fetching updated user data:', error)
+                            
+                            // Fetch updated user data with the new token
+                            try {
+                                const userResponse = await fetch(
+                                    `${backendUrl}/api/v1/users/me`,
+                                    {
+                                        headers: {
+                                            Authorization: `Bearer ${refreshData.access_token}`,
+                                        },
+                                    },
+                                )
+                                
+                                if (userResponse.ok) {
+                                    const userData = await userResponse.json()
+                                    // Update user data in token
+                                    token.user = {
+                                        ...token.user,
+                                        id: userData.id.toString(),
+                                        email: userData.email,
+                                        name: userData.full_name,
+                                        image: userData.avatar_url || null,
+                                        is_verified: userData.is_verified,
+                                        is_superuser: userData.is_superuser,
+                                        is_active: userData.is_active,
+                                        roles: userData.roles || ['user'],
+                                        avatar_url: userData.avatar_url || null,
+                                    }
+                                    console.log('NextAuth: User data refreshed')
+                                }
+                            } catch (error) {
+                                console.error('Error fetching updated user data:', error)
+                            }
+                            
+                            console.log('NextAuth: Token refreshed successfully')
+                            refreshSuccess = true
+                        } else {
+                            const errorText = await refreshResponse.text()
+                            console.warn(`NextAuth: Refresh attempt ${4 - retries} failed`, {
+                                status: refreshResponse.status,
+                                error: errorText
+                            })
+                            
+                            retries--
+                            if (retries > 0) {
+                                // Wait before retrying (exponential backoff)
+                                await new Promise(resolve => setTimeout(resolve, (4 - retries) * 1000))
+                            }
                         }
-                        
-                        console.log('NextAuth: Token refreshed successfully')
-                    } else {
-                        console.log('NextAuth: Refresh token expired or invalid, clearing session')
-                        // Refresh token is invalid, clear session
-                        token.accessToken = null
-                        token.refreshToken = null
-                        token.user = null
-                        return null
+                    } catch (error) {
+                        console.error(`NextAuth: Refresh attempt ${4 - retries} error:`, error)
+                        retries--
+                        if (retries > 0) {
+                            // Wait before retrying
+                            await new Promise(resolve => setTimeout(resolve, (4 - retries) * 1000))
+                        }
                     }
-                } catch (error) {
-                    console.error('NextAuth: Error refreshing token:', error)
-                    // On error, clear session
+                }
+                
+                if (!refreshSuccess) {
+                    console.log('NextAuth: All refresh attempts failed, clearing session')
+                    // All retries failed, clear session
                     token.accessToken = null
                     token.refreshToken = null
                     token.user = null
