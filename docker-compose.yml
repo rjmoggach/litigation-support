@@ -1,0 +1,220 @@
+# Docker Compose for Local Testing
+# Matches production memory limits and configuration
+# Enables development features like hot reloading
+
+name: litigation-support
+
+services:
+  # PostgreSQL Database (same as production)
+  postgres:
+    container_name: litigation-support-postgres
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: litigation_support_local
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: localdev123
+    volumes:
+      - postgres_local_data:/var/lib/postgresql/data
+      # - ./deployment/docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    ports:
+      - "5434:5432"  # Use different local port to avoid conflict
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d litigation_support_local"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - app-network
+
+  # Backend (FastAPI with development settings)
+  backend:
+    container_name: litigation-support-backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # Override for hot reload
+    env_file:
+      - backend/.env
+    environment:
+      # Database
+      DATABASE_URL: postgresql://postgres:localdev123@postgres:5432/litigation_support_local
+      
+      # App settings
+      APP_NAME: "Litigation Support API (Local)"
+      ENVIRONMENT: development
+      DEBUG: true
+      SECRET_KEY: local-development-secret-key-not-secure
+      
+      # Server configuration
+      HOST: 0.0.0.0
+      PORT: 8000
+      RELOAD: true
+      WORKERS: 1
+      
+      # CORS for local development
+      BACKEND_CORS_ORIGINS: '["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost"]'
+      
+      # Email (use Mailjet API - configured in .env)
+      # SMTP settings will be loaded from backend/.env
+      
+      # OAuth (use test credentials)
+      GOOGLE_CLIENT_ID: test-client-id
+      GOOGLE_CLIENT_SECRET: test-client-secret
+      
+      # Storage
+      STORAGE_BACKEND: local
+      UPLOAD_DIR: /app/uploads
+      
+      # Security (relaxed for local dev)
+      ALLOWED_HOSTS: '["localhost", "127.0.0.1", "0.0.0.0"]'
+      
+    volumes:
+      - ./backend:/app:cached  # Mount source code for hot reload
+      - backend_local_uploads:/app/uploads
+      - backend_local_logs:/app/logs
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - app-network
+
+  # Frontend (Next.js with development settings)
+  frontend:
+    container_name: litigation-support-frontend
+    image: node:20-alpine  # Use Node image directly for development
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"  # Install deps and run dev server for hot reload
+    environment:
+      # App settings
+      NEXT_PUBLIC_APP_NAME: "Litigation Support (Local)"
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      
+      # API configuration
+      # Browser should call host-mapped backend
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      # Server-side (SSR) inside the container should call backend by service name
+      API_URL_INTERNAL: http://backend:8000
+      NEXT_PUBLIC_API_VERSION: v1
+      
+      # Auth
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: local-nextauth-secret
+      AUTH_TRUST_HOST: true
+      NEXTAUTH_URL_INTERNAL: http://frontend:3000
+      
+      # OAuth
+      GOOGLE_CLIENT_ID: test-client-id
+      GOOGLE_CLIENT_SECRET: test-client-secret
+      
+      # Feature flags (enable all for testing)
+      NEXT_PUBLIC_FEATURE_SIGNUP: true
+      NEXT_PUBLIC_FEATURE_OAUTH: true
+      NEXT_PUBLIC_FEATURE_2FA: false
+      
+      # Development settings
+      NODE_ENV: development
+      # Increase Node.js old space to reduce OOM kills during Next.js dev
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      
+    volumes:
+      - ./frontend:/app:cached  # Mount source code for hot reload
+      - /app/node_modules  # Prevent overriding node_modules
+      - /app/.next  # Persist Next.js build cache
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 4096M  # Note: ignored by docker-compose (non-swarm), kept for documentation
+        reservations:
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - app-network
+
+  # Nginx (commented out - only needed for production deployment)
+  # nginx:
+  #   container_name: litigation-support-nginx
+  #   image: nginx:1.24-alpine
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - nginx_local_logs:/var/log/nginx
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - frontend
+  #     - backend
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 256M
+  #       reservations:
+  #         memory: 128M
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 10s
+  #   networks:
+  #     - app-network
+
+
+  # Redis for caching/sessions (optional)
+  redis:
+    container_name: litigation-support-redis
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_local_data:/data
+    ports:
+      - "6380:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    networks:
+      - app-network
+
+# Local volumes for development data persistence
+volumes:
+  postgres_local_data:
+  backend_local_uploads:
+  backend_local_logs:
+  nginx_local_logs:
+  redis_local_data:
+
+# Custom network configuration for local development
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,109 @@
+# Dependencies
+node_modules/
+backend/.venv/
+backend/__pycache__/
+backend/media/*
+
+# Build outputs
+frontend/.next/
+frontend/out/
+frontend/dist/
+backend/dist/
+backend/build/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+
+# Claude
+.claude.backup*
+
+# IDE
+# .vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# UV
+# uv.lock should be committed for reproducible builds
+
+# Next.js
+.next/
+out/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Docker
+# .dockerignore
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Package manager lockfiles (keep only one)
+# Uncomment the one you want to keep
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Testing
+.nyc_output
+coverage/
+
+# Ansible
+deployment/ansible/retry/
+*.retry
+
+# Misc
+*.tgz
+*.tar.gz
+.vault_pass
