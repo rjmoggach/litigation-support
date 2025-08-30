@@ -1,34 +1,144 @@
-import { Footer } from '@/components/blocks-footer/footer'
-import Image from 'next/image'
+'use client'
 
-export default function Home() {
+import { PageHeader } from '@/components/dashboard/page-header'
+import { Button } from '@/components/ui/button'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
+import { useBreadcrumbUpdate } from '@/providers/breadcrumb-provider'
+import {
+    Calendar,
+    ChevronRight,
+    FileText,
+    LayoutDashboard,
+    Users,
+} from 'lucide-react'
+import Link from 'next/link'
+
+export default function Dashboard() {
+    // Set breadcrumb for dashboard
+    useBreadcrumbUpdate([{ label: 'Dashboard', href: '/', active: true }])
+
+    const modules = [
+        {
+            title: 'Contacts',
+            description:
+                'Keep track of all parties, witnesses, attorneys, and other contacts involved in your case',
+            icon: Users,
+            href: '/contacts',
+            color: 'bg-green-500',
+            stats: 'Manage parties, witnesses, and attorneys',
+        },
+        {
+            title: 'Emails & Attachments',
+            description:
+                'Organize, store, and manage all your emails and attachments in one secure location',
+            icon: FileText,
+            href: '/emails',
+            color: 'bg-blue-500',
+            stats: 'Upload, organize, and search emails & attachments',
+        },
+        {
+            title: 'Case Timeline',
+            description:
+                'Track important dates, deadlines, and events throughout your litigation process',
+            icon: Calendar,
+            href: '/timeline',
+            color: 'bg-purple-500',
+            stats: 'Track deadlines and court dates',
+        },
+    ]
+
     return (
         <>
-            <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-                <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-                    <Image
-                        className="dark:invert"
-                        src="/next.svg"
-                        alt="Next.js logo"
-                        width={180}
-                        height={38}
-                        priority
-                    />
-                    <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-                        <li className="mb-2 tracking-[-.01em]">
-                            Get started by editing{' '}
-                            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-                                src/app/page.tsx
-                            </code>
-                            .
-                        </li>
-                        <li className="tracking-[-.01em]">
-                            Save and see your changes instantly.
-                        </li>
-                    </ol>
-                </main>
+            <PageHeader
+                title="Dashboard"
+                subtitle="Manage your litigation case with organized tools and resources."
+                icon={LayoutDashboard}
+            />
+
+            {/* Module Cards */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {modules.map((module, index) => (
+                    <Card
+                        key={index}
+                        className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                    >
+                        <CardHeader className="pb-3">
+                            <div className="flex items-center gap-3">
+                                <div
+                                    className={`p-2 rounded-lg ${module.color} text-white`}
+                                >
+                                    <module.icon className="h-5 w-5" />
+                                </div>
+                                <CardTitle className="text-lg">
+                                    {module.title}
+                                </CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <CardDescription className="text-sm leading-relaxed">
+                                {module.description}
+                            </CardDescription>
+
+                            <div className="text-xs text-muted-foreground">
+                                {module.stats}
+                            </div>
+
+                            <Button
+                                asChild
+                                className="w-full group-hover:bg-primary/90"
+                            >
+                                <Link
+                                    href={module.href}
+                                    className="flex items-center justify-center gap-2"
+                                >
+                                    Open Module
+                                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
-            <Footer />
+
+            {/* Quick Stats */}
+            <div className="grid gap-4 md:grid-cols-3">
+                <Card>
+                    <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                            0
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Documents Uploaded
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                            0
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Contacts Managed
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                            0
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Upcoming Deadlines
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </>
     )
 }

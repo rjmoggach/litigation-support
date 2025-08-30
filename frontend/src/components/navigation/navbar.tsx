@@ -18,7 +18,7 @@ export function Navbar() {
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto max-lg:px-6 flex h-16 justify-between items-center">
+            <div className="container max-w-8xl mx-auto max-lg:px-6 flex h-16 justify-between items-center">
                 <Link
                     href="/"
                     className="mr-6 flex items-center w-3/6 font-medium text-lg text-primary-foreground gap-2"

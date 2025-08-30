@@ -173,14 +173,14 @@ export function UserMenu() {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link href="/admin/settings" className="cursor-pointer">
+                    <Link href="/dashboard/settings" className="cursor-pointer">
                         <Settings2 className="mr-2 h-4 w-4" />
                         <span>Settings</span>
                     </Link>
                 </DropdownMenuItem>
                 {isAdmin(session) && (
                     <DropdownMenuItem asChild>
-                        <Link href="/admin" className="cursor-pointer">
+                        <Link href="/dashboard" className="cursor-pointer">
                             <Settings className="mr-2 h-4 w-4" />
                             <span>Admin</span>
                         </Link>
