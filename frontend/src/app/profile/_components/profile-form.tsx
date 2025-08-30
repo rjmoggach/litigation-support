@@ -1,7 +1,7 @@
 'use client'
 
-import { AvatarUploadDialog } from '@/app/admin/profile/_components/avatar-upload-dialog'
-import { ProfileHeader } from '@/components/admin/profile-header'
+import { AvatarUploadDialog } from '@/app/(site)/profile/_components/avatar-upload-dialog'
+import { ProfileHeader } from '@/components/blocks/profile-header'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'

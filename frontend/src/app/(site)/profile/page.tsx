@@ -1,6 +1,6 @@
 'use client'
 
-import { ProfileForm } from '@/app/admin/profile/_components/profile-form'
+import { ProfileForm } from '@/app/(site)/profile/_components/profile-form'
 import { useBreadcrumbUpdate } from '@/providers/breadcrumb-provider'
 import { useMemo } from 'react'
 
