@@ -44,19 +44,36 @@ export function LoginForm({
     const onSubmit = async (data: LoginFormData) => {
         try {
             setError('')
+            console.log('Attempting login for:', data.email)
+            
             const result = await signIn('credentials', {
                 email: data.email,
                 password: data.password,
                 redirect: false,
             })
 
+            console.log('Login result:', result)
+
             if (result?.error) {
-                setError('Invalid email or password')
-            } else {
-                router.push('/') // Redirect to home page after successful login
+                // Parse specific error types
+                if (result.error.includes('verified')) {
+                    setError('Please verify your email before logging in')
+                } else if (result.error.includes('inactive')) {
+                    setError('Your account is inactive. Please contact support.')
+                } else {
+                    setError('Invalid email or password')
+                }
+            } else if (result?.ok) {
+                // Get callback URL from query params or default to home
+                const params = new URLSearchParams(window.location.search)
+                const callbackUrl = params.get('callbackUrl') || '/'
+                
+                console.log('Login successful, redirecting to:', callbackUrl)
+                router.push(callbackUrl)
+                router.refresh() // Ensure the page reloads with new session
             }
         } catch (err) {
-            setError('An unexpected error occurred')
+            setError('An unexpected error occurred. Please try again.')
             console.error('Login error:', err)
         }
     }

@@ -13,9 +13,9 @@ interface MantraProps {
 }
 
 const words: MantraWord[] = [
-    { text: 'Collaborate', href: '/collaborate' },
-    { text: 'Craft', href: '/craft' },
-    { text: 'Create', href: '/create' },
+    { text: 'Prepare', href: '/' },
+    { text: 'Present', href: '/' },
+    { text: 'Persist', href: '/' },
 ]
 
 export function Mantra({ className = '' }: MantraProps) {

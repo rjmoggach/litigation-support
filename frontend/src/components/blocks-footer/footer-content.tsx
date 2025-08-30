@@ -2,7 +2,7 @@ import { Block, Section } from '@/components/blocks'
 import { FooterNavigation } from '@/components/blocks-footer/footer-navigation'
 import { Mantra } from '@/components/navigation/mantra'
 import { footerNavItems } from '@/content/navigation/data'
-import { socialLinks } from '@/content/social/data'
+
 import { cn } from '@/lib/utils'
 
 export const FooterContent = () => {
@@ -22,7 +22,6 @@ export const FooterContent = () => {
                         'md:flex-col md:gap-10',
                     )}
                 >
-                    <FooterNavigation title="Connect" items={socialLinks} />
                     <FooterNavigation items={footerNavItems} showThemeToggle />
                 </div>
             </Block>
@@ -34,7 +33,7 @@ export const FooterContent = () => {
                 )}
             >
                 <div className="w-1/2 relative max-sm:text-xl text-2xl font-medium">
-                    Robert Moggach
+                    Litigation Support
                 </div>
 
                 <div
