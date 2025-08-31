@@ -2,11 +2,11 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEmailConnections } from '@/hooks/use-email-connections'
 import { Mail, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { ConnectionCard } from './connection-card'
 import { ConnectionTestDialog } from './connection-test-dialog'
-import { useEmailConnections } from '@/hooks/use-email-connections'
 
 interface TestResult {
     connection_id: number
@@ -123,10 +123,11 @@ export function EmailConnectionsManager() {
                                 disabled={actionLoading.add}
                                 variant="outline"
                                 className="gap-2"
+                                size="sm"
                             >
                                 <Plus className="size-4" />
                                 {actionLoading.add
-                                    ? 'Add Account...'
+                                    ? 'Add Another Account...'
                                     : 'Add Another Account'}
                             </Button>
                         </>
