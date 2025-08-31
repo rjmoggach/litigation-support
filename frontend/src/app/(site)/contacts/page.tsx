@@ -361,57 +361,57 @@ export default function ContactsPage() {
                 {/* Column 1: Companies - 1/4 width */}
                 <div className="col-span-1 flex flex-col">
                     <CompanyList
-                    companies={filteredCompanies}
-                    loading={loading}
-                    selected={selected}
-                    onSearchChange={handleSearchChange}
-                    onCompanySelect={handleCompanySelect}
-                    onCompanyDelete={(company) =>
-                        setDeleteDialog({
-                            open: true,
-                            item: company,
-                            type: 'company',
-                        })
-                    }
-                    onAddCompany={() =>
-                        setSelected({
-                            type: 'company',
-                            item: null,
-                            mode: 'create',
-                        })
-                    }
+                        companies={filteredCompanies}
+                        loading={loading}
+                        selected={selected}
+                        onSearchChange={handleSearchChange}
+                        onCompanySelect={handleCompanySelect}
+                        onCompanyDelete={(company) =>
+                            setDeleteDialog({
+                                open: true,
+                                item: company,
+                                type: 'company',
+                            })
+                        }
+                        onAddCompany={() =>
+                            setSelected({
+                                type: 'company',
+                                item: null,
+                                mode: 'create',
+                            })
+                        }
                     />
                 </div>
 
                 {/* Column 2: People - 1/4 width */}
                 <div className="col-span-1 flex flex-col">
                     <PeopleList
-                    people={filteredPeople}
-                    loading={loading}
-                    selected={selected}
-                    companyFilter={selected.companyContext}
-                    onSearchChange={handlePeopleSearchChange}
-                    onPersonSelect={handlePersonSelect}
-                    onPersonDelete={(person) =>
-                        setDeleteDialog({
-                            open: true,
-                            item: person,
-                            type: 'person',
-                        })
-                    }
-                    onAddPerson={() =>
-                        setSelected({
-                            type: 'person',
-                            item: null,
-                            mode: 'create',
-                        })
-                    }
+                        people={filteredPeople}
+                        loading={loading}
+                        selected={selected}
+                        companyFilter={selected.companyContext}
+                        onSearchChange={handlePeopleSearchChange}
+                        onPersonSelect={handlePersonSelect}
+                        onPersonDelete={(person) =>
+                            setDeleteDialog({
+                                open: true,
+                                item: person,
+                                type: 'person',
+                            })
+                        }
+                        onAddPerson={() =>
+                            setSelected({
+                                type: 'person',
+                                item: null,
+                                mode: 'create',
+                            })
+                        }
                     />
                 </div>
 
                 {/* Column 3: Detail Panel - 1/2 width */}
-                <div className="col-span-2 flex flex-col border rounded-lg bg-card">
-                    <div className="flex-1 p-6">
+                <div className="col-span-2 flex flex-col border rounded-md bg-card">
+                    <div className="flex-1 p-3">
                         {!selected.type ? (
                             <div className="h-full flex items-center justify-center text-muted-foreground">
                                 <div className="text-center">

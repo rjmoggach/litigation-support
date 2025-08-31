@@ -303,7 +303,7 @@ export function PageFormDialog({
                     >
                         {/* Page Info */}
                         {isEditing && (
-                            <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                            <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
                                 <FileText className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-sm text-muted-foreground">
                                     Page ID: {page?.id}
@@ -458,7 +458,7 @@ export function PageFormDialog({
                                                     <img
                                                         src={field.value}
                                                         alt="Banner preview"
-                                                        className="w-full h-32 object-cover rounded-lg border"
+                                                        className="w-full h-32 object-cover rounded-md border"
                                                     />
                                                     <Button
                                                         type="button"
@@ -477,7 +477,7 @@ export function PageFormDialog({
                                                     </Button>
                                                 </div>
                                             ) : (
-                                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-muted-foreground/25 rounded-lg cursor-pointer hover:border-primary/50 transition-colors">
+                                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-muted-foreground/25 rounded-md cursor-pointer hover:border-primary/50 transition-colors">
                                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                         <ImageIcon className="h-8 w-8 mb-2 text-muted-foreground" />
                                                         <p className="mb-2 text-sm text-muted-foreground">
@@ -551,13 +551,13 @@ export function PageFormDialog({
                         />
 
                         {/* Publishing Controls */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {/* Published Switch */}
                             <FormField
                                 control={form.control}
                                 name="is_published"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                    <FormItem className="flex flex-row items-center justify-between rounded-md border p-3">
                                         <div className="space-y-0.5">
                                             <FormLabel className="text-base">
                                                 Published
@@ -582,7 +582,7 @@ export function PageFormDialog({
                                 control={form.control}
                                 name="is_private"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                                    <FormItem className="flex flex-row items-center justify-between rounded-md border p-3">
                                         <div className="space-y-0.5">
                                             <FormLabel className="text-base">
                                                 Private

@@ -1540,14 +1540,17 @@ export type DocumentType = 'affidavit' | 'financial_statement' | 'correspondence
 export type EmailConnectionResponse = {
     /**
      * Email Address
+     * Email address of the connected account
      */
     email_address: string;
     /**
      * Provider
+     * OAuth provider (currently only 'google' is supported)
      */
     provider?: string;
     /**
      * Connection Name
+     * User-friendly name for the connection
      */
     connection_name?: string | null;
     /**
@@ -1829,6 +1832,292 @@ export type ImageUpdate = {
 };
 
 /**
+ * MarriageChildrenCreate
+ */
+export type MarriageChildrenCreate = {
+    /**
+     * Marriage Id
+     */
+    marriage_id: number;
+    /**
+     * Child Id
+     */
+    child_id: number;
+    /**
+     * Custody Status
+     */
+    custody_status: string;
+    /**
+     * Custody Details
+     */
+    custody_details?: string | null;
+    /**
+     * Current Living With
+     */
+    current_living_with: string;
+    /**
+     * Custody Arrangement File Id
+     */
+    custody_arrangement_file_id?: number | null;
+};
+
+/**
+ * MarriageChildrenResponse
+ */
+export type MarriageChildrenResponse = {
+    /**
+     * Marriage Id
+     */
+    marriage_id: number;
+    /**
+     * Child Id
+     */
+    child_id: number;
+    /**
+     * Custody Status
+     */
+    custody_status: string;
+    /**
+     * Custody Details
+     */
+    custody_details?: string | null;
+    /**
+     * Current Living With
+     */
+    current_living_with: string;
+    /**
+     * Custody Arrangement File Id
+     */
+    custody_arrangement_file_id?: number | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * MarriageChildrenUpdate
+ */
+export type MarriageChildrenUpdate = {
+    /**
+     * Custody Status
+     */
+    custody_status?: string | null;
+    /**
+     * Custody Details
+     */
+    custody_details?: string | null;
+    /**
+     * Current Living With
+     */
+    current_living_with?: string | null;
+    /**
+     * Custody Arrangement File Id
+     */
+    custody_arrangement_file_id?: number | null;
+};
+
+/**
+ * MarriageCreate
+ */
+export type MarriageCreate = {
+    /**
+     * Person Id
+     */
+    person_id: number;
+    /**
+     * Spouse Id
+     */
+    spouse_id: number;
+    /**
+     * Marriage Date
+     */
+    marriage_date: string;
+    /**
+     * Marriage Location
+     */
+    marriage_location?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Separation Date
+     */
+    separation_date?: string | null;
+    /**
+     * Divorce Date
+     */
+    divorce_date?: string | null;
+    /**
+     * Current Status
+     */
+    current_status: string;
+    /**
+     * Marriage Certificate File Id
+     */
+    marriage_certificate_file_id?: number | null;
+    /**
+     * Divorce Decree File Id
+     */
+    divorce_decree_file_id?: number | null;
+};
+
+/**
+ * MarriageResponse
+ */
+export type MarriageResponse = {
+    /**
+     * Person Id
+     */
+    person_id: number;
+    /**
+     * Spouse Id
+     */
+    spouse_id: number;
+    /**
+     * Marriage Date
+     */
+    marriage_date: string;
+    /**
+     * Marriage Location
+     */
+    marriage_location?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Separation Date
+     */
+    separation_date?: string | null;
+    /**
+     * Divorce Date
+     */
+    divorce_date?: string | null;
+    /**
+     * Current Status
+     */
+    current_status: string;
+    /**
+     * Marriage Certificate File Id
+     */
+    marriage_certificate_file_id?: number | null;
+    /**
+     * Divorce Decree File Id
+     */
+    divorce_decree_file_id?: number | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * MarriageUpdate
+ */
+export type MarriageUpdate = {
+    /**
+     * Marriage Date
+     */
+    marriage_date?: string | null;
+    /**
+     * Marriage Location
+     */
+    marriage_location?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Separation Date
+     */
+    separation_date?: string | null;
+    /**
+     * Divorce Date
+     */
+    divorce_date?: string | null;
+    /**
+     * Current Status
+     */
+    current_status?: string | null;
+    /**
+     * Marriage Certificate File Id
+     */
+    marriage_certificate_file_id?: number | null;
+    /**
+     * Divorce Decree File Id
+     */
+    divorce_decree_file_id?: number | null;
+};
+
+/**
+ * MarriageWithChildrenResponse
+ */
+export type MarriageWithChildrenResponse = {
+    /**
+     * Person Id
+     */
+    person_id: number;
+    /**
+     * Spouse Id
+     */
+    spouse_id: number;
+    /**
+     * Marriage Date
+     */
+    marriage_date: string;
+    /**
+     * Marriage Location
+     */
+    marriage_location?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Separation Date
+     */
+    separation_date?: string | null;
+    /**
+     * Divorce Date
+     */
+    divorce_date?: string | null;
+    /**
+     * Current Status
+     */
+    current_status: string;
+    /**
+     * Marriage Certificate File Id
+     */
+    marriage_certificate_file_id?: number | null;
+    /**
+     * Divorce Decree File Id
+     */
+    divorce_decree_file_id?: number | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Children Associations
+     */
+    children_associations?: Array<MarriageChildrenResponse>;
+};
+
+/**
  * Message
  */
 export type Message = {
@@ -1855,14 +2144,17 @@ export type NoteType = 'general' | 'strategy' | 'event' | 'document' | 'service'
 export type OAuthInitiateRequest = {
     /**
      * Provider
+     * OAuth provider to use for authentication
      */
     provider?: string;
     /**
      * Scopes
+     * List of OAuth scopes to request from the provider
      */
     scopes?: Array<string>;
     /**
      * Redirect Uri
+     * Custom OAuth callback URL (defaults to backend callback if not provided)
      */
     redirect_uri?: string | null;
 };
@@ -1874,14 +2166,17 @@ export type OAuthInitiateRequest = {
 export type OAuthInitiateResponse = {
     /**
      * Authorization Url
+     * Complete OAuth authorization URL to redirect user to
      */
     authorization_url: string;
     /**
      * State
+     * Secure state parameter for CSRF protection (store this for validation)
      */
     state: string;
     /**
      * Provider
+     * OAuth provider being used
      */
     provider: string;
 };
@@ -1957,6 +2252,152 @@ export type PasswordResetRequest = {
 };
 
 /**
+ * PersonAddressCreate
+ */
+export type PersonAddressCreate = {
+    /**
+     * Street Address
+     */
+    street_address: string;
+    /**
+     * City
+     */
+    city: string;
+    /**
+     * State
+     */
+    state: string;
+    /**
+     * Zip Code
+     */
+    zip_code: string;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Effective Start Date
+     */
+    effective_start_date: string;
+    /**
+     * Effective End Date
+     */
+    effective_end_date?: string | null;
+    /**
+     * Is Current
+     */
+    is_current?: boolean;
+    /**
+     * Address Type
+     */
+    address_type?: string | null;
+    /**
+     * Person Id
+     */
+    person_id: number;
+};
+
+/**
+ * PersonAddressResponse
+ */
+export type PersonAddressResponse = {
+    /**
+     * Street Address
+     */
+    street_address: string;
+    /**
+     * City
+     */
+    city: string;
+    /**
+     * State
+     */
+    state: string;
+    /**
+     * Zip Code
+     */
+    zip_code: string;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Effective Start Date
+     */
+    effective_start_date: string;
+    /**
+     * Effective End Date
+     */
+    effective_end_date?: string | null;
+    /**
+     * Is Current
+     */
+    is_current?: boolean;
+    /**
+     * Address Type
+     */
+    address_type?: string | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Person Id
+     */
+    person_id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * PersonAddressUpdate
+ */
+export type PersonAddressUpdate = {
+    /**
+     * Street Address
+     */
+    street_address?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * State
+     */
+    state?: string | null;
+    /**
+     * Zip Code
+     */
+    zip_code?: string | null;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Effective Start Date
+     */
+    effective_start_date?: string | null;
+    /**
+     * Effective End Date
+     */
+    effective_end_date?: string | null;
+    /**
+     * Is Current
+     */
+    is_current?: boolean | null;
+    /**
+     * Address Type
+     */
+    address_type?: string | null;
+};
+
+/**
  * PersonCreate
  */
 export type PersonCreate = {
@@ -1976,6 +2417,14 @@ export type PersonCreate = {
      * Phone
      */
     phone?: string | null;
+    /**
+     * Date Of Birth
+     */
+    date_of_birth?: string | null;
+    /**
+     * Gender
+     */
+    gender?: string | null;
     /**
      * Is Active
      */
@@ -2013,6 +2462,20 @@ export type PersonProfileResponse = {
      */
     social_links?: {
         [key: string]: string;
+    } | null;
+    /**
+     * Ssn Last Four
+     */
+    ssn_last_four?: string | null;
+    /**
+     * Preferred Name
+     */
+    preferred_name?: string | null;
+    /**
+     * Emergency Contact
+     */
+    emergency_contact?: {
+        [key: string]: unknown;
     } | null;
     /**
      * Is Public
@@ -2069,6 +2532,20 @@ export type PersonProfileUpdate = {
         [key: string]: string;
     } | null;
     /**
+     * Ssn Last Four
+     */
+    ssn_last_four?: string | null;
+    /**
+     * Preferred Name
+     */
+    preferred_name?: string | null;
+    /**
+     * Emergency Contact
+     */
+    emergency_contact?: {
+        [key: string]: unknown;
+    } | null;
+    /**
      * Is Public
      */
     is_public?: boolean | null;
@@ -2094,6 +2571,14 @@ export type PersonResponse = {
      * Phone
      */
     phone?: string | null;
+    /**
+     * Date Of Birth
+     */
+    date_of_birth?: string | null;
+    /**
+     * Gender
+     */
+    gender?: string | null;
     /**
      * Is Active
      */
@@ -2145,6 +2630,14 @@ export type PersonUpdate = {
      * Phone
      */
     phone?: string | null;
+    /**
+     * Date Of Birth
+     */
+    date_of_birth?: string | null;
+    /**
+     * Gender
+     */
+    gender?: string | null;
     /**
      * Is Active
      */
@@ -2715,6 +3208,10 @@ export type UserProfileResponse = {
      */
     public_profile?: boolean;
     /**
+     * Person Id
+     */
+    person_id?: number | null;
+    /**
      * Id
      */
     id: number;
@@ -2776,6 +3273,10 @@ export type UserProfileUpdate = {
      * Public Profile
      */
     public_profile?: boolean;
+    /**
+     * Person Id
+     */
+    person_id?: number | null;
 };
 
 /**
@@ -3656,6 +4157,64 @@ export type UploadAvatarApiV1UsersMeAvatarPostResponses = {
 };
 
 export type UploadAvatarApiV1UsersMeAvatarPostResponse = UploadAvatarApiV1UsersMeAvatarPostResponses[keyof UploadAvatarApiV1UsersMeAvatarPostResponses];
+
+export type UnlinkUserFromPersonApiV1UsersMeProfilePersonDeleteData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/profile/person';
+};
+
+export type UnlinkUserFromPersonApiV1UsersMeProfilePersonDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetLinkedPersonApiV1UsersMeProfilePersonGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/profile/person';
+};
+
+export type GetLinkedPersonApiV1UsersMeProfilePersonGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type LinkUserToPersonApiV1UsersMeProfilePersonPutData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Person Id
+         */
+        person_id: number;
+    };
+    url: '/api/v1/users/me/profile/person';
+};
+
+export type LinkUserToPersonApiV1UsersMeProfilePersonPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LinkUserToPersonApiV1UsersMeProfilePersonPutError = LinkUserToPersonApiV1UsersMeProfilePersonPutErrors[keyof LinkUserToPersonApiV1UsersMeProfilePersonPutErrors];
+
+export type LinkUserToPersonApiV1UsersMeProfilePersonPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserProfileResponse;
+};
+
+export type LinkUserToPersonApiV1UsersMeProfilePersonPutResponse = LinkUserToPersonApiV1UsersMeProfilePersonPutResponses[keyof LinkUserToPersonApiV1UsersMeProfilePersonPutResponses];
 
 export type TestStorageConnectionApiV1StorageTestConnectionGetData = {
     body?: never;
@@ -4868,6 +5427,139 @@ export type GetPersonCompaniesApiV1ContactsPeoplePersonIdCompaniesGetResponses =
 
 export type GetPersonCompaniesApiV1ContactsPeoplePersonIdCompaniesGetResponse = GetPersonCompaniesApiV1ContactsPeoplePersonIdCompaniesGetResponses[keyof GetPersonCompaniesApiV1ContactsPeoplePersonIdCompaniesGetResponses];
 
+export type ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetData = {
+    body?: never;
+    path: {
+        /**
+         * Person Id
+         */
+        person_id: number;
+    };
+    query?: {
+        /**
+         * Current Only
+         * Only return current addresses
+         */
+        current_only?: boolean;
+    };
+    url: '/api/v1/contacts/people/{person_id}/addresses';
+};
+
+export type ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetError = ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetErrors[keyof ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetErrors];
+
+export type ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetResponses = {
+    /**
+     * Response List Person Addresses Api V1 Contacts People  Person Id  Addresses Get
+     * Successful Response
+     */
+    200: Array<PersonAddressResponse>;
+};
+
+export type ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetResponse = ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetResponses[keyof ListPersonAddressesApiV1ContactsPeoplePersonIdAddressesGetResponses];
+
+export type CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostData = {
+    body: PersonAddressCreate;
+    path: {
+        /**
+         * Person Id
+         */
+        person_id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/people/{person_id}/addresses';
+};
+
+export type CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostError = CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostErrors[keyof CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostErrors];
+
+export type CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: PersonAddressResponse;
+};
+
+export type CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostResponse = CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostResponses[keyof CreatePersonAddressApiV1ContactsPeoplePersonIdAddressesPostResponses];
+
+export type DeletePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Person Id
+         */
+        person_id: number;
+        /**
+         * Address Id
+         */
+        address_id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/people/{person_id}/addresses/{address_id}';
+};
+
+export type DeletePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeletePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdDeleteError = DeletePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdDeleteErrors[keyof DeletePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdDeleteErrors];
+
+export type DeletePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutData = {
+    body: PersonAddressUpdate;
+    path: {
+        /**
+         * Person Id
+         */
+        person_id: number;
+        /**
+         * Address Id
+         */
+        address_id: number;
+    };
+    query?: never;
+    url: '/api/v1/contacts/people/{person_id}/addresses/{address_id}';
+};
+
+export type UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutError = UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutErrors[keyof UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutErrors];
+
+export type UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: PersonAddressResponse;
+};
+
+export type UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutResponse = UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutResponses[keyof UpdatePersonAddressApiV1ContactsPeoplePersonIdAddressesAddressIdPutResponses];
+
 export type GetTagStatsApiV1TagsStatsGetData = {
     body?: never;
     path?: never;
@@ -5617,9 +6309,16 @@ export type ListConnectionsApiV1EmailConnectionsGetData = {
     url: '/api/v1/email-connections';
 };
 
+export type ListConnectionsApiV1EmailConnectionsGetErrors = {
+    /**
+     * Authentication required
+     */
+    401: unknown;
+};
+
 export type ListConnectionsApiV1EmailConnectionsGetResponses = {
     /**
-     * Successful Response
+     * List of email connections with summary statistics
      */
     200: ConnectionListResponse;
 };
@@ -5771,6 +6470,14 @@ export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostData = {
 
 export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostErrors = {
     /**
+     * Invalid request parameters
+     */
+    400: unknown;
+    /**
+     * Authentication required
+     */
+    401: unknown;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -5780,7 +6487,7 @@ export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostError = Initi
 
 export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses = {
     /**
-     * Successful Response
+     * OAuth authorization URL generated successfully
      */
     200: OAuthInitiateResponse;
 };
@@ -5809,16 +6516,24 @@ export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetData = {
 
 export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetErrors = {
     /**
+     * Invalid OAuth state or authorization code
+     */
+    400: unknown;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
+    /**
+     * Failed to create connection or exchange tokens
+     */
+    500: unknown;
 };
 
 export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetError = HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetErrors[keyof HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetErrors];
 
 export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetResponses = {
     /**
-     * Successful Response
+     * OAuth callback processed successfully - returns HTML page that closes popup
      */
     200: unknown;
 };
@@ -5903,6 +6618,130 @@ export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostErrors = {
 export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostError = TestConnectionApiV1EmailConnectionsConnectionIdTestPostErrors[keyof TestConnectionApiV1EmailConnectionsConnectionIdTestPostErrors];
 
 export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type DebugHealthCheckApiV1EmailConnectionsDebugHealthGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/email-connections/debug/health';
+};
+
+export type DebugHealthCheckApiV1EmailConnectionsDebugHealthGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type DebugTestErrorApiV1EmailConnectionsDebugTestErrorErrorTypeGetData = {
+    body?: never;
+    path: {
+        /**
+         * Error Type
+         */
+        error_type: string;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/debug/test-error/{error_type}';
+};
+
+export type DebugTestErrorApiV1EmailConnectionsDebugTestErrorErrorTypeGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DebugTestErrorApiV1EmailConnectionsDebugTestErrorErrorTypeGetError = DebugTestErrorApiV1EmailConnectionsDebugTestErrorErrorTypeGetErrors[keyof DebugTestErrorApiV1EmailConnectionsDebugTestErrorErrorTypeGetErrors];
+
+export type DebugTestErrorApiV1EmailConnectionsDebugTestErrorErrorTypeGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type TestHarvestingCapabilityApiV1EmailConnectionsHarvestTestPostData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/email-connections/harvest/test';
+};
+
+export type TestHarvestingCapabilityApiV1EmailConnectionsHarvestTestPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type HarvestEmailsForCaseApiV1EmailConnectionsHarvestCaseCaseIdPostData = {
+    /**
+     * Connection Ids
+     */
+    body?: Array<number> | null;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: {
+        /**
+         * Max Messages Per Connection
+         */
+        max_messages_per_connection?: number;
+        /**
+         * Search Query
+         */
+        search_query?: string | null;
+    };
+    url: '/api/v1/email-connections/harvest/case/{case_id}';
+};
+
+export type HarvestEmailsForCaseApiV1EmailConnectionsHarvestCaseCaseIdPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type HarvestEmailsForCaseApiV1EmailConnectionsHarvestCaseCaseIdPostError = HarvestEmailsForCaseApiV1EmailConnectionsHarvestCaseCaseIdPostErrors[keyof HarvestEmailsForCaseApiV1EmailConnectionsHarvestCaseCaseIdPostErrors];
+
+export type HarvestEmailsForCaseApiV1EmailConnectionsHarvestCaseCaseIdPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetHarvestingStatsApiV1EmailConnectionsHarvestStatsGetData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Case Id
+         */
+        case_id?: number | null;
+    };
+    url: '/api/v1/email-connections/harvest/stats';
+};
+
+export type GetHarvestingStatsApiV1EmailConnectionsHarvestStatsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetHarvestingStatsApiV1EmailConnectionsHarvestStatsGetError = GetHarvestingStatsApiV1EmailConnectionsHarvestStatsGetErrors[keyof GetHarvestingStatsApiV1EmailConnectionsHarvestStatsGetErrors];
+
+export type GetHarvestingStatsApiV1EmailConnectionsHarvestStatsGetResponses = {
     /**
      * Successful Response
      */
@@ -6735,6 +7574,358 @@ export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponses = {
 
 export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponse = UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponses[keyof UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponses];
 
+export type ListMarriagesApiV1MarriagesGetData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Person Id
+         * Filter by person ID
+         */
+        person_id?: number | null;
+        /**
+         * Current Status
+         * Filter by current status
+         */
+        current_status?: string | null;
+    };
+    url: '/api/v1/marriages';
+};
+
+export type ListMarriagesApiV1MarriagesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListMarriagesApiV1MarriagesGetError = ListMarriagesApiV1MarriagesGetErrors[keyof ListMarriagesApiV1MarriagesGetErrors];
+
+export type ListMarriagesApiV1MarriagesGetResponses = {
+    /**
+     * Response List Marriages Api V1 Marriages Get
+     * Successful Response
+     */
+    200: Array<MarriageResponse>;
+};
+
+export type ListMarriagesApiV1MarriagesGetResponse = ListMarriagesApiV1MarriagesGetResponses[keyof ListMarriagesApiV1MarriagesGetResponses];
+
+export type CreateMarriageApiV1MarriagesPostData = {
+    body: MarriageCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/marriages';
+};
+
+export type CreateMarriageApiV1MarriagesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateMarriageApiV1MarriagesPostError = CreateMarriageApiV1MarriagesPostErrors[keyof CreateMarriageApiV1MarriagesPostErrors];
+
+export type CreateMarriageApiV1MarriagesPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: MarriageResponse;
+};
+
+export type CreateMarriageApiV1MarriagesPostResponse = CreateMarriageApiV1MarriagesPostResponses[keyof CreateMarriageApiV1MarriagesPostResponses];
+
+export type DeleteMarriageApiV1MarriagesMarriageIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}';
+};
+
+export type DeleteMarriageApiV1MarriagesMarriageIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteMarriageApiV1MarriagesMarriageIdDeleteError = DeleteMarriageApiV1MarriagesMarriageIdDeleteErrors[keyof DeleteMarriageApiV1MarriagesMarriageIdDeleteErrors];
+
+export type DeleteMarriageApiV1MarriagesMarriageIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetMarriageApiV1MarriagesMarriageIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}';
+};
+
+export type GetMarriageApiV1MarriagesMarriageIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetMarriageApiV1MarriagesMarriageIdGetError = GetMarriageApiV1MarriagesMarriageIdGetErrors[keyof GetMarriageApiV1MarriagesMarriageIdGetErrors];
+
+export type GetMarriageApiV1MarriagesMarriageIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: MarriageResponse;
+};
+
+export type GetMarriageApiV1MarriagesMarriageIdGetResponse = GetMarriageApiV1MarriagesMarriageIdGetResponses[keyof GetMarriageApiV1MarriagesMarriageIdGetResponses];
+
+export type UpdateMarriageApiV1MarriagesMarriageIdPutData = {
+    body: MarriageUpdate;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}';
+};
+
+export type UpdateMarriageApiV1MarriagesMarriageIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMarriageApiV1MarriagesMarriageIdPutError = UpdateMarriageApiV1MarriagesMarriageIdPutErrors[keyof UpdateMarriageApiV1MarriagesMarriageIdPutErrors];
+
+export type UpdateMarriageApiV1MarriagesMarriageIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: MarriageResponse;
+};
+
+export type UpdateMarriageApiV1MarriagesMarriageIdPutResponse = UpdateMarriageApiV1MarriagesMarriageIdPutResponses[keyof UpdateMarriageApiV1MarriagesMarriageIdPutResponses];
+
+export type ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetData = {
+    body?: never;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}/children';
+};
+
+export type ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetError = ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetErrors[keyof ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetErrors];
+
+export type ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetResponses = {
+    /**
+     * Response List Marriage Children Api V1 Marriages  Marriage Id  Children Get
+     * Successful Response
+     */
+    200: Array<MarriageChildrenResponse>;
+};
+
+export type ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetResponse = ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetResponses[keyof ListMarriageChildrenApiV1MarriagesMarriageIdChildrenGetResponses];
+
+export type AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostData = {
+    body: MarriageChildrenCreate;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}/children';
+};
+
+export type AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostError = AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostErrors[keyof AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostErrors];
+
+export type AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: MarriageChildrenResponse;
+};
+
+export type AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostResponse = AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostResponses[keyof AddChildToMarriageApiV1MarriagesMarriageIdChildrenPostResponses];
+
+export type RemoveChildFromMarriageApiV1MarriagesMarriageIdChildrenChildIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+        /**
+         * Child Id
+         */
+        child_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}/children/{child_id}';
+};
+
+export type RemoveChildFromMarriageApiV1MarriagesMarriageIdChildrenChildIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RemoveChildFromMarriageApiV1MarriagesMarriageIdChildrenChildIdDeleteError = RemoveChildFromMarriageApiV1MarriagesMarriageIdChildrenChildIdDeleteErrors[keyof RemoveChildFromMarriageApiV1MarriagesMarriageIdChildrenChildIdDeleteErrors];
+
+export type RemoveChildFromMarriageApiV1MarriagesMarriageIdChildrenChildIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutData = {
+    body: MarriageChildrenUpdate;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+        /**
+         * Child Id
+         */
+        child_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}/children/{child_id}';
+};
+
+export type UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutError = UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutErrors[keyof UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutErrors];
+
+export type UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: MarriageChildrenResponse;
+};
+
+export type UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutResponse = UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutResponses[keyof UpdateMarriageChildApiV1MarriagesMarriageIdChildrenChildIdPutResponses];
+
+export type GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetData = {
+    body?: never;
+    path: {
+        /**
+         * Person Id
+         */
+        person_id: number;
+    };
+    query?: {
+        /**
+         * Include All
+         * Include all marriages, not just as primary person
+         */
+        include_all?: boolean;
+    };
+    url: '/api/v1/marriages/people/{person_id}/marriages';
+};
+
+export type GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetError = GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetErrors[keyof GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetErrors];
+
+export type GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetResponses = {
+    /**
+     * Response Get Person Marriages Api V1 Marriages People  Person Id  Marriages Get
+     * Successful Response
+     */
+    200: Array<MarriageResponse>;
+};
+
+export type GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetResponse = GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetResponses[keyof GetPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGetResponses];
+
+export type GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetData = {
+    body?: never;
+    path: {
+        /**
+         * Marriage Id
+         */
+        marriage_id: number;
+    };
+    query?: never;
+    url: '/api/v1/marriages/{marriage_id}/with-children';
+};
+
+export type GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetError = GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetErrors[keyof GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetErrors];
+
+export type GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: MarriageWithChildrenResponse;
+};
+
+export type GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetResponse = GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetResponses[keyof GetMarriageWithChildrenApiV1MarriagesMarriageIdWithChildrenGetResponses];
+
 export type RootGetData = {
     body?: never;
     path?: never;
@@ -6757,6 +7948,20 @@ export type HealthCheckHealthGetData = {
 };
 
 export type HealthCheckHealthGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type ConnectionHealthStatusHealthConnectionsGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/health/connections';
+};
+
+export type ConnectionHealthStatusHealthConnectionsGetResponses = {
     /**
      * Successful Response
      */

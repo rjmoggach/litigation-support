@@ -11,9 +11,11 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { uploadProfilePictureApiV1UsersMeProfilePicturePost, readUsersMeApiV1UsersMeGet } from '@/lib/api/sdk.gen'
 import { client } from '@/lib/api/client.gen'
-import { API_CONFIG } from '@/lib/config'
+import {
+    readUsersMeApiV1UsersMeGet,
+    uploadProfilePictureApiV1UsersMeProfilePicturePost,
+} from '@/lib/api/sdk.gen'
 import { ImageIcon, RotateCcw, Upload } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useRef, useState } from 'react'
@@ -289,9 +291,12 @@ export function AvatarUploadDialog({
             }
 
             // Set up authentication for the API client
-            const accessToken = session && typeof session === 'object' && 'accessToken' in session 
-                ? String(session.accessToken) 
-                : ''
+            const accessToken =
+                session &&
+                typeof session === 'object' &&
+                'accessToken' in session
+                    ? String(session.accessToken)
+                    : ''
 
             if (!accessToken) {
                 toast.error('Authentication failed. Please log in again.')
@@ -301,16 +306,20 @@ export function AvatarUploadDialog({
             // Configure client with auth token
             client.setConfig({
                 headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
+                    Authorization: `Bearer ${accessToken}`,
+                },
             })
 
             // First test if the user endpoint works with our token
             console.log('Testing user endpoint first...')
             try {
-                const testResponse = await readUsersMeApiV1UsersMeGet({ client })
+                const testResponse = await readUsersMeApiV1UsersMeGet({
+                    client,
+                })
                 if (!testResponse.data) {
-                    console.error('User endpoint failed, token might be invalid')
+                    console.error(
+                        'User endpoint failed, token might be invalid',
+                    )
                     toast.error('Authentication failed. Please log in again.')
                     return
                 }
@@ -323,17 +332,15 @@ export function AvatarUploadDialog({
 
             // Upload avatar using the API client
             console.log('Making avatar upload request to backend...')
-            console.log(
-                'Using token:',
-                accessToken.substring(0, 20) + '...'
-            )
+            console.log('Using token:', accessToken.substring(0, 20) + '...')
 
-            const response = await uploadProfilePictureApiV1UsersMeProfilePicturePost({
-                body: {
-                    file: file
-                },
-                client
-            })
+            const response =
+                await uploadProfilePictureApiV1UsersMeProfilePicturePost({
+                    body: {
+                        file: file,
+                    },
+                    client,
+                })
 
             if (!response.data) {
                 console.error('Upload failed: no data returned')
@@ -403,7 +410,7 @@ export function AvatarUploadDialog({
                     {!imgSrc ? (
                         /* Drag and Drop Zone */
                         <div
-                            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer aspect-square flex items-center justify-center ${
+                            className={`border-2 border-dashed rounded-md p-8 text-center transition-colors cursor-pointer aspect-square flex items-center justify-center ${
                                 isDragOver
                                     ? 'border-primary bg-primary/5'
                                     : 'border-muted-foreground/25 hover:border-primary/50'
@@ -451,7 +458,7 @@ export function AvatarUploadDialog({
 
                             {/* Square crop container with fixed circular overlay */}
                             <div
-                                className="aspect-square border rounded-lg overflow-hidden bg-black/5 relative select-none"
+                                className="aspect-square border rounded-md overflow-hidden bg-black/5 relative select-none"
                                 onMouseMove={handleImageMouseMove}
                                 onMouseUp={handleImageMouseUp}
                                 onMouseLeave={handleImageMouseUp}
@@ -522,7 +529,7 @@ export function AvatarUploadDialog({
                                     max="3"
                                     step="0.01"
                                     value={imageScale}
-                                    className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
+                                    className="w-full h-2 bg-muted rounded-md appearance-none cursor-pointer slider"
                                     onChange={(e) =>
                                         handleZoomChange(
                                             parseFloat(e.target.value),

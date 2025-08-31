@@ -1,33 +1,41 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { 
-    Plus, 
-    Search, 
-    X, 
-    Building2, 
-    User, 
-    Calendar,
-    Briefcase,
-    Star,
-    AlertCircle,
-    Loader2,
-    Trash2,
-    Edit
-} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
+import {
+    Briefcase,
+    Building2,
+    Calendar,
+    Edit,
+    Loader2,
+    Plus,
+    Search,
+    Star,
+    Trash2,
+    User,
+    X,
+} from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 
 // Types
 interface Company {
@@ -71,17 +79,20 @@ interface AssociationManagerProps {
     entityName: string
     associations: Association[]
     onAssociationCreate?: (association: Association) => void
-    onAssociationUpdate?: (associationId: number, updates: Partial<Association>) => void
+    onAssociationUpdate?: (
+        associationId: number,
+        updates: Partial<Association>,
+    ) => void
     onAssociationDelete?: (associationId: number) => void
     className?: string
 }
 
 // Search component for finding entities to associate
-function EntitySearch({ 
-    type, 
-    onSelect, 
-    excludeIds = []
-}: { 
+function EntitySearch({
+    type,
+    onSelect,
+    excludeIds = [],
+}: {
     type: 'company' | 'person'
     onSelect: (entity: Company | Person) => void
     excludeIds?: number[]
@@ -90,49 +101,106 @@ function EntitySearch({
     const [searchResults, setSearchResults] = useState<(Company | Person)[]>([])
     const [loading, setLoading] = useState(false)
 
-    const searchEntities = useCallback(async (query: string) => {
-        if (!query.trim()) {
-            setSearchResults([])
-            return
-        }
+    const searchEntities = useCallback(
+        async (query: string) => {
+            if (!query.trim()) {
+                setSearchResults([])
+                return
+            }
 
-        setLoading(true)
-        try {
-            // TODO: Replace with actual API call when SDK is ready
-            // const response = await api.contacts[type === 'company' ? 'companies' : 'people']({
-            //     search: query,
-            //     limit: 10
-            // })
-            
-            // Mock search results
-            await new Promise(resolve => setTimeout(resolve, 300))
-            
-            const mockResults = type === 'company' ? [
-                { id: 1, name: "Tech Innovations Inc.", slug: "tech-innovations-inc", profile: { industry: "Technology", size: "medium" } },
-                { id: 2, name: "Creative Studios", slug: "creative-studios", profile: { industry: "Creative Services", size: "small" } },
-                { id: 3, name: "Global Solutions Ltd", slug: "global-solutions-ltd", profile: { industry: "Consulting", size: "large" } }
-            ] : [
-                { id: 1, first_name: "Sarah", last_name: "Johnson", full_name: "Sarah Johnson", slug: "sarah-johnson", profile: { title: "Senior Software Engineer" } },
-                { id: 2, first_name: "Michael", last_name: "Chen", full_name: "Michael Chen", slug: "michael-chen", profile: { title: "Creative Director" } },
-                { id: 3, first_name: "Emma", last_name: "Rodriguez", full_name: "Emma Rodriguez", slug: "emma-rodriguez", profile: { title: "Business Consultant" } }
-            ]
+            setLoading(true)
+            try {
+                // TODO: Replace with actual API call when SDK is ready
+                // const response = await api.contacts[type === 'company' ? 'companies' : 'people']({
+                //     search: query,
+                //     limit: 10
+                // })
 
-            const filtered = mockResults.filter(entity => 
-                !excludeIds.includes(entity.id) &&
-                (type === 'company' 
-                    ? (entity as Company).name.toLowerCase().includes(query.toLowerCase())
-                    : (entity as Person).full_name.toLowerCase().includes(query.toLowerCase())
+                // Mock search results
+                await new Promise((resolve) => setTimeout(resolve, 300))
+
+                const mockResults =
+                    type === 'company'
+                        ? [
+                              {
+                                  id: 1,
+                                  name: 'Tech Innovations Inc.',
+                                  slug: 'tech-innovations-inc',
+                                  profile: {
+                                      industry: 'Technology',
+                                      size: 'medium',
+                                  },
+                              },
+                              {
+                                  id: 2,
+                                  name: 'Creative Studios',
+                                  slug: 'creative-studios',
+                                  profile: {
+                                      industry: 'Creative Services',
+                                      size: 'small',
+                                  },
+                              },
+                              {
+                                  id: 3,
+                                  name: 'Global Solutions Ltd',
+                                  slug: 'global-solutions-ltd',
+                                  profile: {
+                                      industry: 'Consulting',
+                                      size: 'large',
+                                  },
+                              },
+                          ]
+                        : [
+                              {
+                                  id: 1,
+                                  first_name: 'Sarah',
+                                  last_name: 'Johnson',
+                                  full_name: 'Sarah Johnson',
+                                  slug: 'sarah-johnson',
+                                  profile: {
+                                      title: 'Senior Software Engineer',
+                                  },
+                              },
+                              {
+                                  id: 2,
+                                  first_name: 'Michael',
+                                  last_name: 'Chen',
+                                  full_name: 'Michael Chen',
+                                  slug: 'michael-chen',
+                                  profile: { title: 'Creative Director' },
+                              },
+                              {
+                                  id: 3,
+                                  first_name: 'Emma',
+                                  last_name: 'Rodriguez',
+                                  full_name: 'Emma Rodriguez',
+                                  slug: 'emma-rodriguez',
+                                  profile: { title: 'Business Consultant' },
+                              },
+                          ]
+
+                const filtered = mockResults.filter(
+                    (entity) =>
+                        !excludeIds.includes(entity.id) &&
+                        (type === 'company'
+                            ? (entity as Company).name
+                                  .toLowerCase()
+                                  .includes(query.toLowerCase())
+                            : (entity as Person).full_name
+                                  .toLowerCase()
+                                  .includes(query.toLowerCase())),
                 )
-            )
 
-            setSearchResults(filtered)
-        } catch (error) {
-            console.error('Search error:', error)
-            setSearchResults([])
-        } finally {
-            setLoading(false)
-        }
-    }, [type, excludeIds])
+                setSearchResults(filtered)
+            } catch (error) {
+                console.error('Search error:', error)
+                setSearchResults([])
+            } finally {
+                setLoading(false)
+            }
+        },
+        [type, excludeIds],
+    )
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -174,22 +242,29 @@ function EntitySearch({
                                     <Building2 className="h-8 w-8 text-muted-foreground" />
                                 ) : (
                                     <Avatar className="h-8 w-8">
-                                        <AvatarImage src="" alt={(entity as Person).full_name} />
+                                        <AvatarImage
+                                            src=""
+                                            alt={(entity as Person).full_name}
+                                        />
                                         <AvatarFallback>
-                                            {(entity as Person).first_name[0]}{(entity as Person).last_name[0]}
+                                            {(entity as Person).first_name[0]}
+                                            {(entity as Person).last_name[0]}
                                         </AvatarFallback>
                                     </Avatar>
                                 )}
                                 <div className="flex-1">
                                     <p className="font-medium">
-                                        {type === 'company' ? (entity as Company).name : (entity as Person).full_name}
+                                        {type === 'company'
+                                            ? (entity as Company).name
+                                            : (entity as Person).full_name}
                                     </p>
                                     {entity.profile && (
                                         <p className="text-sm text-muted-foreground">
-                                            {type === 'company' 
-                                                ? (entity as Company).profile?.industry 
-                                                : (entity as Person).profile?.title
-                                            }
+                                            {type === 'company'
+                                                ? (entity as Company).profile
+                                                      ?.industry
+                                                : (entity as Person).profile
+                                                      ?.title}
                                         </p>
                                     )}
                                 </div>
@@ -201,7 +276,8 @@ function EntitySearch({
 
             {searchQuery && !loading && searchResults.length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                    No {type === 'company' ? 'companies' : 'people'} found matching "{searchQuery}"
+                    No {type === 'company' ? 'companies' : 'people'} found
+                    matching "{searchQuery}"
                 </p>
             )}
         </div>
@@ -209,12 +285,12 @@ function EntitySearch({
 }
 
 // Association form component
-function AssociationForm({ 
+function AssociationForm({
     type,
     entityId,
     association,
     onSave,
-    onCancel
+    onCancel,
 }: {
     type: 'company' | 'person'
     entityId: number
@@ -222,8 +298,13 @@ function AssociationForm({
     onSave: (data: Partial<Association>) => void
     onCancel: () => void
 }) {
-    const [selectedEntity, setSelectedEntity] = useState<Company | Person | null>(
-        association ? (type === 'company' ? association.person : association.company) || null : null
+    const [selectedEntity, setSelectedEntity] = useState<
+        Company | Person | null
+    >(
+        association
+            ? (type === 'company' ? association.person : association.company) ||
+                  null
+            : null,
     )
     const [role, setRole] = useState(association?.role || '')
     const [startDate, setStartDate] = useState(association?.start_date || '')
@@ -244,7 +325,7 @@ function AssociationForm({
                 role: role || undefined,
                 start_date: startDate || undefined,
                 end_date: endDate || undefined,
-                is_primary: isPrimary
+                is_primary: isPrimary,
             }
 
             if (!isEditing && selectedEntity) {
@@ -269,7 +350,9 @@ function AssociationForm({
         <div className="space-y-4">
             {!isEditing && (
                 <div>
-                    <Label>Select {type === 'company' ? 'Person' : 'Company'}</Label>
+                    <Label>
+                        Select {type === 'company' ? 'Person' : 'Company'}
+                    </Label>
                     <div className="mt-2">
                         {selectedEntity ? (
                             <div className="p-3 border rounded-md">
@@ -277,9 +360,25 @@ function AssociationForm({
                                     <div className="flex items-center space-x-3">
                                         {type === 'company' ? (
                                             <Avatar className="h-8 w-8">
-                                                <AvatarImage src="" alt={(selectedEntity as Person).full_name} />
+                                                <AvatarImage
+                                                    src=""
+                                                    alt={
+                                                        (
+                                                            selectedEntity as Person
+                                                        ).full_name
+                                                    }
+                                                />
                                                 <AvatarFallback>
-                                                    {(selectedEntity as Person).first_name[0]}{(selectedEntity as Person).last_name[0]}
+                                                    {
+                                                        (
+                                                            selectedEntity as Person
+                                                        ).first_name[0]
+                                                    }
+                                                    {
+                                                        (
+                                                            selectedEntity as Person
+                                                        ).last_name[0]
+                                                    }
                                                 </AvatarFallback>
                                             </Avatar>
                                         ) : (
@@ -287,17 +386,22 @@ function AssociationForm({
                                         )}
                                         <div>
                                             <p className="font-medium">
-                                                {type === 'company' 
-                                                    ? (selectedEntity as Person).full_name 
-                                                    : (selectedEntity as Company).name
-                                                }
+                                                {type === 'company'
+                                                    ? (selectedEntity as Person)
+                                                          .full_name
+                                                    : (
+                                                          selectedEntity as Company
+                                                      ).name}
                                             </p>
                                             {selectedEntity.profile && (
                                                 <p className="text-sm text-muted-foreground">
-                                                    {type === 'company' 
-                                                        ? (selectedEntity as Person).profile?.title
-                                                        : (selectedEntity as Company).profile?.industry
-                                                    }
+                                                    {type === 'company'
+                                                        ? (
+                                                              selectedEntity as Person
+                                                          ).profile?.title
+                                                        : (
+                                                              selectedEntity as Company
+                                                          ).profile?.industry}
                                                 </p>
                                             )}
                                         </div>
@@ -333,7 +437,7 @@ function AssociationForm({
                 />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
                 <div>
                     <Label htmlFor="start_date">Start Date</Label>
                     <Input
@@ -370,11 +474,13 @@ function AssociationForm({
                 <Button variant="outline" onClick={onCancel} disabled={loading}>
                     Cancel
                 </Button>
-                <Button 
-                    onClick={handleSave} 
+                <Button
+                    onClick={handleSave}
                     disabled={loading || (!selectedEntity && !isEditing)}
                 >
-                    {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    {loading && (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    )}
                     {isEditing ? 'Update' : 'Create'} Association
                 </Button>
             </div>
@@ -391,10 +497,11 @@ export function AssociationManager({
     onAssociationCreate,
     onAssociationUpdate,
     onAssociationDelete,
-    className
+    className,
 }: AssociationManagerProps) {
     const [showCreateDialog, setShowCreateDialog] = useState(false)
-    const [editingAssociation, setEditingAssociation] = useState<Association | null>(null)
+    const [editingAssociation, setEditingAssociation] =
+        useState<Association | null>(null)
     const [deletingId, setDeletingId] = useState<number | null>(null)
 
     const handleCreate = (data: Partial<Association>) => {
@@ -425,7 +532,7 @@ export function AssociationManager({
     }
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn('space-y-4', className)}>
             <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
@@ -444,10 +551,15 @@ export function AssociationManager({
                                 )}
                             </CardTitle>
                             <CardDescription>
-                                Manage {type === 'company' ? 'people' : 'companies'} associated with {entityName}
+                                Manage{' '}
+                                {type === 'company' ? 'people' : 'companies'}{' '}
+                                associated with {entityName}
                             </CardDescription>
                         </div>
-                        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+                        <Dialog
+                            open={showCreateDialog}
+                            onOpenChange={setShowCreateDialog}
+                        >
                             <DialogTrigger asChild>
                                 <Button>
                                     <Plus className="h-4 w-4 mr-2" />
@@ -457,10 +569,18 @@ export function AssociationManager({
                             <DialogContent className="sm:max-w-md">
                                 <DialogHeader>
                                     <DialogTitle>
-                                        Add {type === 'company' ? 'Person' : 'Company'} Association
+                                        Add{' '}
+                                        {type === 'company'
+                                            ? 'Person'
+                                            : 'Company'}{' '}
+                                        Association
                                     </DialogTitle>
                                     <DialogDescription>
-                                        Associate a {type === 'company' ? 'person' : 'company'} with {entityName}
+                                        Associate a{' '}
+                                        {type === 'company'
+                                            ? 'person'
+                                            : 'company'}{' '}
+                                        with {entityName}
                                     </DialogDescription>
                                 </DialogHeader>
                                 <AssociationForm
@@ -483,9 +603,13 @@ export function AssociationManager({
                                     <Building2 className="h-12 w-12 text-muted-foreground mx-auto" />
                                 )}
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">No associations yet</h3>
+                            <h3 className="text-lg font-semibold mb-2">
+                                No associations yet
+                            </h3>
                             <p className="text-muted-foreground mb-4">
-                                Start by adding {type === 'company' ? 'people' : 'companies'} associated with {entityName}
+                                Start by adding{' '}
+                                {type === 'company' ? 'people' : 'companies'}{' '}
+                                associated with {entityName}
                             </p>
                             <Button onClick={() => setShowCreateDialog(true)}>
                                 <Plus className="h-4 w-4 mr-2" />
@@ -495,36 +619,66 @@ export function AssociationManager({
                     ) : (
                         <div className="space-y-4">
                             {associations.map((association) => {
-                                const linkedEntity = type === 'company' ? association.person : association.company
+                                const linkedEntity =
+                                    type === 'company'
+                                        ? association.person
+                                        : association.company
                                 if (!linkedEntity) return null
 
                                 return (
-                                    <div key={association.id || `${association.company_id}-${association.person_id}`} 
-                                         className="p-4 border rounded-lg">
+                                    <div
+                                        key={
+                                            association.id ||
+                                            `${association.company_id}-${association.person_id}`
+                                        }
+                                        className="p-3 border rounded-md"
+                                    >
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-start space-x-3 flex-1">
                                                 {type === 'company' ? (
                                                     <Avatar className="h-12 w-12">
-                                                        <AvatarImage src="" alt={(linkedEntity as Person).full_name} />
+                                                        <AvatarImage
+                                                            src=""
+                                                            alt={
+                                                                (
+                                                                    linkedEntity as Person
+                                                                ).full_name
+                                                            }
+                                                        />
                                                         <AvatarFallback>
-                                                            {(linkedEntity as Person).first_name[0]}{(linkedEntity as Person).last_name[0]}
+                                                            {
+                                                                (
+                                                                    linkedEntity as Person
+                                                                ).first_name[0]
+                                                            }
+                                                            {
+                                                                (
+                                                                    linkedEntity as Person
+                                                                ).last_name[0]
+                                                            }
                                                         </AvatarFallback>
                                                     </Avatar>
                                                 ) : (
-                                                    <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
+                                                    <div className="h-12 w-12 rounded-md bg-muted flex items-center justify-center">
                                                         <Building2 className="h-6 w-6 text-muted-foreground" />
                                                     </div>
                                                 )}
                                                 <div className="flex-1">
                                                     <div className="flex items-center space-x-2">
                                                         <h4 className="font-medium">
-                                                            {type === 'company' 
-                                                                ? (linkedEntity as Person).full_name
-                                                                : (linkedEntity as Company).name
-                                                            }
+                                                            {type === 'company'
+                                                                ? (
+                                                                      linkedEntity as Person
+                                                                  ).full_name
+                                                                : (
+                                                                      linkedEntity as Company
+                                                                  ).name}
                                                         </h4>
                                                         {association.is_primary && (
-                                                            <Badge variant="secondary" className="text-xs">
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className="text-xs"
+                                                            >
                                                                 <Star className="h-3 w-3 mr-1" />
                                                                 Primary
                                                             </Badge>
@@ -536,21 +690,36 @@ export function AssociationManager({
                                                             {association.role}
                                                         </div>
                                                     )}
-                                                    {(association.start_date || association.end_date) && (
+                                                    {(association.start_date ||
+                                                        association.end_date) && (
                                                         <div className="flex items-center mt-1 text-sm text-muted-foreground">
                                                             <Calendar className="h-3 w-3 mr-1" />
-                                                            {association.start_date && formatDate(association.start_date)}
-                                                            {association.start_date && association.end_date && ' - '}
-                                                            {association.end_date ? formatDate(association.end_date) : 
-                                                             (association.start_date && 'Present')}
+                                                            {association.start_date &&
+                                                                formatDate(
+                                                                    association.start_date,
+                                                                )}
+                                                            {association.start_date &&
+                                                                association.end_date &&
+                                                                ' - '}
+                                                            {association.end_date
+                                                                ? formatDate(
+                                                                      association.end_date,
+                                                                  )
+                                                                : association.start_date &&
+                                                                  'Present'}
                                                         </div>
                                                     )}
                                                     {linkedEntity.profile && (
                                                         <p className="text-sm text-muted-foreground mt-1">
-                                                            {type === 'company' 
-                                                                ? (linkedEntity as Person).profile?.title
-                                                                : (linkedEntity as Company).profile?.industry
-                                                            }
+                                                            {type === 'company'
+                                                                ? (
+                                                                      linkedEntity as Person
+                                                                  ).profile
+                                                                      ?.title
+                                                                : (
+                                                                      linkedEntity as Company
+                                                                  ).profile
+                                                                      ?.industry}
                                                         </p>
                                                     )}
                                                 </div>
@@ -559,17 +728,30 @@ export function AssociationManager({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => setEditingAssociation(association)}
+                                                    onClick={() =>
+                                                        setEditingAssociation(
+                                                            association,
+                                                        )
+                                                    }
                                                 >
                                                     <Edit className="h-4 w-4" />
                                                 </Button>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => association.id && handleDelete(association.id)}
-                                                    disabled={deletingId === association.id}
+                                                    onClick={() =>
+                                                        association.id &&
+                                                        handleDelete(
+                                                            association.id,
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        deletingId ===
+                                                        association.id
+                                                    }
                                                 >
-                                                    {deletingId === association.id ? (
+                                                    {deletingId ===
+                                                    association.id ? (
                                                         <Loader2 className="h-4 w-4 animate-spin" />
                                                     ) : (
                                                         <Trash2 className="h-4 w-4" />
@@ -586,7 +768,10 @@ export function AssociationManager({
             </Card>
 
             {/* Edit Dialog */}
-            <Dialog open={!!editingAssociation} onOpenChange={(open) => !open && setEditingAssociation(null)}>
+            <Dialog
+                open={!!editingAssociation}
+                onOpenChange={(open) => !open && setEditingAssociation(null)}
+            >
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Edit Association</DialogTitle>

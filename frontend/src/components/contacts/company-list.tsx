@@ -28,7 +28,7 @@ export function CompanyList({
 }: CompanyListProps) {
     return (
         <div className="flex flex-col border rounded-sm bg-card flex-1">
-            <div className="p-4 border-b">
+            <div className="p-3 border-b">
                 <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                     <Building2 className="h-5 w-5" />
                     Companies
@@ -46,7 +46,7 @@ export function CompanyList({
                 <ScrollArea className="flex-1 ">
                     <div>
                         {loading ? (
-                            <div className="p-4">Loading...</div>
+                            <div className="p-3">Loading...</div>
                         ) : (
                             companies.map((company) => (
                                 <div

@@ -1,5 +1,5 @@
-import { DynamicBreadcrumb } from '@/components/dashboard/dynamic-breadcrumb'
 import { Navbar } from '@/components/navigation/navbar'
+import { ConditionalSiteLayout } from '@/components/layout/conditional-site-layout'
 export default function AuthLayout({
     children,
 }: {
@@ -9,18 +9,11 @@ export default function AuthLayout({
         <div className="min-h-screen flex flex-col">
             {/* Fixed Navbar */}
             <Navbar />
-
-            {/* Breadcrumb section */}
-            <div className="h-8 mt-16 flex items-center flex-shrink-0">
-                <div className="container max-w-8xl mx-auto max-lg:px-6">
-                    <DynamicBreadcrumb />
-                </div>
-            </div>
-
-            {/* Main content area - fills remaining space */}
-            <div className="flex-1 flex flex-col container max-w-8xl mx-auto max-lg:px-6 pt-4 pb-6">
+            
+            {/* Conditional Site Layout - handles menu bar and breadcrumbs */}
+            <ConditionalSiteLayout>
                 {children}
-            </div>
+            </ConditionalSiteLayout>
         </div>
     )
 }

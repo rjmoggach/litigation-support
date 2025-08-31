@@ -19,11 +19,11 @@ export function PageHeader({
     return (
         <div
             className={cn(
-                'flex items-center justify-between py-6 pt-0 ',
+                'flex items-center justify-between py-3 pt-0 ',
                 className,
             )}
         >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 {Icon && <Icon className="size-8 text-muted-foreground" />}
                 <div>
                     <h1 className="text-xl font-medium">{title}</h1>

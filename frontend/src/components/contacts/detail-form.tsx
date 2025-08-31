@@ -172,12 +172,12 @@ export function DetailForm({
             try {
                 // Clean the data before sending
                 const updateData = { ...formData, [field]: value }
-                
+
                 // Convert empty strings to null for optional fields
                 if (updateData.email === '') updateData.email = null
                 if (updateData.phone === '') updateData.phone = null
                 if (updateData.website === '') updateData.website = null
-                
+
                 if (selected.type === 'company' && selected.item) {
                     await updateCompanyApiV1ContactsCompaniesCompanyIdPut({
                         path: { company_id: selected.item.id },
@@ -229,7 +229,7 @@ export function DetailForm({
             delete cleanedData.updated_at
             delete cleanedData.slug
             delete cleanedData.full_name // This is typically auto-generated from first_name + last_name
-            
+
             // Convert empty strings to null for optional fields
             if (cleanedData.email === '') cleanedData.email = null
             if (cleanedData.phone === '') cleanedData.phone = null
@@ -258,15 +258,15 @@ export function DetailForm({
                 error?.response?.data || error?.message || error,
             )
             console.error('Full error object:', JSON.stringify(error, null, 2))
-            
+
             // Try to extract detailed validation errors
             let errorMessage = 'Failed to create'
             if (error?.response?.data?.detail) {
                 if (Array.isArray(error.response.data.detail)) {
                     // Pydantic validation errors
-                    const validationErrors = error.response.data.detail.map(
-                        (err: any) => `${err.loc.join('.')}: ${err.msg}`
-                    ).join(', ')
+                    const validationErrors = error.response.data.detail
+                        .map((err: any) => `${err.loc.join('.')}: ${err.msg}`)
+                        .join(', ')
                     errorMessage = `Validation error: ${validationErrors}`
                 } else {
                     errorMessage = error.response.data.detail
@@ -274,7 +274,7 @@ export function DetailForm({
             } else if (error?.message) {
                 errorMessage = error.message
             }
-            
+
             toast.error(errorMessage)
         } finally {
             setSaving(false)
@@ -313,7 +313,7 @@ export function DetailForm({
     if (selected.type === 'company') {
         return (
             <ScrollArea className="h-full">
-                <div className="space-y-6">
+                <div className="space-y-3">
                     <div className="flex items-center justify-between">
                         <h3 className="text-2xl font-medium">
                             {selected.mode === 'create'
@@ -354,7 +354,7 @@ export function DetailForm({
                         </div>
                     </div>
 
-                    <div className="grid gap-4">
+                    <div className="grid gap-3">
                         <div>
                             <Label htmlFor="name">Company Name</Label>
                             {isEditing || selected.mode === 'create' ? (
@@ -371,7 +371,11 @@ export function DetailForm({
                                 />
                             ) : (
                                 <div className="p-2 text-sm">
-                                    {formData.name || <span className="text-muted-foreground">Not specified</span>}
+                                    {formData.name || (
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -401,7 +405,9 @@ export function DetailForm({
                                             {formData.email}
                                         </a>
                                     ) : (
-                                        <span className="text-muted-foreground">Not specified</span>
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
                                     )}
                                 </div>
                             )}
@@ -431,7 +437,9 @@ export function DetailForm({
                                             {formData.phone}
                                         </a>
                                     ) : (
-                                        <span className="text-muted-foreground">Not specified</span>
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
                                     )}
                                 </div>
                             )}
@@ -463,7 +471,9 @@ export function DetailForm({
                                             {formData.website}
                                         </a>
                                     ) : (
-                                        <span className="text-muted-foreground">Not specified</span>
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
                                     )}
                                 </div>
                             )}
@@ -517,7 +527,7 @@ export function DetailForm({
     if (selected.type === 'person') {
         return (
             <ScrollArea className="h-full">
-                <div className="space-y-6">
+                <div className="space-y-3">
                     <div className="flex items-start justify-between">
                         <div className="flex-1">
                             <h3 className="text-2xl font-medium">
@@ -605,7 +615,7 @@ export function DetailForm({
                         </div>
                     </div>
 
-                    <div className="grid gap-4">
+                    <div className="grid gap-3">
                         <div>
                             <Label htmlFor="first_name">First Name</Label>
                             {isEditing || selected.mode === 'create' ? (
@@ -622,7 +632,11 @@ export function DetailForm({
                                 />
                             ) : (
                                 <div className="p-2 text-sm">
-                                    {formData.first_name || <span className="text-muted-foreground">Not specified</span>}
+                                    {formData.first_name || (
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -643,7 +657,11 @@ export function DetailForm({
                                 />
                             ) : (
                                 <div className="p-2 text-sm">
-                                    {formData.last_name || <span className="text-muted-foreground">Not specified</span>}
+                                    {formData.last_name || (
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -673,7 +691,9 @@ export function DetailForm({
                                             {formData.email}
                                         </a>
                                     ) : (
-                                        <span className="text-muted-foreground">Not specified</span>
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
                                     )}
                                 </div>
                             )}
@@ -703,7 +723,9 @@ export function DetailForm({
                                             {formData.phone}
                                         </a>
                                     ) : (
-                                        <span className="text-muted-foreground">Not specified</span>
+                                        <span className="text-muted-foreground">
+                                            Not specified
+                                        </span>
                                     )}
                                 </div>
                             )}

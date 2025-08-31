@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { ConnectionCard } from './connection-card'
 import { ConnectionTestDialog } from './connection-test-dialog'
 import { AddEmailAccountDialog } from './add-email-account-dialog'
+import { EmailConnectionsErrorBoundary, EmailConnectionsErrorFallback } from './email-connections-error-boundary'
 
 interface TestResult {
     connection_id: number
@@ -73,7 +74,11 @@ export function EmailConnectionsManager() {
     }
 
     return (
-        <>
+        <EmailConnectionsErrorBoundary
+            fallback={(error, retry) => (
+                <EmailConnectionsErrorFallback error={error} retry={retry} />
+            )}
+        >
             <ConnectionTestDialog
                 open={testDialogOpen}
                 onOpenChange={setTestDialogOpen}
@@ -144,6 +149,6 @@ export function EmailConnectionsManager() {
                     )}
                 </CardContent>
             </Card>
-        </>
+        </EmailConnectionsErrorBoundary>
     )
 }

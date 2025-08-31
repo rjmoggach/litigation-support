@@ -74,11 +74,11 @@ export function ForgotPasswordForm({
     }
 
     return (
-        <div className={cn('flex flex-col gap-6', className)} {...props}>
+        <div className={cn('flex flex-col gap-3', className)} {...props}>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-3">
                     <div className="flex flex-col items-center gap-2">
-                        <div className="flex items-center gap-4 w-full justify-between">
+                        <div className="flex items-center gap-3 w-full justify-between">
                             <div className="w-16" /> {/* Spacer */}
                             <Link
                                 href="/"
@@ -115,7 +115,7 @@ export function ForgotPasswordForm({
                         </div>
                     )}
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-3">
                         <div className="grid gap-3">
                             <Label htmlFor="email">Email</Label>
                             <Input

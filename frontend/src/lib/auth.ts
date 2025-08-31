@@ -176,6 +176,11 @@ export const config = {
                 token.refreshToken = anyUser.refreshToken || null
                 token.user = user
                 
+                // Initialize email connections array if not exists
+                if (!token.emailConnections) {
+                    token.emailConnections = []
+                }
+                
                 // Calculate token expiry times (in seconds)
                 if (token.accessToken) {
                     try {
@@ -201,7 +206,18 @@ export const config = {
             if (trigger === 'update' && session) {
                 // Update the token with new session data
                 token.user = { ...token.user, ...session }
+                
+                // Handle email connections updates
+                if (session.emailConnections) {
+                    token.emailConnections = session.emailConnections
+                }
+                
                 return token
+            }
+            
+            // Initialize email connections array if not exists
+            if (!token.emailConnections) {
+                token.emailConnections = []
             }
 
             // Check if access token needs refresh
@@ -338,6 +354,7 @@ export const config = {
                 anySession.refreshToken = token.refreshToken
                 anySession.accessTokenExpires = token.accessTokenExpires
                 anySession.refreshTokenExpires = token.refreshTokenExpires
+                anySession.emailConnections = token.emailConnections || []
                 
                 session.user = {
                     ...session.user,
@@ -345,6 +362,7 @@ export const config = {
                     ...(token.user as any),
                     accessToken: token.accessToken,
                     refreshToken: token.refreshToken,
+                    emailConnections: token.emailConnections || [],
                 }
             }
             return session
@@ -358,5 +376,153 @@ export const config = {
         strategy: 'jwt',
     },
 } satisfies NextAuthConfig
+
+// Types for additional email account connections
+export interface AdditionalEmailAccount {
+    id: string
+    email: string
+    provider: string
+    providerAccountId: string
+    name?: string
+    accessToken?: string
+    refreshToken?: string
+    expiresAt?: number
+    scopes?: string[]
+    status: 'active' | 'expired' | 'error' | 'revoked'
+    createdAt: string
+    lastSyncAt?: string
+    errorMessage?: string
+}
+
+// Email connection management utilities
+export class EmailConnectionManager {
+    /**
+     * Add or update an email connection in the session
+     */
+    static async addEmailConnection(
+        connection: AdditionalEmailAccount,
+        update?: (session: any) => void
+    ): Promise<void> {
+        if (typeof window !== 'undefined' && update) {
+            const { useSession } = await import('next-auth/react')
+            
+            // Get current session
+            const { data: session } = useSession()
+            
+            if (session) {
+                const updatedConnections = [
+                    ...(session.emailConnections || []).filter(
+                        (conn: AdditionalEmailAccount) => conn.id !== connection.id
+                    ),
+                    connection,
+                ]
+                
+                // Update session with new email connections
+                update({
+                    ...session,
+                    emailConnections: updatedConnections,
+                })
+            }
+        }
+    }
+    
+    /**
+     * Remove an email connection from the session
+     */
+    static async removeEmailConnection(
+        connectionId: string,
+        update?: (session: any) => void
+    ): Promise<void> {
+        if (typeof window !== 'undefined' && update) {
+            const { useSession } = await import('next-auth/react')
+            
+            // Get current session
+            const { data: session } = useSession()
+            
+            if (session) {
+                const updatedConnections = (session.emailConnections || []).filter(
+                    (conn: AdditionalEmailAccount) => conn.id !== connectionId
+                )
+                
+                // Update session with filtered email connections
+                update({
+                    ...session,
+                    emailConnections: updatedConnections,
+                })
+            }
+        }
+    }
+    
+    /**
+     * Update an email connection status
+     */
+    static async updateEmailConnectionStatus(
+        connectionId: string,
+        status: 'active' | 'expired' | 'error' | 'revoked',
+        errorMessage?: string,
+        update?: (session: any) => void
+    ): Promise<void> {
+        if (typeof window !== 'undefined' && update) {
+            const { useSession } = await import('next-auth/react')
+            
+            // Get current session
+            const { data: session } = useSession()
+            
+            if (session) {
+                const updatedConnections = (session.emailConnections || []).map(
+                    (conn: AdditionalEmailAccount) =>
+                        conn.id === connectionId
+                            ? {
+                                  ...conn,
+                                  status,
+                                  errorMessage: status === 'error' ? errorMessage : undefined,
+                                  lastSyncAt: status === 'active' ? new Date().toISOString() : conn.lastSyncAt,
+                              }
+                            : conn
+                )
+                
+                // Update session with updated email connections
+                update({
+                    ...session,
+                    emailConnections: updatedConnections,
+                })
+            }
+        }
+    }
+    
+    /**
+     * Get email connections from session
+     */
+    static getEmailConnections(session: any): AdditionalEmailAccount[] {
+        return session?.emailConnections || []
+    }
+    
+    /**
+     * Get a specific email connection by ID
+     */
+    static getEmailConnection(session: any, connectionId: string): AdditionalEmailAccount | undefined {
+        return session?.emailConnections?.find((conn: AdditionalEmailAccount) => conn.id === connectionId)
+    }
+    
+    /**
+     * Check if an email address is already connected
+     */
+    static isEmailConnected(session: any, email: string): boolean {
+        return Boolean(
+            session?.emailConnections?.some(
+                (conn: AdditionalEmailAccount) => conn.email.toLowerCase() === email.toLowerCase()
+            )
+        )
+    }
+    
+    /**
+     * Get active email connections only
+     */
+    static getActiveEmailConnections(session: any): AdditionalEmailAccount[] {
+        return (session?.emailConnections || []).filter(
+            (conn: AdditionalEmailAccount) => conn.status === 'active'
+        )
+    }
+}
 
 // Export only the config, NextAuth instance is created in auth.ts

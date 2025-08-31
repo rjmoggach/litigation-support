@@ -4,7 +4,7 @@
 
 body,
 html {
-    /* font-size: 14px; */
+    font-size: 14px;
     /* Prevent scrollbar layout jump by reserving space - only for non-admin pages */
     font-family: var(--font-geist-sans), system-ui, sans-serif;
 }

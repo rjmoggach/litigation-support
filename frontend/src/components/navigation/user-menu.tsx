@@ -4,7 +4,6 @@ import { LogOut, Scale, Settings, Settings2, User } from 'lucide-react'
 import { Session } from 'next-auth'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import * as React from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -44,7 +43,6 @@ export function UserMenu() {
         signOut({ callbackUrl: '/' })
     }
 
-
     const getUserInitials = (
         fullName: string | null | undefined,
         email: string,
@@ -62,7 +60,7 @@ export function UserMenu() {
 
     if (status === 'loading') {
         return (
-            <div className="h-6 w-6 animate-pulse rounded-lg">
+            <div className="h-6 w-6 animate-pulse rounded-md">
                 <Scale className="size-5" />
             </div>
         )

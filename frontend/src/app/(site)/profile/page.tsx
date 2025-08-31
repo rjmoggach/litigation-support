@@ -8,7 +8,7 @@ export default function AdminProfilePage() {
     // Memoize breadcrumb items to prevent re-renders
     const breadcrumbItems = useMemo(
         () => [
-            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Dashboard', href: '/' },
             { label: 'Profile', active: true },
         ],
         [],

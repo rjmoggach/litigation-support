@@ -24,6 +24,8 @@ import {
 } from 'lucide-react'
 import type { EmailConnection } from '@/types/email-connections'
 import { ConnectionStatusIndicator } from './connection-status-indicator'
+import { EmailConnectionsErrorFallback } from './email-connections-error-boundary'
+import { handleEmailConnectionError } from '@/lib/error-handling'
 
 interface ConnectionCardProps {
     connection: EmailConnection
@@ -40,6 +42,14 @@ export function ConnectionCard({
     onDelete,
     actionLoading,
 }: ConnectionCardProps) {
+    
+    const handleAction = async (actionFn: () => Promise<void>, actionName: string) => {
+        try {
+            await actionFn()
+        } catch (error) {
+            handleEmailConnectionError(error, `${actionName} for ${connection.email_address}`)
+        }
+    }
 
     return (
         <div className="flex items-center justify-between p-2 px-4 border rounded-sm">
@@ -74,7 +84,7 @@ export function ConnectionCard({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => onTest(connection)}
+                                onClick={() => handleAction(() => onTest(connection), 'Testing connection')}
                                 disabled={actionLoading[`test-${connection.id}`]}
                             >
                                 <TestTube className="size-4" />
@@ -91,7 +101,7 @@ export function ConnectionCard({
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => onRefresh(connection)}
+                                    onClick={() => handleAction(() => onRefresh(connection), 'Refreshing connection')}
                                     disabled={
                                         actionLoading[`refresh-${connection.id}`]
                                     }
@@ -141,7 +151,7 @@ export function ConnectionCard({
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
-                                    onClick={() => onDelete(connection)}
+                                    onClick={() => handleAction(() => onDelete(connection), 'Deleting connection')}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
                                     Delete connection

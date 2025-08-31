@@ -1,16 +1,17 @@
 'use client'
 
-import { Suspense } from 'react'
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Command, CheckCircle, XCircle, Loader2 } from 'lucide-react'
+import { CheckCircle, Command, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { verifyEmailApiV1AuthVerifyEmailPost } from '@/lib/api/sdk.gen'
 
 function VerifyEmailContent() {
-    const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'invalid'>('loading')
+    const [status, setStatus] = useState<
+        'loading' | 'success' | 'error' | 'invalid'
+    >('loading')
     const [message, setMessage] = useState('')
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -27,12 +28,14 @@ function VerifyEmailContent() {
             try {
                 console.log('Verifying token:', token)
                 const response = await verifyEmailApiV1AuthVerifyEmailPost({
-                    body: { token }
+                    body: { token },
                 })
 
                 if (response.data) {
                     setStatus('success')
-                    setMessage('Email verified successfully! You can now log in to your account.')
+                    setMessage(
+                        'Email verified successfully! You can now log in to your account.',
+                    )
                 } else {
                     setStatus('error')
                     setMessage('Email verification failed. Please try again.')
@@ -40,9 +43,17 @@ function VerifyEmailContent() {
             } catch (err: unknown) {
                 console.error('Verification error:', err)
                 setStatus('error')
-                
-                let errorMessage = 'Email verification failed. Please try again.'
-                if (err && typeof err === 'object' && 'body' in err && err.body && typeof err.body === 'object' && 'detail' in err.body) {
+
+                let errorMessage =
+                    'Email verification failed. Please try again.'
+                if (
+                    err &&
+                    typeof err === 'object' &&
+                    'body' in err &&
+                    err.body &&
+                    typeof err.body === 'object' &&
+                    'detail' in err.body
+                ) {
                     errorMessage = String(err.body.detail)
                 } else if (err && typeof err === 'object' && 'message' in err) {
                     errorMessage = String(err.message)
@@ -63,8 +74,8 @@ function VerifyEmailContent() {
     }
 
     return (
-        <div className="flex flex-col gap-6 max-w-md mx-auto">
-            <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-3 max-w-md mx-auto">
+            <div className="flex flex-col gap-3">
                 <div className="flex flex-col items-center gap-2">
                     <Link
                         href="/"
@@ -76,8 +87,8 @@ function VerifyEmailContent() {
                         <span className="sr-only">Home</span>
                     </Link>
                     <h1 className="text-xl font-bold">Email Verification</h1>
-                    
-                    <div className="flex flex-col items-center gap-4">
+
+                    <div className="flex flex-col items-center gap-3">
                         {status === 'loading' && (
                             <div className="flex flex-col items-center gap-2">
                                 <div className="flex size-12 items-center justify-center rounded-full bg-muted">
@@ -119,20 +130,28 @@ function VerifyEmailContent() {
 
                 <div className="flex flex-col gap-3">
                     {status === 'success' && (
-                        <Button onClick={handleLoginRedirect} className="w-full">
+                        <Button
+                            onClick={handleLoginRedirect}
+                            className="w-full"
+                        >
                             Continue to Login
                         </Button>
                     )}
-                    
+
                     {(status === 'error' || status === 'invalid') && (
                         <>
-                            <Button onClick={handleHomeRedirect} className="w-full">
+                            <Button
+                                onClick={handleHomeRedirect}
+                                className="w-full"
+                            >
                                 Go to Home
                             </Button>
-                            <Button variant="outline" asChild className="w-full">
-                                <Link href="/signup">
-                                    Try Signing Up Again
-                                </Link>
+                            <Button
+                                variant="outline"
+                                asChild
+                                className="w-full"
+                            >
+                                <Link href="/signup">Try Signing Up Again</Link>
                             </Button>
                         </>
                     )}
@@ -140,10 +159,7 @@ function VerifyEmailContent() {
 
                 {status !== 'loading' && (
                     <div className="text-center text-sm">
-                        <Link
-                            href="/"
-                            className="underline underline-offset-4"
-                        >
+                        <Link href="/" className="underline underline-offset-4">
                             Back to Home
                         </Link>
                     </div>
@@ -155,18 +171,20 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
     return (
-        <Suspense fallback={
-            <div className="flex flex-col gap-6 max-w-md mx-auto">
-                <div className="flex flex-col items-center gap-2">
-                    <div className="flex size-12 items-center justify-center rounded-full bg-muted">
-                        <Loader2 className="size-6 text-muted-foreground animate-spin" />
-                    </div>
-                    <div className="text-center text-sm text-muted-foreground">
-                        Loading...
+        <Suspense
+            fallback={
+                <div className="flex flex-col gap-3 max-w-md mx-auto">
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+                            <Loader2 className="size-6 text-muted-foreground animate-spin" />
+                        </div>
+                        <div className="text-center text-sm text-muted-foreground">
+                            Loading...
+                        </div>
                     </div>
                 </div>
-            </div>
-        }>
+            }
+        >
             <VerifyEmailContent />
         </Suspense>
     )

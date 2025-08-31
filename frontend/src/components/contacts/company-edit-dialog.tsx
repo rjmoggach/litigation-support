@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -21,7 +21,6 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
     Select,
     SelectContent,
@@ -29,63 +28,98 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { Company, CompanyProfile } from '@/lib/api/contacts.types'
+import { Textarea } from '@/components/ui/textarea'
 import { useDebounce } from '@/hooks/use-debounce'
+import type { Company } from '@/lib/api/contacts.types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useWatch } from 'react-hook-form'
-import { z } from 'zod'
-import { 
-    Building, 
-    Upload, 
-    Save, 
-    Globe, 
-    Phone, 
-    Mail, 
-    MapPin, 
-    Users, 
+import {
+    Building,
     Calendar,
     Eye,
     EyeOff,
+    Globe,
+    Mail,
+    MapPin,
+    Phone,
     Plus,
-    X
+    Save,
+    Upload,
+    Users,
+    X,
 } from 'lucide-react'
+import * as React from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
+import { z } from 'zod'
 
 // Schema for comprehensive company editing
 const companyEditSchema = z.object({
     // Basic company fields
-    name: z.string().min(1, 'Company name is required').max(255, 'Name is too long'),
-    email: z.string().email('Invalid email address').optional().or(z.literal('')),
-    phone: z.string().max(50, 'Phone number is too long').optional().or(z.literal('')),
-    website: z.string().max(500, 'Website URL is too long').optional().or(z.literal('')),
+    name: z
+        .string()
+        .min(1, 'Company name is required')
+        .max(255, 'Name is too long'),
+    email: z
+        .string()
+        .email('Invalid email address')
+        .optional()
+        .or(z.literal('')),
+    phone: z
+        .string()
+        .max(50, 'Phone number is too long')
+        .optional()
+        .or(z.literal('')),
+    website: z
+        .string()
+        .max(500, 'Website URL is too long')
+        .optional()
+        .or(z.literal('')),
     is_active: z.boolean(),
     is_public: z.boolean(),
-    
+
     // Profile fields
-    profile: z.object({
-        description: z.string().max(2000, 'Description is too long').optional().or(z.literal('')),
-        industry: z.string().max(100, 'Industry is too long').optional().or(z.literal('')),
-        size: z.enum(['startup', 'small', 'medium', 'large', 'enterprise', '']).optional(),
-        founded_year: z.number().min(1800).max(new Date().getFullYear()).optional().or(z.nan()),
-        
-        // Address as structured data
-        address: z.object({
-            street: z.string().optional(),
-            city: z.string().optional(),
-            state: z.string().optional(),
-            postal_code: z.string().optional(),
-            country: z.string().optional(),
-        }).optional(),
-        
-        // Social links
-        social_links: z.record(z.string()).optional(),
-        
-        logo_file_id: z.number().optional(),
-        is_public: z.boolean(),
-    }).optional(),
+    profile: z
+        .object({
+            description: z
+                .string()
+                .max(2000, 'Description is too long')
+                .optional()
+                .or(z.literal('')),
+            industry: z
+                .string()
+                .max(100, 'Industry is too long')
+                .optional()
+                .or(z.literal('')),
+            size: z
+                .enum(['startup', 'small', 'medium', 'large', 'enterprise', ''])
+                .optional(),
+            founded_year: z
+                .number()
+                .min(1800)
+                .max(new Date().getFullYear())
+                .optional()
+                .or(z.nan()),
+
+            // Address as structured data
+            address: z
+                .object({
+                    street: z.string().optional(),
+                    city: z.string().optional(),
+                    state: z.string().optional(),
+                    postal_code: z.string().optional(),
+                    country: z.string().optional(),
+                })
+                .optional(),
+
+            // Social links
+            social_links: z.record(z.string()).optional(),
+
+            logo_file_id: z.number().optional(),
+            is_public: z.boolean(),
+        })
+        .optional(),
 })
 
 type CompanyEditFormData = z.infer<typeof companyEditSchema>
@@ -94,8 +128,14 @@ interface CompanyEditDialogProps {
     company: Company | null
     open: boolean
     onOpenChange: (open: boolean) => void
-    onSave: (companyId: number | null, data: Partial<CompanyEditFormData>) => Promise<void>
-    onAutoSave?: (companyId: number | null, data: Partial<CompanyEditFormData>) => Promise<void>
+    onSave: (
+        companyId: number | null,
+        data: Partial<CompanyEditFormData>,
+    ) => Promise<void>
+    onAutoSave?: (
+        companyId: number | null,
+        data: Partial<CompanyEditFormData>,
+    ) => Promise<void>
     isCreating?: boolean
 }
 
@@ -108,26 +148,44 @@ const COMPANY_SIZES = [
 ]
 
 const SOCIAL_PLATFORMS = [
-    { key: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/company/...' },
-    { key: 'twitter', label: 'Twitter', placeholder: 'https://twitter.com/...' },
-    { key: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/...' },
+    {
+        key: 'linkedin',
+        label: 'LinkedIn',
+        placeholder: 'https://linkedin.com/company/...',
+    },
+    {
+        key: 'twitter',
+        label: 'Twitter',
+        placeholder: 'https://twitter.com/...',
+    },
+    {
+        key: 'facebook',
+        label: 'Facebook',
+        placeholder: 'https://facebook.com/...',
+    },
     { key: 'github', label: 'GitHub', placeholder: 'https://github.com/...' },
-    { key: 'instagram', label: 'Instagram', placeholder: 'https://instagram.com/...' },
+    {
+        key: 'instagram',
+        label: 'Instagram',
+        placeholder: 'https://instagram.com/...',
+    },
 ]
 
-export function CompanyEditDialog({ 
-    company, 
-    open, 
-    onOpenChange, 
+export function CompanyEditDialog({
+    company,
+    open,
+    onOpenChange,
     onSave,
     onAutoSave,
-    isCreating = false
+    isCreating = false,
 }: CompanyEditDialogProps) {
     const [isAutoSaving, setIsAutoSaving] = React.useState(false)
     const [lastAutoSave, setLastAutoSave] = React.useState<Date | null>(null)
     const [logoFile, setLogoFile] = React.useState<File | null>(null)
     const [logoPreview, setLogoPreview] = React.useState<string | null>(null)
-    const [socialLinks, setSocialLinks] = React.useState<Record<string, string>>({})
+    const [socialLinks, setSocialLinks] = React.useState<
+        Record<string, string>
+    >({})
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
     const form = useForm<CompanyEditFormData>({
@@ -208,7 +266,7 @@ export function CompanyEditDialog({
                 logo_file_id: company.profile?.logo_file_id,
                 is_public: company.profile?.is_public ?? true,
             }
-            
+
             form.reset({
                 name: company.name || '',
                 email: company.email || '',
@@ -225,10 +283,10 @@ export function CompanyEditDialog({
     // Auto-save functionality
     React.useEffect(() => {
         if (!onAutoSave || isCreating) return
-        
+
         const performAutoSave = async () => {
             if (!company || !form.formState.isDirty) return
-            
+
             setIsAutoSaving(true)
             try {
                 await onAutoSave(company.id, debouncedValues)
@@ -242,7 +300,13 @@ export function CompanyEditDialog({
         }
 
         performAutoSave()
-    }, [debouncedValues, onAutoSave, company, isCreating, form.formState.isDirty])
+    }, [
+        debouncedValues,
+        onAutoSave,
+        company,
+        isCreating,
+        form.formState.isDirty,
+    ])
 
     const handleSubmit = async (data: CompanyEditFormData) => {
         try {
@@ -251,9 +315,9 @@ export function CompanyEditDialog({
                 profile: {
                     ...data.profile,
                     social_links: socialLinks,
-                }
+                },
             }
-            
+
             await onSave(isCreating ? null : company?.id || null, submitData)
             onOpenChange(false)
             form.reset()
@@ -283,7 +347,7 @@ export function CompanyEditDialog({
         }
 
         setLogoFile(file)
-        
+
         // Create preview
         const reader = new FileReader()
         reader.onload = (e) => {
@@ -293,14 +357,14 @@ export function CompanyEditDialog({
     }
 
     const addSocialLink = (platform: string) => {
-        setSocialLinks(prev => ({
+        setSocialLinks((prev) => ({
             ...prev,
-            [platform]: ''
+            [platform]: '',
         }))
     }
 
     const removeSocialLink = (platform: string) => {
-        setSocialLinks(prev => {
+        setSocialLinks((prev) => {
             const updated = { ...prev }
             delete updated[platform]
             return updated
@@ -308,9 +372,9 @@ export function CompanyEditDialog({
     }
 
     const updateSocialLink = (platform: string, url: string) => {
-        setSocialLinks(prev => ({
+        setSocialLinks((prev) => ({
             ...prev,
-            [platform]: url
+            [platform]: url,
         }))
     }
 
@@ -332,31 +396,37 @@ export function CompanyEditDialog({
                     </DialogTitle>
                     <DialogDescription className="flex items-center justify-between">
                         <span>
-                            {isCreating 
+                            {isCreating
                                 ? 'Create a new company profile with comprehensive details'
-                                : 'Update company information, profile, and media'
-                            }
+                                : 'Update company information, profile, and media'}
                         </span>
                         {!isCreating && (
                             <div className="flex items-center gap-2 text-xs">
                                 {isAutoSaving && (
-                                    <Badge variant="secondary" className="gap-1">
+                                    <Badge
+                                        variant="secondary"
+                                        className="gap-1"
+                                    >
                                         <Save className="h-3 w-3 animate-pulse" />
                                         Auto-saving...
                                     </Badge>
                                 )}
                                 {lastAutoSave && !isAutoSaving && (
                                     <span className="text-muted-foreground">
-                                        Last saved: {lastAutoSave.toLocaleTimeString()}
+                                        Last saved:{' '}
+                                        {lastAutoSave.toLocaleTimeString()}
                                     </span>
                                 )}
                             </div>
                         )}
                     </DialogDescription>
                 </DialogHeader>
-                
+
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="space-y-3"
+                    >
                         <Tabs defaultValue="basic" className="w-full">
                             <TabsList className="grid w-full grid-cols-3">
                                 <TabsTrigger value="basic" className="gap-2">
@@ -373,7 +443,10 @@ export function CompanyEditDialog({
                                 </TabsTrigger>
                             </TabsList>
 
-                            <TabsContent value="basic" className="space-y-4 mt-6">
+                            <TabsContent
+                                value="basic"
+                                className="space-y-4 mt-6"
+                            >
                                 <FormField
                                     control={form.control}
                                     name="name"
@@ -384,14 +457,17 @@ export function CompanyEditDialog({
                                                 Company Name *
                                             </FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="Enter company name" />
+                                                <Input
+                                                    {...field}
+                                                    placeholder="Enter company name"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <FormField
                                         control={form.control}
                                         name="email"
@@ -402,9 +478,9 @@ export function CompanyEditDialog({
                                                     Email
                                                 </FormLabel>
                                                 <FormControl>
-                                                    <Input 
-                                                        {...field} 
-                                                        type="email" 
+                                                    <Input
+                                                        {...field}
+                                                        type="email"
                                                         placeholder="company@example.com"
                                                     />
                                                 </FormControl>
@@ -426,9 +502,9 @@ export function CompanyEditDialog({
                                                     Phone
                                                 </FormLabel>
                                                 <FormControl>
-                                                    <Input 
-                                                        {...field} 
-                                                        type="tel" 
+                                                    <Input
+                                                        {...field}
+                                                        type="tel"
                                                         placeholder="+1 (555) 123-4567"
                                                     />
                                                 </FormControl>
@@ -451,13 +527,20 @@ export function CompanyEditDialog({
                                                 Website
                                             </FormLabel>
                                             <FormControl>
-                                                <Input 
-                                                    {...field} 
-                                                    type="url" 
+                                                <Input
+                                                    {...field}
+                                                    type="url"
                                                     placeholder="https://example.com"
                                                     onChange={(e) => {
-                                                        const value = e.target.value
-                                                        field.onChange(value ? formatWebsiteUrl(value) : '')
+                                                        const value =
+                                                            e.target.value
+                                                        field.onChange(
+                                                            value
+                                                                ? formatWebsiteUrl(
+                                                                      value,
+                                                                  )
+                                                                : '',
+                                                        )
                                                     }}
                                                 />
                                             </FormControl>
@@ -468,12 +551,14 @@ export function CompanyEditDialog({
                                         </FormItem>
                                     )}
                                 />
-                                
+
                                 <Separator />
-                                
+
                                 <div className="space-y-3">
-                                    <h4 className="font-medium">Visibility Settings</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <h4 className="font-medium">
+                                        Visibility Settings
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <FormField
                                             control={form.control}
                                             name="is_active"
@@ -481,20 +566,27 @@ export function CompanyEditDialog({
                                                 <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                                                     <FormControl>
                                                         <Checkbox
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                            onCheckedChange={
+                                                                field.onChange
+                                                            }
                                                         />
                                                     </FormControl>
                                                     <div className="space-y-1 leading-none">
-                                                        <FormLabel>Active</FormLabel>
+                                                        <FormLabel>
+                                                            Active
+                                                        </FormLabel>
                                                         <FormDescription>
-                                                            Company is active and can be managed
+                                                            Company is active
+                                                            and can be managed
                                                         </FormDescription>
                                                     </div>
                                                 </FormItem>
                                             )}
                                         />
-                                        
+
                                         <FormField
                                             control={form.control}
                                             name="is_public"
@@ -502,17 +594,26 @@ export function CompanyEditDialog({
                                                 <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                                                     <FormControl>
                                                         <Checkbox
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                            onCheckedChange={
+                                                                field.onChange
+                                                            }
                                                         />
                                                     </FormControl>
                                                     <div className="space-y-1 leading-none">
                                                         <FormLabel className="flex items-center gap-2">
-                                                            {field.value ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                                                            {field.value ? (
+                                                                <Eye className="h-3 w-3" />
+                                                            ) : (
+                                                                <EyeOff className="h-3 w-3" />
+                                                            )}
                                                             Public
                                                         </FormLabel>
                                                         <FormDescription>
-                                                            Show in public directories
+                                                            Show in public
+                                                            directories
                                                         </FormDescription>
                                                     </div>
                                                 </FormItem>
@@ -522,15 +623,20 @@ export function CompanyEditDialog({
                                 </div>
                             </TabsContent>
 
-                            <TabsContent value="profile" className="space-y-4 mt-6">
+                            <TabsContent
+                                value="profile"
+                                className="space-y-4 mt-6"
+                            >
                                 <FormField
                                     control={form.control}
                                     name="profile.description"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Company Description</FormLabel>
+                                            <FormLabel>
+                                                Company Description
+                                            </FormLabel>
                                             <FormControl>
-                                                <Textarea 
+                                                <Textarea
                                                     {...field}
                                                     placeholder="Brief description of the company, its mission, and services..."
                                                     rows={4}
@@ -538,14 +644,15 @@ export function CompanyEditDialog({
                                                 />
                                             </FormControl>
                                             <FormDescription>
-                                                A brief overview of your company (max 2000 characters)
+                                                A brief overview of your company
+                                                (max 2000 characters)
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <FormField
                                         control={form.control}
                                         name="profile.industry"
@@ -553,7 +660,7 @@ export function CompanyEditDialog({
                                             <FormItem>
                                                 <FormLabel>Industry</FormLabel>
                                                 <FormControl>
-                                                    <Input 
+                                                    <Input
                                                         {...field}
                                                         placeholder="e.g., Technology, Healthcare, Finance"
                                                     />
@@ -571,23 +678,40 @@ export function CompanyEditDialog({
                                         name="profile.size"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Company Size</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormLabel>
+                                                    Company Size
+                                                </FormLabel>
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                    defaultValue={field.value}
+                                                >
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select company size" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {COMPANY_SIZES.map((size) => (
-                                                            <SelectItem key={size.value} value={size.value}>
-                                                                {size.label}
-                                                            </SelectItem>
-                                                        ))}
+                                                        {COMPANY_SIZES.map(
+                                                            (size) => (
+                                                                <SelectItem
+                                                                    key={
+                                                                        size.value
+                                                                    }
+                                                                    value={
+                                                                        size.value
+                                                                    }
+                                                                >
+                                                                    {size.label}
+                                                                </SelectItem>
+                                                            ),
+                                                        )}
                                                     </SelectContent>
                                                 </Select>
                                                 <FormDescription>
-                                                    Approximate number of employees
+                                                    Approximate number of
+                                                    employees
                                                 </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
@@ -605,15 +729,22 @@ export function CompanyEditDialog({
                                                 Founded Year
                                             </FormLabel>
                                             <FormControl>
-                                                <Input 
+                                                <Input
                                                     {...field}
                                                     type="number"
                                                     min="1800"
                                                     max={new Date().getFullYear()}
                                                     placeholder="2020"
                                                     onChange={(e) => {
-                                                        const value = e.target.value
-                                                        field.onChange(value ? parseInt(value) : undefined)
+                                                        const value =
+                                                            e.target.value
+                                                        field.onChange(
+                                                            value
+                                                                ? parseInt(
+                                                                      value,
+                                                                  )
+                                                                : undefined,
+                                                        )
                                                     }}
                                                     value={field.value || ''}
                                                 />
@@ -633,22 +764,27 @@ export function CompanyEditDialog({
                                         <MapPin className="h-4 w-4" />
                                         Address
                                     </h4>
-                                    
+
                                     <FormField
                                         control={form.control}
                                         name="profile.address.street"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Street Address</FormLabel>
+                                                <FormLabel>
+                                                    Street Address
+                                                </FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} placeholder="123 Main Street" />
+                                                    <Input
+                                                        {...field}
+                                                        placeholder="123 Main Street"
+                                                    />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <FormField
                                             control={form.control}
                                             name="profile.address.city"
@@ -656,7 +792,10 @@ export function CompanyEditDialog({
                                                 <FormItem>
                                                     <FormLabel>City</FormLabel>
                                                     <FormControl>
-                                                        <Input {...field} placeholder="San Francisco" />
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="San Francisco"
+                                                        />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -668,9 +807,14 @@ export function CompanyEditDialog({
                                             name="profile.address.state"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>State/Province</FormLabel>
+                                                    <FormLabel>
+                                                        State/Province
+                                                    </FormLabel>
                                                     <FormControl>
-                                                        <Input {...field} placeholder="CA" />
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="CA"
+                                                        />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -678,15 +822,20 @@ export function CompanyEditDialog({
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <FormField
                                             control={form.control}
                                             name="profile.address.postal_code"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Postal Code</FormLabel>
+                                                    <FormLabel>
+                                                        Postal Code
+                                                    </FormLabel>
                                                     <FormControl>
-                                                        <Input {...field} placeholder="94105" />
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="94105"
+                                                        />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -698,9 +847,14 @@ export function CompanyEditDialog({
                                             name="profile.address.country"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Country</FormLabel>
+                                                    <FormLabel>
+                                                        Country
+                                                    </FormLabel>
                                                     <FormControl>
-                                                        <Input {...field} placeholder="United States" />
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="United States"
+                                                        />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -717,16 +871,23 @@ export function CompanyEditDialog({
                                             <FormControl>
                                                 <Checkbox
                                                     checked={field.value}
-                                                    onCheckedChange={field.onChange}
+                                                    onCheckedChange={
+                                                        field.onChange
+                                                    }
                                                 />
                                             </FormControl>
                                             <div className="space-y-1 leading-none">
                                                 <FormLabel className="flex items-center gap-2">
-                                                    {field.value ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                                                    {field.value ? (
+                                                        <Eye className="h-3 w-3" />
+                                                    ) : (
+                                                        <EyeOff className="h-3 w-3" />
+                                                    )}
                                                     Public Profile
                                                 </FormLabel>
                                                 <FormDescription>
-                                                    Show detailed profile information publicly
+                                                    Show detailed profile
+                                                    information publicly
                                                 </FormDescription>
                                             </div>
                                         </FormItem>
@@ -734,40 +895,48 @@ export function CompanyEditDialog({
                                 />
                             </TabsContent>
 
-                            <TabsContent value="media" className="space-y-6 mt-6">
+                            <TabsContent
+                                value="media"
+                                className="space-y-3 mt-6"
+                            >
                                 <div className="space-y-4">
                                     <h4 className="font-medium flex items-center gap-2">
                                         <Upload className="h-4 w-4" />
                                         Company Logo
                                     </h4>
-                                    
-                                    <div className="flex items-center gap-4">
+
+                                    <div className="flex items-center gap-3">
                                         {logoPreview && (
-                                            <div className="w-20 h-20 rounded-lg border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden">
-                                                <img 
-                                                    src={logoPreview} 
-                                                    alt="Logo preview" 
+                                            <div className="w-20 h-20 rounded-md border-2 border-dashed border-muted-foreground/25 flex items-center justify-center overflow-hidden">
+                                                <img
+                                                    src={logoPreview}
+                                                    alt="Logo preview"
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
                                         )}
-                                        
+
                                         <div className="space-y-2">
                                             <Button
                                                 type="button"
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => fileInputRef.current?.click()}
+                                                onClick={() =>
+                                                    fileInputRef.current?.click()
+                                                }
                                                 className="gap-2"
                                             >
                                                 <Upload className="h-4 w-4" />
-                                                {logoPreview ? 'Change Logo' : 'Upload Logo'}
+                                                {logoPreview
+                                                    ? 'Change Logo'
+                                                    : 'Upload Logo'}
                                             </Button>
                                             <p className="text-xs text-muted-foreground">
-                                                PNG, JPG up to 5MB. Recommended: 200x200px
+                                                PNG, JPG up to 5MB. Recommended:
+                                                200x200px
                                             </p>
                                         </div>
-                                        
+
                                         <input
                                             ref={fileInputRef}
                                             type="file"
@@ -782,14 +951,24 @@ export function CompanyEditDialog({
 
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <h4 className="font-medium">Social Links</h4>
+                                        <h4 className="font-medium">
+                                            Social Links
+                                        </h4>
                                         <Select onValueChange={addSocialLink}>
                                             <SelectTrigger className="w-[180px]">
                                                 <SelectValue placeholder="Add social link" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {SOCIAL_PLATFORMS.filter(platform => !socialLinks[platform.key]).map((platform) => (
-                                                    <SelectItem key={platform.key} value={platform.key}>
+                                                {SOCIAL_PLATFORMS.filter(
+                                                    (platform) =>
+                                                        !socialLinks[
+                                                            platform.key
+                                                        ],
+                                                ).map((platform) => (
+                                                    <SelectItem
+                                                        key={platform.key}
+                                                        value={platform.key}
+                                                    >
                                                         <div className="flex items-center gap-2">
                                                             <Plus className="h-3 w-3" />
                                                             {platform.label}
@@ -801,44 +980,69 @@ export function CompanyEditDialog({
                                     </div>
 
                                     <div className="space-y-3">
-                                        {Object.entries(socialLinks).map(([platform, url]) => {
-                                            const platformInfo = SOCIAL_PLATFORMS.find(p => p.key === platform)
-                                            return (
-                                                <div key={platform} className="flex items-center gap-2">
-                                                    <div className="flex-1">
-                                                        <FormLabel className="text-sm capitalize">
-                                                            {platformInfo?.label || platform}
-                                                        </FormLabel>
-                                                        <Input
-                                                            value={url}
-                                                            onChange={(e) => updateSocialLink(platform, e.target.value)}
-                                                            placeholder={platformInfo?.placeholder || `https://${platform}.com/...`}
-                                                            className="mt-1"
-                                                        />
-                                                    </div>
-                                                    <Button
-                                                        type="button"
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => removeSocialLink(platform)}
-                                                        className="mt-6 text-destructive hover:text-destructive"
+                                        {Object.entries(socialLinks).map(
+                                            ([platform, url]) => {
+                                                const platformInfo =
+                                                    SOCIAL_PLATFORMS.find(
+                                                        (p) =>
+                                                            p.key === platform,
+                                                    )
+                                                return (
+                                                    <div
+                                                        key={platform}
+                                                        className="flex items-center gap-2"
                                                     >
-                                                        <X className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            )
-                                        })}
-                                        
-                                        {Object.keys(socialLinks).length === 0 && (
+                                                        <div className="flex-1">
+                                                            <FormLabel className="text-sm capitalize">
+                                                                {platformInfo?.label ||
+                                                                    platform}
+                                                            </FormLabel>
+                                                            <Input
+                                                                value={url}
+                                                                onChange={(e) =>
+                                                                    updateSocialLink(
+                                                                        platform,
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                placeholder={
+                                                                    platformInfo?.placeholder ||
+                                                                    `https://${platform}.com/...`
+                                                                }
+                                                                className="mt-1"
+                                                            />
+                                                        </div>
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                removeSocialLink(
+                                                                    platform,
+                                                                )
+                                                            }
+                                                            className="mt-6 text-destructive hover:text-destructive"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                )
+                                            },
+                                        )}
+
+                                        {Object.keys(socialLinks).length ===
+                                            0 && (
                                             <p className="text-sm text-muted-foreground text-center py-4">
-                                                No social links added yet. Use the dropdown above to add some.
+                                                No social links added yet. Use
+                                                the dropdown above to add some.
                                             </p>
                                         )}
                                     </div>
                                 </div>
                             </TabsContent>
                         </Tabs>
-                        
+
                         <DialogFooter>
                             <Button
                                 type="button"

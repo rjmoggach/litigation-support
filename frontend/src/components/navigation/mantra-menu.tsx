@@ -5,21 +5,11 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
-
-interface MantraWord {
-    text: string
-    href: string
-}
+import { mantraNavItems } from '@/content/navigation/data'
 
 interface MantraMenuProps {
     className?: string
 }
-
-const words: MantraWord[] = [
-    { text: 'Prepare', href: '/' },
-    { text: 'Present', href: '/' },
-    { text: 'Persist', href: '/' },
-]
 
 export function MantraMenu({ className = '' }: MantraMenuProps) {
     const pathname = usePathname() || '/'
@@ -27,7 +17,7 @@ export function MantraMenu({ className = '' }: MantraMenuProps) {
     const activeIndex = React.useMemo(() => {
         const isActive = (href: string) =>
             pathname === href || pathname.startsWith(`${href}/`)
-        const i = words.findIndex((w) => isActive(w.href))
+        const i = mantraNavItems.findIndex((item) => isActive(item.url as string))
         return i // -1 means no active item; underline hidden until hover
     }, [pathname])
 
@@ -39,17 +29,17 @@ export function MantraMenu({ className = '' }: MantraMenuProps) {
             className={cn('font-medium text-2xl max-sm:text-lg', className)}
             onMouseLeave={() => setHovered(null)}
         >
-            {words.map((word, index) => {
+            {mantraNavItems.map((item, index) => {
                 const showUnderline =
                     hovered === index ||
                     (hovered === null && activeIndex === index)
                 const isCurrent = activeIndex === index
 
                 return (
-                    <span key={word.text} className="inline-flex items-center">
+                    <span key={item.title} className="inline-flex items-center">
                         <span className="relative inline-block">
                             <Link
-                                href={word.href}
+                                href={item.url as string}
                                 className={cn(
                                     'relative font-medium transition-colors duration-200',
                                     isCurrent
@@ -61,7 +51,7 @@ export function MantraMenu({ className = '' }: MantraMenuProps) {
                                 onFocus={() => setHovered(index)}
                                 onBlur={() => setHovered(null)}
                             >
-                                {word.text}
+                                {item.title}
                             </Link>
                             {showUnderline && (
                                 <motion.span
@@ -77,7 +67,7 @@ export function MantraMenu({ className = '' }: MantraMenuProps) {
                                 />
                             )}
                         </span>
-                        {index < words.length - 1 && (
+                        {index < mantraNavItems.length - 1 && (
                             <span className="text-foreground/60">
                                 &nbsp;/&nbsp;
                             </span>

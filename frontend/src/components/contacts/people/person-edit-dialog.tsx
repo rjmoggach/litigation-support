@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -23,14 +22,29 @@ import {
 import { Input } from '@/components/ui/input'
 import type { Person } from '@/lib/api/contacts.types'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const personEditSchema = z.object({
-    first_name: z.string().min(1, 'First name is required').max(100, 'First name is too long'),
-    last_name: z.string().min(1, 'Last name is required').max(100, 'Last name is too long'),
-    email: z.string().email('Invalid email address').optional().or(z.literal('')),
-    phone: z.string().max(50, 'Phone number is too long').optional().or(z.literal('')),
+    first_name: z
+        .string()
+        .min(1, 'First name is required')
+        .max(100, 'First name is too long'),
+    last_name: z
+        .string()
+        .min(1, 'Last name is required')
+        .max(100, 'Last name is too long'),
+    email: z
+        .string()
+        .email('Invalid email address')
+        .optional()
+        .or(z.literal('')),
+    phone: z
+        .string()
+        .max(50, 'Phone number is too long')
+        .optional()
+        .or(z.literal('')),
     is_active: z.boolean(),
     is_public: z.boolean(),
 })
@@ -41,16 +55,19 @@ interface PersonEditDialogProps {
     person: Person | null
     open: boolean
     onOpenChange: (open: boolean) => void
-    onSave: (personId: number | null, data: Partial<PersonEditFormData>) => Promise<void>
+    onSave: (
+        personId: number | null,
+        data: Partial<PersonEditFormData>,
+    ) => Promise<void>
     isCreating?: boolean
 }
 
-export function PersonEditDialog({ 
-    person, 
-    open, 
-    onOpenChange, 
+export function PersonEditDialog({
+    person,
+    open,
+    onOpenChange,
     onSave,
-    isCreating = false
+    isCreating = false,
 }: PersonEditDialogProps) {
     const form = useForm<PersonEditFormData>({
         resolver: zodResolver(personEditSchema),
@@ -105,16 +122,18 @@ export function PersonEditDialog({
                         {isCreating ? 'Create Person' : 'Edit Person'}
                     </DialogTitle>
                     <DialogDescription>
-                        {isCreating 
+                        {isCreating
                             ? 'Create a new person in your contacts database'
-                            : 'Update person information and settings'
-                        }
+                            : 'Update person information and settings'}
                     </DialogDescription>
                 </DialogHeader>
-                
+
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="space-y-4"
+                    >
+                        <div className="grid grid-cols-2 gap-3">
                             <FormField
                                 control={form.control}
                                 name="first_name"
@@ -122,13 +141,16 @@ export function PersonEditDialog({
                                     <FormItem>
                                         <FormLabel>First Name *</FormLabel>
                                         <FormControl>
-                                            <Input {...field} placeholder="Enter first name" />
+                                            <Input
+                                                {...field}
+                                                placeholder="Enter first name"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            
+
                             <FormField
                                 control={form.control}
                                 name="last_name"
@@ -136,14 +158,17 @@ export function PersonEditDialog({
                                     <FormItem>
                                         <FormLabel>Last Name *</FormLabel>
                                         <FormControl>
-                                            <Input {...field} placeholder="Enter last name" />
+                                            <Input
+                                                {...field}
+                                                placeholder="Enter last name"
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        
+
                         <FormField
                             control={form.control}
                             name="email"
@@ -151,9 +176,9 @@ export function PersonEditDialog({
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input 
-                                            {...field} 
-                                            type="email" 
+                                        <Input
+                                            {...field}
+                                            type="email"
                                             placeholder="person@example.com"
                                         />
                                     </FormControl>
@@ -172,9 +197,9 @@ export function PersonEditDialog({
                                 <FormItem>
                                     <FormLabel>Phone</FormLabel>
                                     <FormControl>
-                                        <Input 
-                                            {...field} 
-                                            type="tel" 
+                                        <Input
+                                            {...field}
+                                            type="tel"
                                             placeholder="+1 (555) 123-4567"
                                         />
                                     </FormControl>
@@ -185,7 +210,7 @@ export function PersonEditDialog({
                                 </FormItem>
                             )}
                         />
-                        
+
                         <div className="space-y-3">
                             <FormField
                                 control={form.control}
@@ -201,13 +226,14 @@ export function PersonEditDialog({
                                         <div className="space-y-1 leading-none">
                                             <FormLabel>Active</FormLabel>
                                             <FormDescription>
-                                                Person is active and can be managed
+                                                Person is active and can be
+                                                managed
                                             </FormDescription>
                                         </div>
                                     </FormItem>
                                 )}
                             />
-                            
+
                             <FormField
                                 control={form.control}
                                 name="is_public"
@@ -222,14 +248,15 @@ export function PersonEditDialog({
                                         <div className="space-y-1 leading-none">
                                             <FormLabel>Public</FormLabel>
                                             <FormDescription>
-                                                Person is visible in public directories
+                                                Person is visible in public
+                                                directories
                                             </FormDescription>
                                         </div>
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        
+
                         <DialogFooter>
                             <Button
                                 type="button"

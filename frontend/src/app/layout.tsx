@@ -1,5 +1,5 @@
 import Providers from '@/app/providers'
-import type { Metadata } from 'next'
+import type { Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 const geistSans = Geist({
@@ -12,9 +12,11 @@ const geistMono = Geist_Mono({
     subsets: ['latin'],
 })
 
-export const metadata: Metadata = {
-    title: 'Litigation Support',
-    description: 'helping self-represented litigants',
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    themeColor: '#021837',
 }
 
 export default function RootLayout({
@@ -24,12 +26,6 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <head>
-                <meta
-                    name="apple-mobile-web-app-title"
-                    content="Litigation Support"
-                />
-            </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >

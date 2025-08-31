@@ -28,9 +28,9 @@ export function OTPForm({
     const [value, setValue] = useState('')
 
     return (
-        <div className={cn('flex flex-col gap-6', className)} {...props}>
+        <div className={cn('flex flex-col gap-3', className)} {...props}>
             <form>
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-3">
                     <div className="flex flex-col items-center gap-2">
                         <Link
                             href="/"
@@ -58,7 +58,7 @@ export function OTPForm({
                             )}
                         </div>
                     </div>
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-3">
                         <div className="flex flex-col items-center gap-2">
                             <div className="text-sm text-muted-foreground">
                                 Enter the {length}-digit code

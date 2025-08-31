@@ -35,10 +35,12 @@ interface PersonActionsProps {
     onEdit: (person: Person) => void
     onDelete: (person: Person) => void
     totalPeople: number
+    linkedPersonId?: number | null
 }
 
-function PersonActions({ person, onEdit, onDelete, totalPeople }: PersonActionsProps) {
+function PersonActions({ person, onEdit, onDelete, totalPeople, linkedPersonId }: PersonActionsProps) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+    const isLinked = linkedPersonId === person.id
 
     const handleDelete = () => {
         setShowDeleteDialog(false)
@@ -62,11 +64,15 @@ function PersonActions({ person, onEdit, onDelete, totalPeople }: PersonActionsP
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                        onClick={() => setShowDeleteDialog(true)}
-                        className="text-destructive focus:text-destructive"
+                        onClick={() => !isLinked && setShowDeleteDialog(true)}
+                        className={isLinked 
+                            ? "text-muted-foreground cursor-not-allowed opacity-50" 
+                            : "text-destructive focus:text-destructive"
+                        }
+                        disabled={isLinked}
                     >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Delete person
+                        {isLinked ? "Cannot delete linked person" : "Delete person"}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -85,6 +91,12 @@ function PersonActions({ person, onEdit, onDelete, totalPeople }: PersonActionsP
                             delete{' '}
                             <strong>{person.full_name}</strong> and
                             remove all of their data from the system.
+                            {isLinked && (
+                                <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm">
+                                    <strong>Warning:</strong> This person is currently linked to your user profile. 
+                                    You should unlink them from your profile first.
+                                </div>
+                            )}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -106,6 +118,7 @@ export function createPersonColumns(
     onEdit: (person: Person) => void,
     onDelete: (person: Person) => void,
     totalPeople: number,
+    linkedPersonId?: number | null,
 ): ColumnDef<Person>[] {
     return [
         {
@@ -144,6 +157,20 @@ export function createPersonColumns(
             cell: ({ row }) => {
                 const person = row.original
                 const getPersonInitials = (person: Person) => {
+                    if (!person.first_name || !person.last_name) {
+                        // If we don't have both names, fall back to full_name or email
+                        if (person.full_name) {
+                            const names = person.full_name.split(' ')
+                            const firstInitial = names[0]?.[0] || '?'
+                            const lastInitial = names[names.length - 1]?.[0] || '?'
+                            return `${firstInitial}${lastInitial}`.toUpperCase()
+                        }
+                        if (person.email) {
+                            return person.email.substring(0, 2).toUpperCase()
+                        }
+                        return '??'
+                    }
+                    
                     return `${person.first_name[0]}${person.last_name[0]}`
                         .toUpperCase()
                 }
@@ -160,9 +187,16 @@ export function createPersonColumns(
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                            <span className="font-medium">
-                                {person.full_name}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-medium">
+                                    {person.full_name}
+                                </span>
+                                {linkedPersonId === person.id && (
+                                    <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                        Linked
+                                    </Badge>
+                                )}
+                            </div>
                             {person.email && (
                                 <span className="text-xs text-muted-foreground">
                                     {person.email}
@@ -333,6 +367,7 @@ export function createPersonColumns(
                     onEdit={onEdit}
                     onDelete={onDelete}
                     totalPeople={totalPeople}
+                    linkedPersonId={linkedPersonId}
                 />
             ),
             enableSorting: false,

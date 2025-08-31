@@ -31,8 +31,8 @@ export function ResetPasswordForm({
     // If no token, show error
     if (!token) {
         return (
-            <div className={cn('flex flex-col gap-6', className)} {...props}>
-                <div className="flex flex-col items-center gap-4">
+            <div className={cn('flex flex-col gap-3', className)} {...props}>
+                <div className="flex flex-col items-center gap-3">
                     <Link
                         href="/"
                         className="flex flex-col items-center gap-2 font-medium"
@@ -111,9 +111,9 @@ export function ResetPasswordForm({
     }
 
     return (
-        <div className={cn('flex flex-col gap-6', className)} {...props}>
+        <div className={cn('flex flex-col gap-3', className)} {...props}>
             <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-3">
                     <div className="flex flex-col items-center gap-2">
                         <Link
                             href="/"
@@ -132,7 +132,7 @@ export function ResetPasswordForm({
                             password.
                         </div>
                     </div>
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-3">
                         <div className="grid gap-3">
                             <Label htmlFor="password">New Password</Label>
                             <div className="relative">

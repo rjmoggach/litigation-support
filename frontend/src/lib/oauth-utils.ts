@@ -7,6 +7,7 @@ export interface OAuthConfig {
     provider: string
     scopes?: string[]
     redirectUri?: string
+    useFrontendCallback?: boolean // Whether to use frontend OAuth callback route
     popupWidth?: number
     popupHeight?: number
     timeout?: number // in milliseconds
@@ -363,9 +364,159 @@ export const GOOGLE_OAUTH_CONFIG: OAuthConfig = {
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile',
     ],
+    useFrontendCallback: false, // Use backend callback by default
     popupWidth: 500,
     popupHeight: 700,
     timeout: 5 * 60 * 1000, // 5 minutes
+}
+
+/**
+ * Start OAuth flow for adding an additional email account connection
+ */
+export async function startOAuthFlow(config: OAuthConfig = GOOGLE_OAUTH_CONFIG): Promise<OAuthResult> {
+    try {
+        console.log('Starting OAuth flow:', { provider: config.provider, useFrontendCallback: config.useFrontendCallback })
+
+        // Determine redirect URI
+        let redirectUri = config.redirectUri
+        if (!redirectUri) {
+            const baseUrl = window.location.origin
+            redirectUri = config.useFrontendCallback 
+                ? `${baseUrl}/api/auth/oauth-callback`
+                : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/email-connections/oauth/callback`
+        }
+
+        console.log('Using redirect URI:', redirectUri)
+
+        // Prepare OAuth initiation request
+        const initiateRequest = {
+            provider: config.provider,
+            scopes: config.scopes || GOOGLE_OAUTH_CONFIG.scopes,
+            redirect_uri: redirectUri,
+        }
+
+        // Get backend API URL
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        
+        // Call backend to initiate OAuth flow
+        const response = await fetch(`${backendUrl}/api/v1/email-connections/oauth/initiate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Note: In a real implementation, you'd include the user's auth token here
+                // For now, we'll handle this in the component where the session is available
+            },
+            body: JSON.stringify(initiateRequest),
+        })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            console.error('OAuth initiation failed:', {
+                status: response.status,
+                error: errorText,
+            })
+            throw new Error(`OAuth initiation failed: ${response.status} ${errorText}`)
+        }
+
+        const oauthData = await response.json()
+        console.log('OAuth URL generated:', { hasUrl: !!oauthData.authorization_url })
+
+        // Start popup OAuth flow
+        return await initiateOAuthFlow(oauthData.authorization_url, {
+            width: config.popupWidth,
+            height: config.popupHeight,
+            timeout: config.timeout,
+        })
+
+    } catch (error) {
+        console.error('OAuth flow error:', error)
+        
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown OAuth error occurred',
+        }
+    }
+}
+
+/**
+ * Start OAuth flow with user session (for use in components)
+ */
+export async function startOAuthFlowWithSession(
+    session: any,
+    config: OAuthConfig = GOOGLE_OAUTH_CONFIG
+): Promise<OAuthResult> {
+    if (!session?.accessToken) {
+        return {
+            success: false,
+            error: 'User session required for OAuth flow',
+        }
+    }
+
+    try {
+        console.log('Starting OAuth flow with session:', { 
+            provider: config.provider, 
+            useFrontendCallback: config.useFrontendCallback,
+            userEmail: session.user?.email 
+        })
+
+        // Determine redirect URI
+        let redirectUri = config.redirectUri
+        if (!redirectUri) {
+            const baseUrl = window.location.origin
+            redirectUri = config.useFrontendCallback 
+                ? `${baseUrl}/api/auth/oauth-callback`
+                : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/email-connections/oauth/callback`
+        }
+
+        console.log('Using redirect URI:', redirectUri)
+
+        // Prepare OAuth initiation request
+        const initiateRequest = {
+            provider: config.provider,
+            scopes: config.scopes || GOOGLE_OAUTH_CONFIG.scopes,
+            redirect_uri: redirectUri,
+        }
+
+        // Get backend API URL
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        
+        // Call backend to initiate OAuth flow with user's auth token
+        const response = await fetch(`${backendUrl}/api/v1/email-connections/oauth/initiate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.accessToken}`,
+            },
+            body: JSON.stringify(initiateRequest),
+        })
+
+        if (!response.ok) {
+            const errorText = await response.text()
+            console.error('OAuth initiation failed:', {
+                status: response.status,
+                error: errorText,
+            })
+            throw new Error(`OAuth initiation failed: ${response.status} ${errorText}`)
+        }
+
+        const oauthData = await response.json()
+        console.log('OAuth URL generated:', { hasUrl: !!oauthData.authorization_url })
+
+        // Start popup OAuth flow
+        return await initiateOAuthFlow(oauthData.authorization_url, {
+            width: config.popupWidth,
+            height: config.popupHeight,
+            timeout: config.timeout,
+        })
+
+    } catch (error) {
+        console.error('OAuth flow with session error:', error)
+        
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown OAuth error occurred',
+        }
+    }
 }
 
 /**

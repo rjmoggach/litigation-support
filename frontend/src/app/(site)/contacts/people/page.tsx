@@ -15,6 +15,7 @@ import {
     deletePersonApiV1ContactsPeoplePersonIdDelete,
     listPeopleApiV1ContactsPeopleGet,
     updatePersonApiV1ContactsPeoplePersonIdPut,
+    getMyProfileApiV1UsersMeProfileGet,
 } from '@/lib/api'
 import { useBreadcrumbUpdate } from '@/providers/breadcrumb-provider'
 import { Plus, RefreshCw, User } from 'lucide-react'
@@ -31,6 +32,7 @@ export default function PeoplePage() {
     )
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [isCreating, setIsCreating] = useState(false)
+    const [linkedPersonId, setLinkedPersonId] = useState<number | null>(null)
 
     // Update breadcrumb when this page loads
     useBreadcrumbUpdate([
@@ -68,9 +70,32 @@ export default function PeoplePage() {
         }
     }, [session])
 
+    // Fetch linked person ID
+    const fetchLinkedPersonId = useCallback(async () => {
+        if (!session?.accessToken) return
+
+        try {
+            const profile = await getMyProfileApiV1UsersMeProfileGet({
+                headers: {
+                    Authorization: `Bearer ${session.accessToken}`,
+                },
+            })
+
+            if (profile.data && profile.data.person_id) {
+                setLinkedPersonId(profile.data.person_id)
+            } else {
+                setLinkedPersonId(null)
+            }
+        } catch (error) {
+            console.error('Failed to fetch linked person ID:', error)
+            setLinkedPersonId(null)
+        }
+    }, [session])
+
     useEffect(() => {
         fetchPeople()
-    }, [fetchPeople])
+        fetchLinkedPersonId()
+    }, [fetchPeople, fetchLinkedPersonId])
 
     const handlePersonEdit = useCallback((person: PersonResponse) => {
         setSelectedPerson(person)
@@ -168,8 +193,9 @@ export default function PeoplePage() {
                 handlePersonEdit,
                 handlePersonDelete,
                 people.length,
+                linkedPersonId,
             ),
-        [handlePersonEdit, handlePersonDelete, people.length],
+        [handlePersonEdit, handlePersonDelete, people.length, linkedPersonId],
     )
 
     // Configure the toolbar (memoized to prevent re-renders)

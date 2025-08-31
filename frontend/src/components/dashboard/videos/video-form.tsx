@@ -1,10 +1,10 @@
 'use client'
 
-import * as React from 'react'
-import { useSession } from 'next-auth/react'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useSession } from 'next-auth/react'
+import * as React from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -17,7 +17,6 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
     Select,
     SelectContent,
@@ -26,11 +25,19 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import type { VideoOutUrl, VideoOutHtml5, VideoOutFile } from '@/lib/api/types.gen'
+import { Textarea } from '@/components/ui/textarea'
 import { uploadFileApiV1StorageUploadPost } from '@/lib/api/sdk.gen'
+import type {
+    VideoOutFile,
+    VideoOutHtml5,
+    VideoOutUrl,
+} from '@/lib/api/types.gen'
 import { toast } from 'sonner'
 
-type VideoType = VideoOutUrl['type'] | VideoOutHtml5['type'] | VideoOutFile['type']
+type VideoType =
+    | VideoOutUrl['type']
+    | VideoOutHtml5['type']
+    | VideoOutFile['type']
 
 const VideoProfileSchema = z.object({
     title: z.string().min(1, 'Title is required'),
@@ -59,7 +66,9 @@ const VideoResolutionDataSchema = z.object({
 })
 
 const HTML5VideoDataSchema = z.object({
-    resolutions: z.array(VideoResolutionDataSchema).min(1, 'At least one resolution required'),
+    resolutions: z
+        .array(VideoResolutionDataSchema)
+        .min(1, 'At least one resolution required'),
 })
 
 const VideoFileDataSchema = z.object({
@@ -106,7 +115,11 @@ function tagsToCommaSeparated(tags?: string[] | null): string {
     return tags.join(', ')
 }
 
-export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }: AdminVideoFormProps) {
+export function AdminVideoForm({
+    defaultValues,
+    onSubmit,
+    submitLabel = 'Save',
+}: AdminVideoFormProps) {
     const { data: session } = useSession()
     const form = useForm<AdminVideoFormValues>({
         resolver: zodResolver(FormSchema),
@@ -131,18 +144,28 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
     })
 
     const watchType = form.watch('type')
-    const [tagsText, setTagsText] = React.useState<string>(() => tagsToCommaSeparated(form.getValues('profile.tags')))
+    const [tagsText, setTagsText] = React.useState<string>(() =>
+        tagsToCommaSeparated(form.getValues('profile.tags')),
+    )
 
     // Uploader state (for video_file type)
     const [dragActive, setDragActive] = React.useState(false)
     const [uploadingFile, setUploadingFile] = React.useState(false)
-    const [uploadedFilename, setUploadedFilename] = React.useState<string | null>(null)
+    const [uploadedFilename, setUploadedFilename] = React.useState<
+        string | null
+    >(null)
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const authToken = React.useMemo(() => session?.accessToken, [session])
-    const baseUrl = React.useMemo(() => process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000', [])
+    const baseUrl = React.useMemo(
+        () => process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+        [],
+    )
 
     type Resolution = z.infer<typeof VideoResolutionDataSchema>
-    const { fields, append, remove } = useFieldArray<AdminVideoFormValues, 'data.resolutions'>({
+    const { fields, append, remove } = useFieldArray<
+        AdminVideoFormValues,
+        'data.resolutions'
+    >({
         control: form.control,
         name: 'data.resolutions',
     })
@@ -150,7 +173,12 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
     React.useEffect(() => {
         if (watchType === 'html5_video' && fields.length === 0) {
             // seed one resolution row
-            const seed: Resolution = { resolution: '1080p', width: 1920, height: 1080, stored_file_id: undefined }
+            const seed: Resolution = {
+                resolution: '1080p',
+                width: 1920,
+                height: 1080,
+                stored_file_id: undefined,
+            }
             append(seed, { shouldFocus: false })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,12 +200,15 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
         if (f) void handleUpload(f)
     }
     const handleDrag = (e: React.DragEvent) => {
-        e.preventDefault(); e.stopPropagation()
+        e.preventDefault()
+        e.stopPropagation()
         if (e.type === 'dragenter' || e.type === 'dragover') setDragActive(true)
         else if (e.type === 'dragleave') setDragActive(false)
     }
     const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault(); e.stopPropagation(); setDragActive(false)
+        e.preventDefault()
+        e.stopPropagation()
+        setDragActive(false)
         const f = e.dataTransfer.files?.[0]
         if (f) void handleUpload(f)
     }
@@ -200,7 +231,10 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                 query: { category: 'videos' },
             })
             const id = res.data.id
-            form.setValue('data.stored_file_id', id, { shouldDirty: true, shouldValidate: true })
+            form.setValue('data.stored_file_id', id, {
+                shouldDirty: true,
+                shouldValidate: true,
+            })
             setUploadedFilename(res.data.original_filename ?? file.name)
             toast.success('File uploaded')
         } catch (err) {
@@ -213,11 +247,13 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <form onSubmit={handleSubmit} className="space-y-3">
+                <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold">Video Details</h3>
+                            <h3 className="text-lg font-semibold">
+                                Video Details
+                            </h3>
                         </div>
                         <FormField
                             control={form.control}
@@ -225,16 +261,25 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Video Type</FormLabel>
-                                    <Select value={field.value as VideoType} onValueChange={field.onChange}>
+                                    <Select
+                                        value={field.value as VideoType}
+                                        onValueChange={field.onChange}
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select video type" />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="video_url">URL (YouTube/Vimeo)</SelectItem>
-                                            <SelectItem value="html5_video">HTML5 (Multiple Resolutions)</SelectItem>
-                                            <SelectItem value="video_file">Uploaded File</SelectItem>
+                                            <SelectItem value="video_url">
+                                                URL (YouTube/Vimeo)
+                                            </SelectItem>
+                                            <SelectItem value="html5_video">
+                                                HTML5 (Multiple Resolutions)
+                                            </SelectItem>
+                                            <SelectItem value="video_file">
+                                                Uploaded File
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormDescription>
@@ -247,7 +292,9 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
 
                         {/* Profile fields */}
                         <Separator />
-                        <h4 className="text-sm font-medium text-muted-foreground">Profile</h4>
+                        <h4 className="text-sm font-medium text-muted-foreground">
+                            Profile
+                        </h4>
                         <FormField
                             control={form.control}
                             name="profile.title"
@@ -255,7 +302,10 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                 <FormItem>
                                     <FormLabel>Title</FormLabel>
                                     <FormControl>
-                                        <Input {...field} placeholder="Enter title" />
+                                        <Input
+                                            {...field}
+                                            placeholder="Enter title"
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -289,15 +339,19 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                             <FormControl>
                                 <Input
                                     value={tagsText}
-                                    onChange={(e) => setTagsText(e.target.value)}
+                                    onChange={(e) =>
+                                        setTagsText(e.target.value)
+                                    }
                                     placeholder="tag1, tag2, tag3"
                                 />
                             </FormControl>
-                            <FormDescription>Comma-separated list of tags</FormDescription>
+                            <FormDescription>
+                                Comma-separated list of tags
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="profile.thumbnail_file_id"
@@ -308,7 +362,16 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                             <Input
                                                 inputMode="numeric"
                                                 value={field.value ?? ''}
-                                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.value
+                                                            ? Number(
+                                                                  e.target
+                                                                      .value,
+                                                              )
+                                                            : null,
+                                                    )
+                                                }
                                                 placeholder="e.g. 123"
                                             />
                                         </FormControl>
@@ -321,12 +384,23 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                 name="profile.duration"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Duration (seconds)</FormLabel>
+                                        <FormLabel>
+                                            Duration (seconds)
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 inputMode="numeric"
                                                 value={field.value ?? ''}
-                                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        e.target.value
+                                                            ? Number(
+                                                                  e.target
+                                                                      .value,
+                                                              )
+                                                            : null,
+                                                    )
+                                                }
                                                 placeholder="e.g. 245"
                                             />
                                         </FormControl>
@@ -351,15 +425,22 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Platform</FormLabel>
-                                            <Select value={field.value} onValueChange={field.onChange}>
+                                            <Select
+                                                value={field.value}
+                                                onValueChange={field.onChange}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select platform" />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    <SelectItem value="youtube">YouTube</SelectItem>
-                                                    <SelectItem value="vimeo">Vimeo</SelectItem>
+                                                    <SelectItem value="youtube">
+                                                        YouTube
+                                                    </SelectItem>
+                                                    <SelectItem value="vimeo">
+                                                        Vimeo
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -373,23 +454,32 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                         <FormItem>
                                             <FormLabel>Video URL</FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="https://..." />
+                                                <Input
+                                                    {...field}
+                                                    placeholder="https://..."
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <FormField
                                         control={form.control}
                                         name="data.video_id"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Video ID (optional)</FormLabel>
+                                                <FormLabel>
+                                                    Video ID (optional)
+                                                </FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        value={field.value ?? ''}
-                                                        onChange={field.onChange}
+                                                        value={
+                                                            field.value ?? ''
+                                                        }
+                                                        onChange={
+                                                            field.onChange
+                                                        }
                                                         onBlur={field.onBlur}
                                                         name={field.name}
                                                         ref={field.ref}
@@ -405,11 +495,17 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                         name="data.embed_url"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Embed URL (optional)</FormLabel>
+                                                <FormLabel>
+                                                    Embed URL (optional)
+                                                </FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        value={field.value ?? ''}
-                                                        onChange={field.onChange}
+                                                        value={
+                                                            field.value ?? ''
+                                                        }
+                                                        onChange={
+                                                            field.onChange
+                                                        }
                                                         onBlur={field.onBlur}
                                                         name={field.name}
                                                         ref={field.ref}
@@ -428,15 +524,25 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <h4 className="text-sm font-medium text-muted-foreground">Resolutions</h4>
-                                        <p className="text-xs text-muted-foreground">Add one or more encodes with stored file IDs</p>
+                                        <h4 className="text-sm font-medium text-muted-foreground">
+                                            Resolutions
+                                        </h4>
+                                        <p className="text-xs text-muted-foreground">
+                                            Add one or more encodes with stored
+                                            file IDs
+                                        </p>
                                     </div>
                                     <Button
                                         type="button"
                                         variant="outline"
                                         size="sm"
                                         onClick={() => {
-                                            const seed: Resolution = { resolution: '720p', width: 1280, height: 720, stored_file_id: undefined }
+                                            const seed: Resolution = {
+                                                resolution: '720p',
+                                                width: 1280,
+                                                height: 720,
+                                                stored_file_id: undefined,
+                                            }
                                             append(seed)
                                         }}
                                     >
@@ -446,19 +552,35 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
 
                                 <div className="space-y-3">
                                     {fields.map((field, idx) => (
-                                        <div key={field.id} className="grid grid-cols-1 gap-3 sm:grid-cols-12">
+                                        <div
+                                            key={field.id}
+                                            className="grid grid-cols-1 gap-3 sm:grid-cols-12"
+                                        >
                                             <FormField
                                                 control={form.control}
-                                                name={`data.resolutions.${idx}.resolution` as const}
+                                                name={
+                                                    `data.resolutions.${idx}.resolution` as const
+                                                }
                                                 render={({ field }) => (
                                                     <FormItem className="sm:col-span-3">
-                                                        <FormLabel>Label</FormLabel>
+                                                        <FormLabel>
+                                                            Label
+                                                        </FormLabel>
                                                         <FormControl>
                                                             <Input
-                                                                value={field.value ?? ''}
-                                                                onChange={field.onChange}
-                                                                onBlur={field.onBlur}
-                                                                name={field.name}
+                                                                value={
+                                                                    field.value ??
+                                                                    ''
+                                                                }
+                                                                onChange={
+                                                                    field.onChange
+                                                                }
+                                                                onBlur={
+                                                                    field.onBlur
+                                                                }
+                                                                name={
+                                                                    field.name
+                                                                }
                                                                 ref={field.ref}
                                                                 placeholder="1080p"
                                                             />
@@ -469,15 +591,33 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                             />
                                             <FormField
                                                 control={form.control}
-                                                name={`data.resolutions.${idx}.width` as const}
+                                                name={
+                                                    `data.resolutions.${idx}.width` as const
+                                                }
                                                 render={({ field }) => (
                                                     <FormItem className="sm:col-span-2">
-                                                        <FormLabel>Width</FormLabel>
+                                                        <FormLabel>
+                                                            Width
+                                                        </FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 inputMode="numeric"
-                                                                value={field.value ?? ''}
-                                                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                                value={
+                                                                    field.value ??
+                                                                    ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    field.onChange(
+                                                                        e.target
+                                                                            .value
+                                                                            ? Number(
+                                                                                  e
+                                                                                      .target
+                                                                                      .value,
+                                                                              )
+                                                                            : null,
+                                                                    )
+                                                                }
                                                                 placeholder="1920"
                                                             />
                                                         </FormControl>
@@ -487,15 +627,33 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                             />
                                             <FormField
                                                 control={form.control}
-                                                name={`data.resolutions.${idx}.height` as const}
+                                                name={
+                                                    `data.resolutions.${idx}.height` as const
+                                                }
                                                 render={({ field }) => (
                                                     <FormItem className="sm:col-span-2">
-                                                        <FormLabel>Height</FormLabel>
+                                                        <FormLabel>
+                                                            Height
+                                                        </FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 inputMode="numeric"
-                                                                value={field.value ?? ''}
-                                                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                                value={
+                                                                    field.value ??
+                                                                    ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    field.onChange(
+                                                                        e.target
+                                                                            .value
+                                                                            ? Number(
+                                                                                  e
+                                                                                      .target
+                                                                                      .value,
+                                                                              )
+                                                                            : null,
+                                                                    )
+                                                                }
                                                                 placeholder="1080"
                                                             />
                                                         </FormControl>
@@ -505,15 +663,33 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                             />
                                             <FormField
                                                 control={form.control}
-                                                name={`data.resolutions.${idx}.stored_file_id` as const}
+                                                name={
+                                                    `data.resolutions.${idx}.stored_file_id` as const
+                                                }
                                                 render={({ field }) => (
                                                     <FormItem className="sm:col-span-3">
-                                                        <FormLabel>Stored File ID</FormLabel>
+                                                        <FormLabel>
+                                                            Stored File ID
+                                                        </FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 inputMode="numeric"
-                                                                value={field.value ?? ''}
-                                                                onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                                                                value={
+                                                                    field.value ??
+                                                                    ''
+                                                                }
+                                                                onChange={(e) =>
+                                                                    field.onChange(
+                                                                        e.target
+                                                                            .value
+                                                                            ? Number(
+                                                                                  e
+                                                                                      .target
+                                                                                      .value,
+                                                                              )
+                                                                            : null,
+                                                                    )
+                                                                }
                                                                 placeholder="e.g. 456"
                                                             />
                                                         </FormControl>
@@ -522,7 +698,11 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                                 )}
                                             />
                                             <div className="flex items-end sm:col-span-2">
-                                                <Button type="button" variant="ghost" onClick={() => remove(idx)}>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    onClick={() => remove(idx)}
+                                                >
                                                     Remove
                                                 </Button>
                                             </div>
@@ -537,8 +717,10 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                 {/* Drag-and-drop uploader */}
                                 <div
                                     className={
-                                        `border-2 border-dashed rounded-md p-6 text-center transition-colors ` +
-                                        (dragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50')
+                                        `border-2 border-dashed rounded-md p-3 text-center transition-colors ` +
+                                        (dragActive
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted-foreground/25 hover:border-muted-foreground/50')
                                     }
                                     onDragEnter={handleDrag}
                                     onDragOver={handleDrag}
@@ -547,10 +729,22 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                     role="button"
                                     aria-label="Upload video file"
                                 >
-                                    <p className="text-sm text-muted-foreground mb-2">Drag and drop a video file here</p>
-                                    <p className="text-xs text-muted-foreground mb-4">or</p>
-                                    <Button type="button" variant="outline" size="sm" onClick={handleChooseFile} disabled={uploadingFile}>
-                                        {uploadingFile ? 'Uploading…' : 'Choose File'}
+                                    <p className="text-sm text-muted-foreground mb-2">
+                                        Drag and drop a video file here
+                                    </p>
+                                    <p className="text-xs text-muted-foreground mb-4">
+                                        or
+                                    </p>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleChooseFile}
+                                        disabled={uploadingFile}
+                                    >
+                                        {uploadingFile
+                                            ? 'Uploading…'
+                                            : 'Choose File'}
                                     </Button>
                                     <input
                                         ref={fileInputRef}
@@ -560,7 +754,12 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                         onChange={handleFileInputChange}
                                     />
                                     {uploadedFilename && (
-                                        <p className="mt-3 text-sm">Selected: <span className="font-medium">{uploadedFilename}</span></p>
+                                        <p className="mt-3 text-sm">
+                                            Selected:{' '}
+                                            <span className="font-medium">
+                                                {uploadedFilename}
+                                            </span>
+                                        </p>
                                     )}
                                 </div>
                                 <FormField
@@ -568,17 +767,30 @@ export function AdminVideoForm({ defaultValues, onSubmit, submitLabel = 'Save' }
                                     name="data.stored_file_id"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Stored File ID</FormLabel>
+                                            <FormLabel>
+                                                Stored File ID
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     inputMode="numeric"
                                                     value={field.value ?? ''}
-                                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            e.target.value
+                                                                ? Number(
+                                                                      e.target
+                                                                          .value,
+                                                                  )
+                                                                : undefined,
+                                                        )
+                                                    }
                                                     placeholder="e.g. 789"
                                                 />
                                             </FormControl>
                                             <FormDescription>
-                                                Upload a new file above or link to a previously uploaded file by ID.
+                                                Upload a new file above or link
+                                                to a previously uploaded file by
+                                                ID.
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>

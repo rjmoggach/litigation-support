@@ -1,8 +1,11 @@
 'use client'
 
+import { ExternalLink, Images } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Images, ExternalLink } from 'lucide-react'
 
+import { ImageDetailDialog } from '@/components/galleries/image-detail-dialog'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
     Dialog,
     DialogContent,
@@ -10,9 +13,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { ImageDetailDialog } from '@/components/galleries/image-detail-dialog'
 import { getGalleryApiV1GalleriesGalleryIdGet } from '@/lib/api/sdk.gen'
 import type { GalleryResponse } from '@/lib/api/types.gen'
 
@@ -46,7 +46,9 @@ export function GalleryViewDialog({
 }: GalleryViewDialogProps) {
     const [galleryWithImages, setGalleryWithImages] = useState<any>(null)
     const [loading, setLoading] = useState(false)
-    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(
+        null,
+    )
 
     useEffect(() => {
         const fetchGalleryWithImages = async () => {
@@ -103,7 +105,9 @@ export function GalleryViewDialog({
                     <DialogDescription>
                         {gallery.description || 'No description provided'}
                         {gallery.image_count !== undefined && (
-                            <span className="ml-2">• {gallery.image_count} images</span>
+                            <span className="ml-2">
+                                • {gallery.image_count} images
+                            </span>
                         )}
                     </DialogDescription>
                 </DialogHeader>
@@ -113,36 +117,51 @@ export function GalleryViewDialog({
                         <div className="flex items-center justify-center py-8">
                             <div className="text-center">
                                 <Images className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                                <p className="text-sm text-muted-foreground">Loading images...</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Loading images...
+                                </p>
                             </div>
                         </div>
                     ) : galleryWithImages?.images?.length > 0 ? (
-                        <div className="grid grid-cols-6 gap-2 p-4">
-                            {galleryWithImages.images.map((image: ImageResponse, index: number) => (
-                                <div
-                                    key={image.id}
-                                    className="aspect-square bg-muted rounded overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
-                                    onClick={() => setSelectedImageIndex(index)}
-                                >
-                                    {image.thumbnail_md_url || image.cloudfront_url ? (
-                                        <img
-                                            src={image.thumbnail_md_url || image.cloudfront_url}
-                                            alt={image.alt_text || image.title}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <Images className="h-6 w-6 text-muted-foreground" />
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                        <div className="grid grid-cols-6 gap-2 p-3">
+                            {galleryWithImages.images.map(
+                                (image: ImageResponse, index: number) => (
+                                    <div
+                                        key={image.id}
+                                        className="aspect-square bg-muted rounded overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                                        onClick={() =>
+                                            setSelectedImageIndex(index)
+                                        }
+                                    >
+                                        {image.thumbnail_md_url ||
+                                        image.cloudfront_url ? (
+                                            <img
+                                                src={
+                                                    image.thumbnail_md_url ||
+                                                    image.cloudfront_url
+                                                }
+                                                alt={
+                                                    image.alt_text ||
+                                                    image.title
+                                                }
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <Images className="h-6 w-6 text-muted-foreground" />
+                                            </div>
+                                        )}
+                                    </div>
+                                ),
+                            )}
                         </div>
                     ) : (
                         <div className="flex items-center justify-center py-8">
                             <div className="text-center">
                                 <Images className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                                <p className="text-sm text-muted-foreground">No images in this gallery</p>
+                                <p className="text-sm text-muted-foreground">
+                                    No images in this gallery
+                                </p>
                             </div>
                         </div>
                     )}

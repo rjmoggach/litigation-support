@@ -1,20 +1,7 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import { Calendar } from '@/components/ui/calendar'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
 import {
     Dialog,
     DialogContent,
@@ -32,12 +19,24 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import { ExternalLink, Loader2, Wand2, CalendarIcon } from 'lucide-react'
-import { format } from 'date-fns'
+import { Input } from '@/components/ui/input'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
 import { fetchVideoMetadata, isValidVideoUrl } from '@/lib/video-metadata'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
 import { debounce } from 'lodash-es'
+import { CalendarIcon, ExternalLink, Loader2, Wand2 } from 'lucide-react'
+import { useCallback, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
 const videoUrlSchema = z.object({
     url: z.string().url('Please enter a valid URL'),
@@ -57,7 +56,11 @@ interface VideoUrlDialogProps {
     onSubmit: (data: VideoUrlFormData) => Promise<void>
 }
 
-export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogProps) {
+export function VideoUrlDialog({
+    open,
+    onOpenChange,
+    onSubmit,
+}: VideoUrlDialogProps) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isLoadingMetadata, setIsLoadingMetadata] = useState(false)
     const [hasAutoFilled, setHasAutoFilled] = useState(false)
@@ -93,7 +96,7 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
     const debouncedFetchMetadata = useCallback(
         debounce(async (url: string) => {
             if (!url || !isValidVideoUrl(url) || hasAutoFilled) return
-            
+
             setIsLoadingMetadata(true)
             try {
                 const metadata = await fetchVideoMetadata(url)
@@ -102,7 +105,10 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                     if (metadata.title && !form.getValues('title')) {
                         form.setValue('title', metadata.title)
                     }
-                    if (metadata.description && !form.getValues('description')) {
+                    if (
+                        metadata.description &&
+                        !form.getValues('description')
+                    ) {
                         form.setValue('description', metadata.description)
                     }
                     setHasAutoFilled(true)
@@ -115,7 +121,7 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                 setIsLoadingMetadata(false)
             }
         }, 1000),
-        [form, hasAutoFilled]
+        [form, hasAutoFilled],
     )
 
     const handleManualFetch = async () => {
@@ -124,7 +130,7 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
             toast.error('Please enter a valid video URL')
             return
         }
-        
+
         setIsLoadingMetadata(true)
         try {
             const metadata = await fetchVideoMetadata(url)
@@ -167,12 +173,16 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                         Add Video URL
                     </DialogTitle>
                     <DialogDescription>
-                        Add a video from YouTube, Vimeo, or other video platforms by URL.
+                        Add a video from YouTube, Vimeo, or other video
+                        platforms by URL.
                     </DialogDescription>
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="space-y-4"
+                    >
                         <FormField
                             control={form.control}
                             name="url"
@@ -186,7 +196,9 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                                 {...field}
                                                 onChange={(e) => {
                                                     field.onChange(e)
-                                                    debouncedFetchMetadata(e.target.value)
+                                                    debouncedFetchMetadata(
+                                                        e.target.value,
+                                                    )
                                                 }}
                                             />
                                             <Button
@@ -194,7 +206,10 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={handleManualFetch}
-                                                disabled={isLoadingMetadata || !field.value}
+                                                disabled={
+                                                    isLoadingMetadata ||
+                                                    !field.value
+                                                }
                                                 className="flex-shrink-0"
                                             >
                                                 {isLoadingMetadata ? (
@@ -206,9 +221,13 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                         </div>
                                     </FormControl>
                                     <FormDescription>
-                                        Enter the full URL of the video from YouTube, Vimeo, or other supported platforms.
+                                        Enter the full URL of the video from
+                                        YouTube, Vimeo, or other supported
+                                        platforms.
                                         {isLoadingMetadata && (
-                                            <span className="text-primary ml-2">Loading video information...</span>
+                                            <span className="text-primary ml-2">
+                                                Loading video information...
+                                            </span>
                                         )}
                                     </FormDescription>
                                     <FormMessage />
@@ -223,7 +242,10 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                 <FormItem>
                                     <FormLabel>Title</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Enter video title" {...field} />
+                                        <Input
+                                            placeholder="Enter video title"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -261,7 +283,8 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Comma-separated tags for categorizing the video.
+                                        Comma-separated tags for categorizing
+                                        the video.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -278,14 +301,20 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                         <PopoverTrigger asChild>
                                             <FormControl>
                                                 <Button
-                                                    variant={"outline"}
+                                                    variant={'outline'}
                                                     className={cn(
-                                                        "w-full pl-3 text-left font-normal",
-                                                        !field.value && "text-muted-foreground"
+                                                        'w-full pl-3 text-left font-normal',
+                                                        !field.value &&
+                                                            'text-muted-foreground',
                                                     )}
                                                 >
                                                     {field.value ? (
-                                                        format(new Date(field.value), "PPP")
+                                                        format(
+                                                            new Date(
+                                                                field.value,
+                                                            ),
+                                                            'PPP',
+                                                        )
                                                     ) : (
                                                         <span>Pick a date</span>
                                                     )}
@@ -293,12 +322,25 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
+                                        <PopoverContent
+                                            className="w-auto p-0"
+                                            align="start"
+                                        >
                                             <Calendar
                                                 mode="single"
-                                                selected={field.value ? new Date(field.value) : undefined}
+                                                selected={
+                                                    field.value
+                                                        ? new Date(field.value)
+                                                        : undefined
+                                                }
                                                 onSelect={(date) => {
-                                                    field.onChange(date ? date.toISOString().split('T')[0] : '')
+                                                    field.onChange(
+                                                        date
+                                                            ? date
+                                                                  .toISOString()
+                                                                  .split('T')[0]
+                                                            : '',
+                                                    )
                                                 }}
                                                 captionLayout="dropdown"
                                                 className="rounded-md border"
@@ -307,14 +349,15 @@ export function VideoUrlDialog({ open, onOpenChange, onSubmit }: VideoUrlDialogP
                                         </PopoverContent>
                                     </Popover>
                                     <FormDescription>
-                                        Use for historical videos to maintain chronological order
+                                        Use for historical videos to maintain
+                                        chronological order
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-                        <div className="flex gap-6">
+                        <div className="flex gap-3">
                             <FormField
                                 control={form.control}
                                 name="is_active"

@@ -1,6 +1,5 @@
 'use client'
 
-import { PageHeader } from '@/components/dashboard/page-header'
 import { Button } from '@/components/ui/button'
 import {
     Card,
@@ -10,88 +9,34 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-import { useBreadcrumbUpdate } from '@/providers/breadcrumb-provider'
-import {
-    BriefcaseBusiness,
-    Calendar,
-    ChevronRight,
-    FileText,
-    LayoutDashboard,
-    UserCircle2,
-    Users,
-} from 'lucide-react'
+import { siteNavItems } from '@/content/navigation/data'
+import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Dashboard() {
-    // Set breadcrumb for dashboard
-    useBreadcrumbUpdate([{ label: 'Dashboard', href: '/', active: true }])
-
-    const modules = [
-        {
-            title: 'User Profile',
-            description: 'Manage your user profile and preferences',
-            icon: UserCircle2,
-            href: '/profile',
-            color: 'bg-violet-800',
-            stats: 'Manage cases, people, events, and documents',
-        },
-        {
-            title: 'Cases',
-            description:
-                'Keep track of all cases and their related people, events, and documents',
-            icon: BriefcaseBusiness,
-            href: '/cases',
-            color: 'bg-amber-800',
-            stats: 'Manage cases, people, events, and documents',
-        },
-        {
-            title: 'Contacts',
-            description:
-                'Keep track of all parties, witnesses, attorneys, and other contacts involved in your case',
-            icon: Users,
-            href: '/contacts',
-            color: 'bg-green-800',
-            stats: 'Manage parties, witnesses, and attorneys',
-        },
-        {
-            title: 'Emails & Attachments',
-            description:
-                'Organize, store, and manage all your emails and attachments in one secure location',
-            icon: FileText,
-            href: '/emails',
-            color: 'bg-blue-500',
-            stats: 'Upload, organize, and search emails & attachments',
-        },
-        {
-            title: 'Case Timeline',
-            description:
-                'Track important dates, deadlines, and events throughout your litigation process',
-            icon: Calendar,
-            href: '/timeline',
-            color: 'bg-purple-500',
-            stats: 'Track deadlines and court dates',
-        },
-    ]
-
     return (
         <>
-            <PageHeader
-                title="Dashboard"
-                subtitle="Manage your litigation case with organized tools and resources."
-                icon={LayoutDashboard}
-            />
             <div className="space-y-4">
+                <div className="flex flex-col gap-2 items-center justify-center py-3">
+                    <h1 className="text-2xl font-semibold text-accent-foreground text-center">
+                        Welcome to Your Dashboard
+                    </h1>
+                    <p className="text-muted-foreground text-center">
+                        Manage your litigation case with organized tools and
+                        resources.
+                    </p>
+                </div>
                 {/* Module Cards */}
-                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-                    {modules.map((module, index) => (
+                <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+                    {siteNavItems.map((module, index) => (
                         <Card
                             key={index}
-                            className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.01] flex flex-col"
+                            className="group hover:shadow-lg transition-all duration-200  flex flex-col"
                         >
                             <CardHeader>
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className={`p-2 rounded-lg ${module.color} text-white shadow-2xl`}
+                                        className={`p-2 rounded-md ${module.iconColorClasses} shadow-2xl`}
                                     >
                                         <module.icon className="h-6 w-6" />
                                     </div>
@@ -108,14 +53,14 @@ export default function Dashboard() {
                             <CardFooter className="pt-0">
                                 <Button
                                     asChild
-                                    className="w-full group-hover:bg-primary/90"
+                                    className="w-full group-hover:bg-primary-foreground"
                                 >
                                     <Link
-                                        href={module.href}
+                                        href={module.url}
                                         className="flex items-center justify-center gap-2"
                                     >
                                         Open Module
-                                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                     </Link>
                                 </Button>
                             </CardFooter>
@@ -124,9 +69,9 @@ export default function Dashboard() {
                 </div>
 
                 {/* Quick Stats */}
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-3 md:grid-cols-3">
                     <Card>
-                        <CardContent className="p-4 text-center">
+                        <CardContent className="p-3 text-center">
                             <div className="text-2xl font-bold text-blue-600">
                                 0
                             </div>
@@ -136,7 +81,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="p-4 text-center">
+                        <CardContent className="p-3 text-center">
                             <div className="text-2xl font-bold text-green-600">
                                 0
                             </div>
@@ -146,7 +91,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                     <Card>
-                        <CardContent className="p-4 text-center">
+                        <CardContent className="p-3 text-center">
                             <div className="text-2xl font-bold text-purple-600">
                                 0
                             </div>

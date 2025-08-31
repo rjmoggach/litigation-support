@@ -30,7 +30,7 @@ export function PeopleList({
 }: PeopleListProps) {
     return (
         <div className="h-full flex flex-col border rounded-sm bg-card">
-            <div className="p-4 border-b">
+            <div className="p-3 border-b">
                 <div className="flex items-center gap-2 text-lg font-semibold mb-4">
                     <Users className="h-5 w-5" />
                     People
@@ -65,7 +65,7 @@ export function PeopleList({
                 <ScrollArea className="flex-1 ">
                     <div>
                         {loading ? (
-                            <div className="p-4">Loading...</div>
+                            <div className="p-3">Loading...</div>
                         ) : (
                             people.map((person) => (
                                 <div

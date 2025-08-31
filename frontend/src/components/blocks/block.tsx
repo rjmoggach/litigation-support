@@ -7,7 +7,7 @@ const blockVariants = cva('max-sm:py-10', {
     variants: {
         size: {
             sm: 'py-0',
-            md: 'py-6',
+            md: 'py-3',
             lg: 'py-12',
             xl: 'py-16',
             '2xl': 'py-40',
@@ -15,8 +15,8 @@ const blockVariants = cva('max-sm:py-10', {
             '6xl': 'py-120',
         },
         width: {
-            full: 'w-full px-6 md:px-12 lg:px-24 ',
-            container: 'container mx-auto max-lg:px-6',
+            full: 'w-full px-3 md:px-12 lg:px-24 ',
+            container: 'container mx-auto max-lg:px-3',
         },
         alignment: {
             left: 'text-left justify-start',
@@ -25,13 +25,13 @@ const blockVariants = cva('max-sm:py-10', {
         },
         columns: {
             1: '',
-            2: 'grid grid-cols-1 md:grid-cols-2 gap-6 items-start content-start',
-            3: 'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 items-start content-start',
-            4: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start content-start',
-            5: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 items-start content-start',
-            6: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 items-start content-start',
-            7: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-6 items-start content-start',
-            8: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-6 items-start content-start',
+            2: 'grid grid-cols-1 md:grid-cols-2 gap-3 items-start content-start',
+            3: 'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 items-start content-start',
+            4: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 items-start content-start',
+            5: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 items-start content-start',
+            6: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-start content-start',
+            7: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3 items-start content-start',
+            8: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3 items-start content-start',
         },
     },
     defaultVariants: {

@@ -15,7 +15,7 @@ export function TitleSubtitle({
 }: TitleSubtitleProps) {
     return (
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 {Icon && <Icon className="size-8 text-primary" />}
                 <div>
                     <h1 className="text-2xl font-semibold">{title}</h1>

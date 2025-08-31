@@ -26,7 +26,7 @@ export function ProfileHeader({
     return (
         <div
             className={cn(
-                'flex items-center justify-between py-6 pt-0',
+                'flex items-center justify-between py-3 pt-0',
                 className,
             )}
         >
@@ -36,10 +36,7 @@ export function ProfileHeader({
                         className="size-12 cursor-pointer transition-opacity group-hover:opacity-80"
                         onClick={onAvatarClick}
                     >
-                        <AvatarImage
-                            src={avatarUrl || undefined}
-                            alt={title}
-                        />
+                        <AvatarImage src={avatarUrl || undefined} alt={title} />
                         <AvatarFallback className="text-lg">
                             {userInitials}
                         </AvatarFallback>

@@ -1,6 +1,5 @@
 'use client'
 
-import ReactMarkdown from 'react-markdown'
 import {
     Dialog,
     DialogContent,
@@ -10,6 +9,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import ReactMarkdown from 'react-markdown'
 
 interface LegalDialogProps {
     title: string
@@ -34,9 +34,11 @@ export function LegalDialog({
             <DialogContent className="max-w-2xl max-h-[80vh]">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
-                    <DialogDescription>Last updated: {lastUpdated}</DialogDescription>
+                    <DialogDescription>
+                        Last updated: {lastUpdated}
+                    </DialogDescription>
                 </DialogHeader>
-                <ScrollArea className="h-[400px] w-full rounded-md border p-4 overflow-auto touch-auto">
+                <ScrollArea className="h-[400px] w-full rounded-md border p-3 overflow-auto touch-auto">
                     <div className="prose prose-sm dark:prose-invert max-w-none">
                         <ReactMarkdown>{content}</ReactMarkdown>
                     </div>

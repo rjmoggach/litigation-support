@@ -1,8 +1,8 @@
 'use client'
 
-import { formatDistanceToNow, format } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { RefreshCw, Eye, Pencil, Trash2, CalendarIcon } from 'lucide-react'
+import { format, formatDistanceToNow } from 'date-fns'
+import { CalendarIcon, Eye, Pencil, RefreshCw, Trash2 } from 'lucide-react'
 import * as React from 'react'
 
 import type { ColumnDef } from '@tanstack/react-table'
@@ -10,15 +10,6 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 import { FlexibleDataTable } from '@/components/data-table/flexible-data-table'
 import type { ToolbarConfig } from '@/components/data-table/flexible-data-table-toolbar'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Calendar } from '@/components/ui/calendar'
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -29,6 +20,15 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover'
 import type {
     VideoOutFile,
     VideoOutHtml5,
@@ -75,10 +75,14 @@ interface EditableVideoDateProps {
     onUpdate: (videoId: number, newDate: string | null) => Promise<void>
 }
 
-function EditableVideoDate({ video, initialDate, onUpdate }: EditableVideoDateProps) {
+function EditableVideoDate({
+    video,
+    initialDate,
+    onUpdate,
+}: EditableVideoDateProps) {
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(
-        initialDate ? new Date(initialDate) : undefined
+        initialDate ? new Date(initialDate) : undefined,
     )
 
     const handleDateSelect = async (selectedDate: Date | undefined) => {
@@ -101,16 +105,12 @@ function EditableVideoDate({ video, initialDate, onUpdate }: EditableVideoDatePr
                     variant="ghost"
                     size="sm"
                     className={cn(
-                        "h-auto p-1 font-normal hover:bg-muted/50 justify-start",
-                        !date && "text-muted-foreground"
+                        'h-auto p-1 font-normal hover:bg-muted/50 justify-start',
+                        !date && 'text-muted-foreground',
                     )}
                 >
                     <CalendarIcon className="mr-2 h-3 w-3" />
-                    {date ? (
-                        format(date, "MMM d, yyyy")
-                    ) : (
-                        <span>Set date</span>
-                    )}
+                    {date ? format(date, 'MMM d, yyyy') : <span>Set date</span>}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -119,7 +119,7 @@ function EditableVideoDate({ video, initialDate, onUpdate }: EditableVideoDatePr
                     selected={date}
                     onSelect={handleDateSelect}
                     captionLayout="dropdown"
-                    className="rounded-lg border shadow-sm"
+                    className="rounded-md border shadow-sm"
                     initialFocus
                 />
             </PopoverContent>
@@ -135,13 +135,24 @@ export interface AdminVideoTableProps {
     onEdit?: (video: VideoResponse) => void
     onDelete?: (video: VideoResponse) => void
     onRefresh?: () => void
-    onUpdateVideoDate?: (videoId: number, newDate: string | null) => Promise<void>
+    onUpdateVideoDate?: (
+        videoId: number,
+        newDate: string | null,
+    ) => Promise<void>
     onAutoFetchThumbnail?: (video: VideoResponse) => Promise<void>
     className?: string
 }
 
 function getColumns(
-    handlers: Pick<AdminVideoTableProps, 'onView' | 'onEdit' | 'onDelete' | 'onRefresh' | 'onUpdateVideoDate' | 'onAutoFetchThumbnail'>,
+    handlers: Pick<
+        AdminVideoTableProps,
+        | 'onView'
+        | 'onEdit'
+        | 'onDelete'
+        | 'onRefresh'
+        | 'onUpdateVideoDate'
+        | 'onAutoFetchThumbnail'
+    >,
 ): ColumnDef<VideoResponse, unknown>[] {
     return [
         {
@@ -191,13 +202,18 @@ function getColumns(
                         />
                     </div>
                 ) : (
-                    <div 
+                    <div
                         className={cn(
-                            "w-16 h-9 bg-muted rounded flex items-center justify-center",
-                            video.type === 'video_url' && handlers.onAutoFetchThumbnail && "cursor-pointer hover:bg-muted/70 transition-colors"
+                            'w-16 h-9 bg-muted rounded flex items-center justify-center',
+                            video.type === 'video_url' &&
+                                handlers.onAutoFetchThumbnail &&
+                                'cursor-pointer hover:bg-muted/70 transition-colors',
                         )}
                         onClick={async () => {
-                            if (video.type === 'video_url' && handlers.onAutoFetchThumbnail) {
+                            if (
+                                video.type === 'video_url' &&
+                                handlers.onAutoFetchThumbnail
+                            ) {
                                 try {
                                     await handlers.onAutoFetchThumbnail(video)
                                 } catch (error) {
@@ -205,12 +221,20 @@ function getColumns(
                                 }
                             }
                         }}
-                        title={video.type === 'video_url' ? 'Click to auto-fetch thumbnail from video URL' : undefined}
+                        title={
+                            video.type === 'video_url'
+                                ? 'Click to auto-fetch thumbnail from video URL'
+                                : undefined
+                        }
                     >
                         <div className="text-center">
-                            <div className="text-xs text-muted-foreground">{video.type === 'video_url' ? '📹' : '🎬'}</div>
+                            <div className="text-xs text-muted-foreground">
+                                {video.type === 'video_url' ? '📹' : '🎬'}
+                            </div>
                             <div className="text-[10px] text-muted-foreground/70">
-                                {video.type === 'video_url' ? 'Fetch thumb' : 'No thumb'}
+                                {video.type === 'video_url'
+                                    ? 'Fetch thumb'
+                                    : 'No thumb'}
                             </div>
                         </div>
                     </div>
@@ -279,14 +303,19 @@ function getColumns(
             cell: ({ row }) => {
                 const videoDate = row.getValue<string | null>('video_date')
                 const video = row.original
-                
+
                 return (
-                    <EditableVideoDate 
+                    <EditableVideoDate
                         video={video}
                         initialDate={videoDate}
-                        onUpdate={handlers.onUpdateVideoDate || (async () => {
-                            throw new Error('onUpdateVideoDate handler not provided')
-                        })}
+                        onUpdate={
+                            handlers.onUpdateVideoDate ||
+                            (async () => {
+                                throw new Error(
+                                    'onUpdateVideoDate handler not provided',
+                                )
+                            })
+                        }
                     />
                 )
             },
@@ -358,22 +387,38 @@ export function AdminVideoTable({
     onAutoFetchThumbnail,
     className,
 }: AdminVideoTableProps) {
-    const [deleteConfirmVideo, setDeleteConfirmVideo] = React.useState<VideoResponse | null>(null)
-    
+    const [deleteConfirmVideo, setDeleteConfirmVideo] =
+        React.useState<VideoResponse | null>(null)
+
     const handleDelete = React.useCallback((video: VideoResponse) => {
         setDeleteConfirmVideo(video)
     }, [])
-    
+
     const handleConfirmDelete = React.useCallback(() => {
         if (deleteConfirmVideo && onDelete) {
             onDelete(deleteConfirmVideo)
             setDeleteConfirmVideo(null)
         }
     }, [deleteConfirmVideo, onDelete])
-    
+
     const columns = React.useMemo(
-        () => getColumns({ onView, onEdit, onDelete: handleDelete, onRefresh, onUpdateVideoDate, onAutoFetchThumbnail }),
-        [onView, onEdit, handleDelete, onRefresh, onUpdateVideoDate, onAutoFetchThumbnail],
+        () =>
+            getColumns({
+                onView,
+                onEdit,
+                onDelete: handleDelete,
+                onRefresh,
+                onUpdateVideoDate,
+                onAutoFetchThumbnail,
+            }),
+        [
+            onView,
+            onEdit,
+            handleDelete,
+            onRefresh,
+            onUpdateVideoDate,
+            onAutoFetchThumbnail,
+        ],
     )
 
     const toolbarConfig: ToolbarConfig = React.useMemo(
@@ -393,8 +438,15 @@ export function AdminVideoTable({
             ],
             showViewOptions: true,
             customActions: onRefresh ? (
-                <Button variant="outline" size="sm" onClick={onRefresh} disabled={loading}>
-                    <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onRefresh}
+                    disabled={loading}
+                >
+                    <RefreshCw
+                        className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`}
+                    />
                     Refresh
                 </Button>
             ) : undefined,
@@ -412,19 +464,23 @@ export function AdminVideoTable({
                 toolbarConfig={toolbarConfig}
                 className={className}
             />
-            
-            <AlertDialog open={!!deleteConfirmVideo} onOpenChange={() => setDeleteConfirmVideo(null)}>
+
+            <AlertDialog
+                open={!!deleteConfirmVideo}
+                onOpenChange={() => setDeleteConfirmVideo(null)}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete Video</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete "{deleteConfirmVideo?.profile?.title || 'this video'}"? 
-                            This action cannot be undone.
+                            Are you sure you want to delete "
+                            {deleteConfirmVideo?.profile?.title || 'this video'}
+                            "? This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
+                        <AlertDialogAction
                             onClick={handleConfirmDelete}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >

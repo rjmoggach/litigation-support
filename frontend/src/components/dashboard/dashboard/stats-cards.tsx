@@ -3,13 +3,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { UserStatsResponse } from '@/lib/api/types.gen'
-import { 
-    Users, 
-    UserCheck, 
-    UserX, 
-    ShieldCheck, 
+import {
     Activity,
-    TrendingUp
+    ShieldCheck,
+    TrendingUp,
+    UserCheck,
+    Users,
+    UserX,
 } from 'lucide-react'
 
 interface StatsCardsProps {
@@ -55,7 +55,7 @@ export function StatsCards({ stats, loading = false }: StatsCardsProps) {
 
     if (loading) {
         return (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
                 {[...Array(4)].map((_, i) => (
                     <Card key={i}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -73,7 +73,7 @@ export function StatsCards({ stats, loading = false }: StatsCardsProps) {
     }
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
             {cards.map((card) => {
                 const Icon = card.icon
                 return (
@@ -82,7 +82,7 @@ export function StatsCards({ stats, loading = false }: StatsCardsProps) {
                             <CardTitle className="text-sm font-medium">
                                 {card.title}
                             </CardTitle>
-                            <div className={`p-2 rounded-lg ${card.bgColor}`}>
+                            <div className={`p-2 rounded-md ${card.bgColor}`}>
                                 <Icon className={`h-4 w-4 ${card.color}`} />
                             </div>
                         </CardHeader>
@@ -111,7 +111,10 @@ export function StatsBreakdown({ stats, loading = false }: StatsCardsProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {[...Array(3)].map((_, i) => (
-                        <div key={i} className="flex items-center justify-between">
+                        <div
+                            key={i}
+                            className="flex items-center justify-between"
+                        >
                             <Skeleton className="h-4 w-24" />
                             <Skeleton className="h-4 w-16" />
                         </div>
@@ -151,7 +154,10 @@ export function StatsBreakdown({ stats, loading = false }: StatsCardsProps) {
                 {breakdownItems.map((item) => {
                     const Icon = item.icon
                     return (
-                        <div key={item.label} className="flex items-center justify-between">
+                        <div
+                            key={item.label}
+                            className="flex items-center justify-between"
+                        >
                             <div className="flex items-center gap-2">
                                 <Icon className={`h-4 w-4 ${item.color}`} />
                                 <span className="text-sm">{item.label}</span>
