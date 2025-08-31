@@ -13,7 +13,7 @@ html {
     /* Border radius */
     --radius: 0.75rem;
 
-    --background: oklch(0.98 0.01 252);
+    --background: oklch(0.96 0.01 252);
     --foreground: oklch(0.35 0.06 252);
     --muted: oklch(0.92 0.02 252);
     --muted-foreground: oklch(0.55 0.04 252);

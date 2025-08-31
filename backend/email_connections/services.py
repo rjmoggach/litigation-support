@@ -284,13 +284,14 @@ class EmailConnectionService:
             "message": "Connection deleted permanently"
         }
     
-    def get_connection_tokens(self, connection_id: int, user_id: int) -> Optional[Dict[str, Any]]:
+    def get_connection_tokens(self, connection_id: int, user_id: int, auto_refresh: bool = True) -> Optional[Dict[str, Any]]:
         """
-        Get decrypted tokens for a connection (for internal use).
+        Get decrypted tokens for a connection with optional automatic refresh.
         
         Args:
             connection_id: ID of the connection
             user_id: ID of the user (for authorization)
+            auto_refresh: Whether to automatically refresh expired tokens
             
         Returns:
             Optional[Dict]: Token data if authorized
@@ -302,13 +303,56 @@ class EmailConnectionService:
             )
         ).first()
         
-        if not connection or connection.connection_status != "active":
+        if not connection:
+            return None
+        
+        # Allow getting tokens for error status connections if auto_refresh is enabled
+        if connection.connection_status not in ["active", "error"] and not auto_refresh:
             return None
         
         try:
             access_token = decrypt_token(connection.access_token_encrypted)
             refresh_token = decrypt_token(connection.refresh_token_encrypted) if connection.refresh_token_encrypted else None
             
+            # Check if token needs refresh and we have a refresh token
+            if auto_refresh and refresh_token and should_refresh_token(connection.token_expires_at):
+                try:
+                    # Import here to avoid circular imports
+                    from email_connections.oauth import google_oauth_handler
+                    
+                    # Attempt to refresh the token
+                    token_response = google_oauth_handler.refresh_access_token(refresh_token)
+                    
+                    # Update the connection with new tokens
+                    success = self.update_tokens(
+                        connection_id=connection_id,
+                        user_id=user_id,
+                        access_token=token_response["access_token"],
+                        refresh_token=token_response.get("refresh_token", refresh_token),
+                        expires_at=token_response.get("expires_at")
+                    )
+                    
+                    if success:
+                        # Mark connection as active if refresh was successful
+                        connection.connection_status = "active"
+                        connection.error_message = None
+                        self.db.commit()
+                        
+                        # Return refreshed tokens
+                        return {
+                            "access_token": token_response["access_token"],
+                            "refresh_token": token_response.get("refresh_token", refresh_token),
+                            "expires_at": token_response.get("expires_at"),
+                            "scopes": parse_scopes_string(connection.scopes_granted)
+                        }
+                    
+                except Exception as refresh_error:
+                    # Auto-refresh failed, mark connection as error but still return old tokens
+                    connection.connection_status = "error"
+                    connection.error_message = sanitize_error_message(f"Auto-refresh failed: {str(refresh_error)}")
+                    self.db.commit()
+            
+            # Return original tokens (whether refresh succeeded or failed)
             return {
                 "access_token": access_token,
                 "refresh_token": refresh_token,
