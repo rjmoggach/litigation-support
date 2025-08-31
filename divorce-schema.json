@@ -1,0 +1,348 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Divorce Case Metadata",
+    "type": "object",
+    "properties": {
+      "case_info": {
+        "type": "object",
+        "properties": {
+          "court_file_number": {"type": "string"},
+          "court_location": {"type": "string"},
+          "case_status": {
+            "type": "string",
+            "enum": ["filed", "served", "responded", "conference_scheduled", "trial_scheduled", "final_order", "appealed"]
+          },
+          "divorce_type": {
+            "type": "string",
+            "enum": ["uncontested", "contested", "simple", "complex"]
+          },
+          "filing_date": {"type": "string", "format": "date"},
+          "service_date": {"type": "string", "format": "date"},
+          "trial_date": {"type": "string", "format": "date"}
+        },
+        "required": ["court_file_number", "case_status"]
+      },
+      
+      "parties": {
+        "type": "object",
+        "properties": {
+          "applicant": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "birthdate": {"type": "string", "format": "date"},
+              "address": {"type": "string"},
+              "phone": {"type": "string"},
+              "email": {"type": "string"},
+              "lawyer": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "firm": {"type": "string"},
+                  "phone": {"type": "string"},
+                  "email": {"type": "string"}
+                }
+              },
+              "self_represented": {"type": "boolean", "default": false}
+            },
+            "required": ["name"]
+          },
+          "respondent": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "birthdate": {"type": "string", "format": "date"},
+              "address": {"type": "string"},
+              "phone": {"type": "string"},
+              "email": {"type": "string"},
+              "lawyer": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "firm": {"type": "string"},
+                  "phone": {"type": "string"},
+                  "email": {"type": "string"}
+                }
+              },
+              "self_represented": {"type": "boolean", "default": false}
+            },
+            "required": ["name"]
+          }
+        },
+        "required": ["applicant", "respondent"]
+      },
+  
+      "marriage_info": {
+        "type": "object",
+        "properties": {
+          "marriage_date": {"type": "string", "format": "date"},
+          "marriage_location": {"type": "string"},
+          "separation_date": {"type": "string", "format": "date"},
+          "cohabitation_start": {"type": "string", "format": "date"},
+          "grounds_for_divorce": {
+            "type": "string",
+            "enum": ["breakdown_separation", "breakdown_adultery", "breakdown_cruelty"]
+          }
+        },
+        "required": ["separation_date"]
+      },
+  
+      "children": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {"type": "string"},
+            "birthdate": {"type": "string", "format": "date"},
+            "current_residence": {
+              "type": "string",
+              "enum": ["applicant", "respondent", "shared", "other"]
+            },
+            "special_needs": {"type": "string"},
+            "school_info": {"type": "string"}
+          },
+          "required": ["name", "birthdate"]
+        }
+      },
+  
+      "custody_access": {
+        "type": "object",
+        "properties": {
+          "current_arrangement": {
+            "type": "string",
+            "enum": ["sole_custody_applicant", "sole_custody_respondent", "joint_custody", "shared_parenting", "temporary_order"]
+          },
+          "requested_arrangement": {
+            "type": "string",
+            "enum": ["sole_custody", "joint_custody", "shared_parenting"]
+          },
+          "access_schedule": {"type": "string"},
+          "decision_making": {
+            "type": "object",
+            "properties": {
+              "education": {"type": "string"},
+              "healthcare": {"type": "string"},
+              "religion": {"type": "string"},
+              "extracurricular": {"type": "string"}
+            }
+          }
+        }
+      },
+  
+      "financial_info": {
+        "type": "object",
+        "properties": {
+          "applicant_income": {
+            "type": "object",
+            "properties": {
+              "employment_income": {"type": "number"},
+              "self_employment_income": {"type": "number"},
+              "investment_income": {"type": "number"},
+              "other_income": {"type": "number"},
+              "total_annual_income": {"type": "number"}
+            }
+          },
+          "respondent_income": {
+            "type": "object",
+            "properties": {
+              "employment_income": {"type": "number"},
+              "self_employment_income": {"type": "number"},
+              "investment_income": {"type": "number"},
+              "other_income": {"type": "number"},
+              "total_annual_income": {"type": "number"}
+            }
+          },
+          "child_support": {
+            "type": "object",
+            "properties": {
+              "current_amount": {"type": "number"},
+              "requested_amount": {"type": "number"},
+              "special_expenses": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          },
+          "spousal_support": {
+            "type": "object",
+            "properties": {
+              "current_amount": {"type": "number"},
+              "requested_amount": {"type": "number"},
+              "duration_requested": {"type": "string"},
+              "entitlement_factors": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      },
+  
+      "property_assets": {
+        "type": "object",
+        "properties": {
+          "matrimonial_home": {
+            "type": "object",
+            "properties": {
+              "address": {"type": "string"},
+              "current_value": {"type": "number"},
+              "mortgage_balance": {"type": "number"},
+              "net_value": {"type": "number"},
+              "possession_order": {"type": "string"}
+            }
+          },
+          "other_real_estate": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "address": {"type": "string"},
+                "current_value": {"type": "number"},
+                "mortgage_balance": {"type": "number"},
+                "net_value": {"type": "number"}
+              }
+            }
+          },
+          "financial_accounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "institution": {"type": "string"},
+                "account_type": {"type": "string"},
+                "account_number": {"type": "string"},
+                "balance_separation": {"type": "number"},
+                "balance_current": {"type": "number"}
+              }
+            }
+          },
+          "investments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {"type": "string"},
+                "institution": {"type": "string"},
+                "value_separation": {"type": "number"},
+                "value_current": {"type": "number"}
+              }
+            }
+          },
+          "pensions_rrsp": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {"type": "string"},
+                "institution": {"type": "string"},
+                "value_separation": {"type": "number"},
+                "value_current": {"type": "number"}
+              }
+            }
+          },
+          "debts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "creditor": {"type": "string"},
+                "type": {"type": "string"},
+                "balance_separation": {"type": "number"},
+                "balance_current": {"type": "number"},
+                "responsibility": {
+                  "type": "string",
+                  "enum": ["joint", "applicant", "respondent"]
+                }
+              }
+            }
+          }
+        }
+      },
+  
+      "legal_timeline": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "date": {"type": "string", "format": "date"},
+            "event_type": {
+              "type": "string",
+              "enum": [
+                "separation",
+                "application_filed",
+                "application_served",
+                "response_filed",
+                "case_conference",
+                "settlement_conference",
+                "motion_filed",
+                "motion_hearing",
+                "trial_management_conference",
+                "trial",
+                "final_order",
+                "appeal_filed"
+              ]
+            },
+            "description": {"type": "string"},
+            "outcome": {"type": "string"},
+            "next_steps": {"type": "string"}
+          },
+          "required": ["date", "event_type"]
+        }
+      },
+  
+      "court_orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "date": {"type": "string", "format": "date"},
+            "type": {
+              "type": "string",
+              "enum": ["temporary", "interim", "final", "consent", "endorsement"]
+            },
+            "subject": {"type": "string"},
+            "terms": {"type": "string"},
+            "compliance_status": {
+              "type": "string",
+              "enum": ["compliant", "partial_compliance", "non_compliant", "disputed"]
+            }
+          },
+          "required": ["date", "type", "subject"]
+        }
+      },
+  
+      "communications": {
+        "type": "object",
+        "properties": {
+          "service_method": {
+            "type": "string",
+            "enum": ["personal_service", "alternative_service", "email", "registered_mail"]
+          },
+          "preferred_contact": {"type": "string"},
+          "communication_restrictions": {"type": "string"}
+        }
+      },
+  
+      "document_tracking": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "document_type": {"type": "string"},
+            "file_path": {"type": "string"},
+            "source_email": {"type": "string"},
+            "date_created": {"type": "string", "format": "date"},
+            "relevance_score": {"type": "number", "minimum": 1, "maximum": 10},
+            "tags": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "summary": {"type": "string"}
+          },
+          "required": ["document_type", "file_path"]
+        }
+      }
+    },
+    
+    "required": ["case_info", "parties", "marriage_info"]
+  }
