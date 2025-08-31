@@ -88,7 +88,7 @@
   - _Leverage: frontend/src/components/ui/ components, existing profile form patterns_
   - _Requirements: 1.1, 1.4, 2.2_
 
-- [ ] 12. Create AddEmailAccountDialog component
+- [x] 12. Create AddEmailAccountDialog component
   - File: frontend/src/components/profile/add-email-account-dialog.tsx
   - Implement modal dialog for initiating OAuth flow
   - Add provider selection and permission explanation
@@ -96,7 +96,7 @@
   - _Leverage: existing dialog components and form patterns_
   - _Requirements: 1.1, 3.3_
 
-- [ ] 13. Create ConnectionStatusIndicator component
+- [x] 13. Create ConnectionStatusIndicator component
   - File: frontend/src/components/profile/connection-status-indicator.tsx
   - Display connection health with visual indicators
   - Show last sync time and error states
@@ -112,7 +112,7 @@
   - _Leverage: existing API client patterns in frontend/src/lib/api/_
   - _Requirements: 1.2, 2.1, 3.1_
 
-- [ ] 15. Create OAuth flow utilities in frontend/src/lib/oauth-utils.ts
+- [x] 15. Create OAuth flow utilities in frontend/src/lib/oauth-utils.ts
   - File: frontend/src/lib/oauth-utils.ts
   - Implement client-side OAuth flow helpers
   - Add popup window management and callback processing
@@ -120,7 +120,7 @@
   - _Leverage: existing auth utilities and NextAuth patterns_
   - _Requirements: 3.1, 3.2_
 
-- [ ] 16. Extend NextAuth configuration for additional account handling
+- [x] 16. Extend NextAuth configuration for additional account handling
   - File: frontend/src/lib/auth.ts (modify existing)
   - Add support for storing additional account tokens in session
   - Extend JWT callback to handle multiple account data
@@ -144,7 +144,7 @@
   - _Leverage: existing type definitions in frontend/src/types/_
   - _Requirements: 1.2, 2.1_
 
-- [ ] 19. Add connection health monitoring service
+- [x] 19. Add connection health monitoring service
   - File: backend/email_connections/monitoring.py
   - Implement background service for checking connection health
   - Add automated token refresh and error detection
@@ -152,7 +152,7 @@
   - _Leverage: existing background task patterns_
   - _Requirements: 4.1, 4.2, 4.5_
 
-- [ ] 20. Create unit tests for EmailConnection model
+- [x] 20. Create unit tests for EmailConnection model
   - File: backend/tests/test_email_connections/test_models.py
   - Write tests for model creation, validation, and relationships
   - Test token encryption/decryption functionality
@@ -160,7 +160,7 @@
   - _Leverage: existing test patterns in backend/tests/_
   - _Requirements: 1.1, 5.2_
 
-- [ ] 21. Create unit tests for EmailConnectionService
+- [x] 21. Create unit tests for EmailConnectionService
   - File: backend/tests/test_email_connections/test_services.py
   - Test connection management business logic
   - Mock external OAuth API calls and database operations
@@ -168,7 +168,7 @@
   - _Leverage: existing service test patterns_
   - _Requirements: 2.1, 2.2, 4.1_
 
-- [ ] 22. Create API endpoint integration tests
+- [x] 22. Create API endpoint integration tests
   - File: backend/tests/test_email_connections/test_api.py
   - Test complete API workflows including OAuth flows
   - Verify proper authentication and authorization
@@ -176,7 +176,7 @@
   - _Leverage: existing API test patterns_
   - _Requirements: 1.2, 3.1, 5.1_
 
-- [ ] 23. Create React component tests
+- [x] 23. Create React component tests
   - File: frontend/src/components/profile/__tests__/email-connections-manager.test.tsx
   - Test component rendering, user interactions, and state management
   - Mock API calls and OAuth flows
@@ -184,7 +184,7 @@
   - _Leverage: existing React test patterns and utilities_
   - _Requirements: 1.1, 1.4, 2.2_
 
-- [ ] 24. Add OAuth callback route handler
+- [x] 24. Add OAuth callback route handler
   - File: frontend/src/app/api/auth/oauth-callback/route.ts
   - Handle OAuth authorization codes from additional account flows
   - Process tokens and store connection data
@@ -192,7 +192,7 @@
   - _Leverage: existing API route patterns_
   - _Requirements: 3.1, 3.2_
 
-- [ ] 25. Create end-to-end tests for complete user journey
+- [x] 25. Create end-to-end tests for complete user journey
   - File: frontend/tests/e2e/email-connections.spec.ts
   - Test full workflow: connect account, manage connections, use for harvesting
   - Include error scenarios and edge cases
@@ -200,7 +200,7 @@
   - _Leverage: existing E2E test framework and patterns_
   - _Requirements: All requirements_
 
-- [ ] 26. Update API documentation and OpenAPI schema
+- [x] 26. Update API documentation and OpenAPI schema
   - File: Various API documentation files
   - Add email connections endpoints to OpenAPI specification
   - Update API documentation with examples and schemas
@@ -208,7 +208,7 @@
   - _Leverage: existing OpenAPI documentation patterns_
   - _Requirements: 1.2_
 
-- [ ] 27. Add error handling and user feedback improvements
+- [x] 27. Add error handling and user feedback improvements
   - File: Multiple files (components and services)
   - Implement comprehensive error handling across all layers
   - Add user-friendly error messages and recovery guidance
@@ -216,7 +216,7 @@
   - _Leverage: existing error handling patterns_
   - _Requirements: 2.3, 4.3, 4.4_
 
-- [ ] 28. Integration testing with email harvesting system
+- [x] 28. Integration testing with email harvesting system
   - File: Integration test files
   - Test email connections integration with existing harvesting features
   - Verify multi-account harvesting works correctly

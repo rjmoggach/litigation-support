@@ -1,0 +1,12 @@
+{
+  "id": "approval_1756603979450_zht1skuld",
+  "title": "Enhanced User Profile - Design Document",
+  "filePath": ".spec-workflow/specs/enhanced-user-profile/design.md",
+  "type": "document",
+  "status": "rejected",
+  "createdAt": "2025-08-31T01:32:59.450Z",
+  "category": "spec",
+  "categoryName": "enhanced-user-profile",
+  "response": "augment the Profile instead of creating a new profile",
+  "respondedAt": "2025-08-31T01:35:42.542Z"
+}
