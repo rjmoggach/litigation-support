@@ -97,7 +97,7 @@ export function FlexibleDataTable<TData, TValue>({
 
     if (loading) {
         return (
-            <div className={`space-y-4 ${className || ''}`}>
+            <div className={`space-y-3 ${className || ''}`}>
                 {toolbarConfig && (
                     <div className="h-8 bg-muted animate-pulse rounded" />
                 )}
@@ -115,7 +115,7 @@ export function FlexibleDataTable<TData, TValue>({
     }
 
     return (
-        <div className={`space-y-4 ${className || ''}`}>
+        <div className={`space-y-3 ${className || ''}`}>
             {toolbarConfig && (
                 <FlexibleDataTableToolbar
                     table={table}
@@ -162,7 +162,9 @@ export function FlexibleDataTable<TData, TValue>({
                                     onClick={(e) => {
                                         // Don't trigger row click if clicking on interactive elements
                                         const target = e.target as HTMLElement
-                                        const isInteractive = target.closest('button, [role="button"], [role="menuitem"], [role="checkbox"]')
+                                        const isInteractive = target.closest(
+                                            'button, [role="button"], [role="menuitem"], [role="checkbox"]',
+                                        )
                                         if (!isInteractive && onRowClick) {
                                             onRowClick(row.original)
                                         }

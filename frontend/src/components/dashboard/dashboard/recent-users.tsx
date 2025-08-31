@@ -44,7 +44,7 @@ export function RecentUsers({ users, loading = false }: RecentUsersProps) {
                 <CardHeader>
                     <CardTitle>Recent Users</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                     {[...Array(5)].map((_, i) => (
                         <div key={i} className="flex items-center gap-3">
                             <Skeleton className="h-10 w-10 rounded-full" />
@@ -78,7 +78,7 @@ export function RecentUsers({ users, loading = false }: RecentUsersProps) {
                         No recent users
                     </p>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {users.slice(0, 5).map((user) => (
                             <div
                                 key={user.id}

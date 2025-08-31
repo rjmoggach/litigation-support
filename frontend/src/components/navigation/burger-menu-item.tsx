@@ -15,10 +15,7 @@ interface NavBarMenuItemProps {
     onClick?: (url: string, e: React.MouseEvent) => void
 }
 
-const NavBarMenuItem: React.FC<NavBarMenuItemProps> = ({
-    route,
-    onClick,
-}) => {
+const NavBarMenuItem: React.FC<NavBarMenuItemProps> = ({ route, onClick }) => {
     const pathname = usePathname()
 
     const isActive = (url: string) => {
@@ -44,7 +41,7 @@ const NavBarMenuItem: React.FC<NavBarMenuItemProps> = ({
                 'group cursor-pointer transition-colors w-fit p-0',
                 'text-foreground/60 hover:text-foreground',
                 'after:content-[""] after:absolute after:-bottom-[2px] after:left-0 after:w-full',
-                'after:h-[2px] after:transform after:translate-y-4 after:transition after:duration-300 after:ease-out',
+                'after:h-[2px] after:transform after:translate-y-3 after:transition after:duration-300 after:ease-out',
                 'hover:after:translate-y-0 hover:after:bg-foreground',
                 isActive(route.url) &&
                     'text-foreground after:translate-y-0 after:bg-foreground',

@@ -299,7 +299,7 @@ export function PageFormDialog({
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(handleSubmit)}
-                        className="space-y-4"
+                        className="space-y-3"
                     >
                         {/* Page Info */}
                         {isEditing && (

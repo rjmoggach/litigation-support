@@ -445,7 +445,7 @@ export function CompanyEditDialog({
 
                             <TabsContent
                                 value="basic"
-                                className="space-y-4 mt-6"
+                                className="space-y-3 mt-6"
                             >
                                 <FormField
                                     control={form.control}
@@ -625,7 +625,7 @@ export function CompanyEditDialog({
 
                             <TabsContent
                                 value="profile"
-                                className="space-y-4 mt-6"
+                                className="space-y-3 mt-6"
                             >
                                 <FormField
                                     control={form.control}
@@ -759,7 +759,7 @@ export function CompanyEditDialog({
 
                                 <Separator />
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <h4 className="font-medium flex items-center gap-2">
                                         <MapPin className="h-4 w-4" />
                                         Address
@@ -899,7 +899,7 @@ export function CompanyEditDialog({
                                 value="media"
                                 className="space-y-3 mt-6"
                             >
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <h4 className="font-medium flex items-center gap-2">
                                         <Upload className="h-4 w-4" />
                                         Company Logo
@@ -949,7 +949,7 @@ export function CompanyEditDialog({
 
                                 <Separator />
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <h4 className="font-medium">
                                             Social Links

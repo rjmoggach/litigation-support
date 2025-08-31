@@ -52,7 +52,7 @@ export function ConnectionTestDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex flex-col flex-1 space-y-4">
+                <div className="flex flex-col flex-1 space-y-3">
                     {/* Connection Status */}
                     <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
                         <CheckCircle className="size-5 text-green-600" />

@@ -36,9 +36,11 @@ interface PersonActionsProps {
     onDelete: (person: Person) => void
     totalPeople: number
     linkedPersonId?: number | null
+    spouseIds?: number[]
+    childIds?: number[]
 }
 
-function PersonActions({ person, onEdit, onDelete, totalPeople, linkedPersonId }: PersonActionsProps) {
+function PersonActions({ person, onEdit, onDelete, totalPeople, linkedPersonId, spouseIds = [], childIds = [] }: PersonActionsProps) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
     const isLinked = linkedPersonId === person.id
 
@@ -119,6 +121,8 @@ export function createPersonColumns(
     onDelete: (person: Person) => void,
     totalPeople: number,
     linkedPersonId?: number | null,
+    spouseIds: number[] = [],
+    childIds: number[] = [],
 ): ColumnDef<Person>[] {
     return [
         {
@@ -193,7 +197,17 @@ export function createPersonColumns(
                                 </span>
                                 {linkedPersonId === person.id && (
                                     <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                        Linked
+                                        My Record
+                                    </Badge>
+                                )}
+                                {spouseIds.includes(person.id) && (
+                                    <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
+                                        Ex-Spouse
+                                    </Badge>
+                                )}
+                                {childIds.includes(person.id) && (
+                                    <Badge variant="secondary" className="text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                        Child
                                     </Badge>
                                 )}
                             </div>
@@ -201,6 +215,18 @@ export function createPersonColumns(
                                 <span className="text-xs text-muted-foreground">
                                     {person.email}
                                 </span>
+                            )}
+                            {/* Add address information if available */}
+                            {(person as any).addresses && (person as any).addresses.length > 0 && (
+                                <div className="text-xs text-muted-foreground mt-1">
+                                    📍 {(person as any).addresses[0].street_address}, {(person as any).addresses[0].city}
+                                </div>
+                            )}
+                            {/* Add marriage information if available */}
+                            {(person as any).marriages && (person as any).marriages.length > 0 && (
+                                <div className="text-xs text-muted-foreground mt-1">
+                                    💒 Married to {(person as any).marriages.map((m: any) => m.spouse_name).join(', ')}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -368,6 +394,8 @@ export function createPersonColumns(
                     onDelete={onDelete}
                     totalPeople={totalPeople}
                     linkedPersonId={linkedPersonId}
+                    spouseIds={spouseIds}
+                    childIds={childIds}
                 />
             ),
             enableSorting: false,

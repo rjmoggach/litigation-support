@@ -109,7 +109,7 @@ export function StatsBreakdown({ stats, loading = false }: StatsCardsProps) {
                 <CardHeader>
                     <CardTitle>User Status Breakdown</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                     {[...Array(3)].map((_, i) => (
                         <div
                             key={i}
@@ -150,7 +150,7 @@ export function StatsBreakdown({ stats, loading = false }: StatsCardsProps) {
             <CardHeader>
                 <CardTitle>User Status Breakdown</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">
                 {breakdownItems.map((item) => {
                     const Icon = item.icon
                     return (

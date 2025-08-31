@@ -249,7 +249,7 @@ export function AdminVideoForm({
         <Form {...form}>
             <form onSubmit={handleSubmit} className="space-y-3">
                 <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <h3 className="text-lg font-semibold">
                                 Video Details
@@ -412,13 +412,13 @@ export function AdminVideoForm({
                     </div>
 
                     {/* Right column: Type-specific fields */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <h3 className="text-lg font-semibold">Source</h3>
                         </div>
 
                         {watchType === 'video_url' && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <FormField
                                     control={form.control}
                                     name="data.platform"
@@ -521,7 +521,7 @@ export function AdminVideoForm({
                         )}
 
                         {watchType === 'html5_video' && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h4 className="text-sm font-medium text-muted-foreground">
@@ -713,7 +713,7 @@ export function AdminVideoForm({
                         )}
 
                         {watchType === 'video_file' && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {/* Drag-and-drop uploader */}
                                 <div
                                     className={

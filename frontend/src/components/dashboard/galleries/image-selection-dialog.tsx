@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Search, Upload, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
     Dialog,
@@ -13,9 +14,8 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { ImageGrid } from '@/components/galleries/image-grid'
 import { SimpleUpload } from '@/components/galleries/simple-upload'
@@ -54,7 +54,8 @@ export function ImageSelectionDialog({
     onLoadImages,
     maxSelection,
 }: ImageSelectionDialogProps) {
-    const [selectedImages, setSelectedImages] = useState<number[]>(selectedImageIds)
+    const [selectedImages, setSelectedImages] =
+        useState<number[]>(selectedImageIds)
     const [images, setImages] = useState<ImageResponse[]>([])
     const [loading, setLoading] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
@@ -95,19 +96,19 @@ export function ImageSelectionDialog({
         // Add newly uploaded images to selection
         const updatedSelection = [...selectedImages, ...newImageIds]
         setSelectedImages(updatedSelection)
-        
+
         // Optionally reload images to show new ones
         if (onLoadImages) {
             onLoadImages(searchQuery).then(setImages).catch(console.error)
         }
-        
+
         // Switch to browse tab to see selected images
         setActiveTab('browse')
     }
 
     const handleSearch = async () => {
         if (!onLoadImages) return
-        
+
         setLoading(true)
         try {
             const results = await onLoadImages(searchQuery)
@@ -128,7 +129,8 @@ export function ImageSelectionDialog({
                 <DialogHeader>
                     <DialogTitle>Select Images</DialogTitle>
                     <DialogDescription>
-                        Choose images to add to the gallery. You can upload new images or select from existing ones.
+                        Choose images to add to the gallery. You can upload new
+                        images or select from existing ones.
                         {maxSelection && (
                             <> Maximum selection: {maxSelection} images.</>
                         )}
@@ -156,7 +158,11 @@ export function ImageSelectionDialog({
                     )}
                 </div>
 
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <Tabs
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    className="w-full"
+                >
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="browse">Browse Images</TabsTrigger>
                         <TabsTrigger value="upload" disabled={!canAddMore}>
@@ -164,7 +170,7 @@ export function ImageSelectionDialog({
                         </TabsTrigger>
                     </TabsList>
 
-                    <TabsContent value="browse" className="space-y-4">
+                    <TabsContent value="browse" className="space-y-3">
                         {/* Search */}
                         <div className="flex gap-2">
                             <div className="relative flex-1">
@@ -172,8 +178,12 @@ export function ImageSelectionDialog({
                                 <Input
                                     placeholder="Search images..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    onKeyDown={(e) =>
+                                        e.key === 'Enter' && handleSearch()
+                                    }
                                     className="pl-9"
                                 />
                             </div>
@@ -196,7 +206,7 @@ export function ImageSelectionDialog({
                         </ScrollArea>
                     </TabsContent>
 
-                    <TabsContent value="upload" className="space-y-4">
+                    <TabsContent value="upload" className="space-y-3">
                         <div className="h-96 flex items-center justify-center">
                             {canAddMore ? (
                                 <div className="w-full max-w-md">
@@ -204,14 +214,20 @@ export function ImageSelectionDialog({
                                         onUploadComplete={handleUploadComplete}
                                         gallerySlug={gallerySlug}
                                         authToken={authToken}
-                                        maxFiles={maxSelection ? maxSelection - selectedCount : 50}
+                                        maxFiles={
+                                            maxSelection
+                                                ? maxSelection - selectedCount
+                                                : 50
+                                        }
                                     />
                                 </div>
                             ) : (
                                 <div className="text-center text-muted-foreground">
                                     <Upload className="h-12 w-12 mx-auto mb-2 opacity-50" />
                                     <p>Maximum selection reached</p>
-                                    <p className="text-sm">Remove some images to upload more</p>
+                                    <p className="text-sm">
+                                        Remove some images to upload more
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -219,11 +235,18 @@ export function ImageSelectionDialog({
                 </Tabs>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button
+                        variant="outline"
+                        onClick={() => onOpenChange(false)}
+                    >
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirm} disabled={selectedCount === 0}>
-                        Add {selectedCount} Image{selectedCount !== 1 ? 's' : ''} to Gallery
+                    <Button
+                        onClick={handleConfirm}
+                        disabled={selectedCount === 0}
+                    >
+                        Add {selectedCount} Image
+                        {selectedCount !== 1 ? 's' : ''} to Gallery
                     </Button>
                 </DialogFooter>
             </DialogContent>

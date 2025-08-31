@@ -32,7 +32,7 @@ export function Navbar() {
                         {/* Search could go here */}
                     </div>
                     {/* Desktop nav */}
-                    <nav className="max-md:hidden flex items-center space-x-4">
+                    <nav className="max-md:hidden flex items-center space-x-3">
                         <ThemeToggle />
                         <UserMenu />
                     </nav>

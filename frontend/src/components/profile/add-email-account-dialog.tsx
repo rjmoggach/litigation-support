@@ -72,7 +72,7 @@ export function AddEmailAccountDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {/* Provider Selection */}
                     <div className="space-y-3">
                         <h4 className="text-sm font-medium">Email Provider</h4>

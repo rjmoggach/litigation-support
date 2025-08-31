@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -23,14 +22,30 @@ import {
 import { Input } from '@/components/ui/input'
 import type { Company } from '@/lib/api/contacts.types'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const companyEditSchema = z.object({
-    name: z.string().min(1, 'Company name is required').max(255, 'Name is too long'),
-    email: z.string().email('Invalid email address').optional().or(z.literal('')),
-    phone: z.string().max(50, 'Phone number is too long').optional().or(z.literal('')),
-    website: z.string().max(500, 'Website URL is too long').optional().or(z.literal('')),
+    name: z
+        .string()
+        .min(1, 'Company name is required')
+        .max(255, 'Name is too long'),
+    email: z
+        .string()
+        .email('Invalid email address')
+        .optional()
+        .or(z.literal('')),
+    phone: z
+        .string()
+        .max(50, 'Phone number is too long')
+        .optional()
+        .or(z.literal('')),
+    website: z
+        .string()
+        .max(500, 'Website URL is too long')
+        .optional()
+        .or(z.literal('')),
     is_active: z.boolean(),
     is_public: z.boolean(),
 })
@@ -41,16 +56,19 @@ interface CompanyEditDialogProps {
     company: Company | null
     open: boolean
     onOpenChange: (open: boolean) => void
-    onSave: (companyId: number | null, data: Partial<CompanyEditFormData>) => Promise<void>
+    onSave: (
+        companyId: number | null,
+        data: Partial<CompanyEditFormData>,
+    ) => Promise<void>
     isCreating?: boolean
 }
 
-export function CompanyEditDialog({ 
-    company, 
-    open, 
-    onOpenChange, 
+export function CompanyEditDialog({
+    company,
+    open,
+    onOpenChange,
     onSave,
-    isCreating = false
+    isCreating = false,
 }: CompanyEditDialogProps) {
     const form = useForm<CompanyEditFormData>({
         resolver: zodResolver(companyEditSchema),
@@ -113,15 +131,17 @@ export function CompanyEditDialog({
                         {isCreating ? 'Create Company' : 'Edit Company'}
                     </DialogTitle>
                     <DialogDescription>
-                        {isCreating 
+                        {isCreating
                             ? 'Create a new company in your contacts database'
-                            : 'Update company information and settings'
-                        }
+                            : 'Update company information and settings'}
                     </DialogDescription>
                 </DialogHeader>
-                
+
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="space-y-3"
+                    >
                         <FormField
                             control={form.control}
                             name="name"
@@ -129,13 +149,16 @@ export function CompanyEditDialog({
                                 <FormItem>
                                     <FormLabel>Company Name *</FormLabel>
                                     <FormControl>
-                                        <Input {...field} placeholder="Enter company name" />
+                                        <Input
+                                            {...field}
+                                            placeholder="Enter company name"
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        
+
                         <FormField
                             control={form.control}
                             name="email"
@@ -143,9 +166,9 @@ export function CompanyEditDialog({
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input 
-                                            {...field} 
-                                            type="email" 
+                                        <Input
+                                            {...field}
+                                            type="email"
                                             placeholder="company@example.com"
                                         />
                                     </FormControl>
@@ -164,9 +187,9 @@ export function CompanyEditDialog({
                                 <FormItem>
                                     <FormLabel>Phone</FormLabel>
                                     <FormControl>
-                                        <Input 
-                                            {...field} 
-                                            type="tel" 
+                                        <Input
+                                            {...field}
+                                            type="tel"
                                             placeholder="+1 (555) 123-4567"
                                         />
                                     </FormControl>
@@ -185,13 +208,19 @@ export function CompanyEditDialog({
                                 <FormItem>
                                     <FormLabel>Website</FormLabel>
                                     <FormControl>
-                                        <Input 
-                                            {...field} 
-                                            type="url" 
+                                        <Input
+                                            {...field}
+                                            type="url"
                                             placeholder="https://example.com"
                                             onChange={(e) => {
                                                 const value = e.target.value
-                                                field.onChange(value ? formatWebsiteUrl(value) : '')
+                                                field.onChange(
+                                                    value
+                                                        ? formatWebsiteUrl(
+                                                              value,
+                                                          )
+                                                        : '',
+                                                )
                                             }}
                                         />
                                     </FormControl>
@@ -202,7 +231,7 @@ export function CompanyEditDialog({
                                 </FormItem>
                             )}
                         />
-                        
+
                         <div className="space-y-3">
                             <FormField
                                 control={form.control}
@@ -218,13 +247,14 @@ export function CompanyEditDialog({
                                         <div className="space-y-1 leading-none">
                                             <FormLabel>Active</FormLabel>
                                             <FormDescription>
-                                                Company is active and can be managed
+                                                Company is active and can be
+                                                managed
                                             </FormDescription>
                                         </div>
                                     </FormItem>
                                 )}
                             />
-                            
+
                             <FormField
                                 control={form.control}
                                 name="is_public"
@@ -239,14 +269,15 @@ export function CompanyEditDialog({
                                         <div className="space-y-1 leading-none">
                                             <FormLabel>Public</FormLabel>
                                             <FormDescription>
-                                                Company is visible in public directories
+                                                Company is visible in public
+                                                directories
                                             </FormDescription>
                                         </div>
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        
+
                         <DialogFooter>
                             <Button
                                 type="button"

@@ -20,6 +20,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
     Select,
@@ -79,6 +80,7 @@ interface ChildrenInformationProps {
         child: Partial<MarriageChild>,
     ) => Promise<void>
     onRemoveChild: (marriageId: number, childId: number) => Promise<void>
+    onCreateChild: (childData: { first_name: string; last_name: string; date_of_birth: string }) => Promise<{ id: number }>
     isLoading?: boolean
 }
 
@@ -104,6 +106,7 @@ export function ChildrenInformation({
     onAddChild,
     onUpdateChild,
     onRemoveChild,
+    onCreateChild,
     isLoading = false,
 }: ChildrenInformationProps) {
     const [editingChild, setEditingChild] = useState<{
@@ -411,6 +414,7 @@ export function ChildrenInformation({
                     child={editingChild?.child}
                     availablePeople={availablePeople}
                     onSave={handleSave}
+                    onCreateChild={onCreateChild}
                     isLoading={isLoading}
                 />
             </CardContent>
@@ -425,6 +429,7 @@ interface ChildFormDialogProps {
     child?: MarriageChild | null
     availablePeople: Person[]
     onSave: (child: Omit<MarriageChild, 'marriage_id'>) => Promise<void>
+    onCreateChild: (childData: { first_name: string; last_name: string; date_of_birth: string }) => Promise<{ id: number }>
     isLoading?: boolean
 }
 
@@ -435,6 +440,7 @@ function ChildFormDialog({
     child,
     availablePeople,
     onSave,
+    onCreateChild,
     isLoading = false,
 }: ChildFormDialogProps) {
     const [formData, setFormData] = useState<
@@ -445,6 +451,12 @@ function ChildFormDialog({
         custody_details: '',
         current_living_with: 'person',
         custody_arrangement_file_id: undefined,
+    })
+    
+    const [newChildData, setNewChildData] = useState({
+        first_name: '',
+        last_name: '',
+        date_of_birth: '',
     })
 
     useEffect(() => {
@@ -477,18 +489,32 @@ function ChildFormDialog({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (!formData.child_id) {
-            toast.error('Please select a child')
-            return
-        }
+        if (child) {
+            // Editing existing child - just save the custody info
+            await onSave(formData)
+        } else {
+            // Creating new child - need to create child first, then add to marriage
+            if (!newChildData.first_name.trim() || !newChildData.last_name.trim()) {
+                toast.error('First name and last name are required')
+                return
+            }
 
-        await onSave(formData)
+            try {
+                // Create new child through onCreateChild function (need to add this prop)
+                const newChild = await onCreateChild(newChildData)
+                
+                // Then save the marriage child relationship
+                await onSave({
+                    ...formData,
+                    child_id: newChild.id
+                })
+            } catch (error) {
+                console.error('Failed to create child:', error)
+                toast.error('Failed to create child')
+            }
+        }
     }
 
-    // Get available children (exclude current marriage participants)
-    const availableChildren = availablePeople.filter(
-        (p) => p.id !== marriage?.person_id && p.id !== marriage?.spouse_id,
-    )
 
     if (!marriage) return null
 
@@ -503,44 +529,60 @@ function ChildFormDialog({
                     </DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-3">
-                    <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="child_id">Child *</Label>
-                            <Select
-                                value={formData.child_id.toString()}
-                                onValueChange={(value) =>
-                                    handleInputChange(
-                                        'child_id',
-                                        parseInt(value),
-                                    )
-                                }
-                                disabled={!!child} // Can't change child when editing
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select child" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {availableChildren.map((person) => {
-                                        const age = person.date_of_birth
-                                            ? new Date().getFullYear() -
-                                              new Date(
-                                                  person.date_of_birth,
-                                              ).getFullYear()
-                                            : null
-                                        return (
-                                            <SelectItem
-                                                key={person.id}
-                                                value={person.id.toString()}
-                                            >
-                                                {person.first_name}{' '}
-                                                {person.last_name}
-                                                {age && ` (Age ${age})`}
-                                            </SelectItem>
-                                        )
-                                    })}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                    <div className="space-y-3">
+                        {!child && (
+                            <>
+                                <div className="space-y-2">
+                                    <Label>Child Information</Label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="child_first_name">First Name *</Label>
+                                            <Input
+                                                id="child_first_name"
+                                                value={newChildData.first_name}
+                                                onChange={(e) =>
+                                                    setNewChildData(prev => ({
+                                                        ...prev,
+                                                        first_name: e.target.value
+                                                    }))
+                                                }
+                                                placeholder="Enter first name"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="child_last_name">Last Name *</Label>
+                                            <Input
+                                                id="child_last_name"
+                                                value={newChildData.last_name}
+                                                onChange={(e) =>
+                                                    setNewChildData(prev => ({
+                                                        ...prev,
+                                                        last_name: e.target.value
+                                                    }))
+                                                }
+                                                placeholder="Enter last name"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="child_date_of_birth">Date of Birth</Label>
+                                    <Input
+                                        id="child_date_of_birth"
+                                        type="date"
+                                        value={newChildData.date_of_birth}
+                                        onChange={(e) =>
+                                            setNewChildData(prev => ({
+                                                ...prev,
+                                                date_of_birth: e.target.value
+                                            }))
+                                        }
+                                    />
+                                </div>
+                            </>
+                        )}
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">

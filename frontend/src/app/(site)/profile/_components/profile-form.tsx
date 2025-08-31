@@ -48,6 +48,7 @@ export function ProfileForm() {
         handleAddChild,
         handleUpdateChild,
         handleRemoveChild,
+        handleCreateChild,
     } = useProfileData()
 
     const [avatarDialogOpen, setAvatarDialogOpen] = useState(false)
@@ -117,6 +118,7 @@ export function ProfileForm() {
                                 onAddChild={handleAddChild}
                                 onUpdateChild={handleUpdateChild}
                                 onRemoveChild={handleRemoveChild}
+                                onCreateChild={handleCreateChild}
                                 isLoading={profileLoading}
                             />
                         </>

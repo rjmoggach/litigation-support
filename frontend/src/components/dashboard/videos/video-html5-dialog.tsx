@@ -367,7 +367,7 @@ export function VideoHtml5Dialog({
                         className="space-y-3"
                     >
                         {/* Always show drag-drop area at top */}
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <FormLabel>Add Video Files</FormLabel>
                             <div
                                 className="border-2 border-dashed rounded-md p-3 text-center transition-colors border-muted-foreground/25 hover:border-primary/50"
@@ -506,7 +506,7 @@ export function VideoHtml5Dialog({
                         </div>
 
                         {/* Video Metadata - moved to top */}
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <FormField
                                 control={form.control}
                                 name="title"
@@ -742,7 +742,7 @@ export function VideoHtml5Dialog({
 
                         {/* Video Files Section - moved to bottom */}
                         {videoFields.length > 0 && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between">
                                     <FormLabel>Selected Video Files</FormLabel>
                                     <Button

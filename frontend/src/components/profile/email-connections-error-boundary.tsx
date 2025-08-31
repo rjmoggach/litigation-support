@@ -218,7 +218,7 @@ export class EmailConnectionsErrorBoundary extends Component<Props, State> {
                             </CardDescription>
                         </CardHeader>
 
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-3">
                             <Alert>
                                 <Bug className="h-4 w-4" />
                                 <AlertDescription>

@@ -34,7 +34,10 @@ import { z } from 'zod'
 
 const userEditSchema = z.object({
     email: z.string().email('Invalid email address'),
-    full_name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+    full_name: z
+        .string()
+        .min(1, 'Name is required')
+        .max(100, 'Name is too long'),
     is_active: z.boolean(),
     is_verified: z.boolean(),
     is_superuser: z.boolean(),
@@ -50,11 +53,11 @@ interface UserEditDialogProps {
     onSave: (userId: number, data: Partial<UserEditFormData>) => Promise<void>
 }
 
-export function UserEditDialog({ 
-    user, 
-    open, 
-    onOpenChange, 
-    onSave 
+export function UserEditDialog({
+    user,
+    open,
+    onOpenChange,
+    onSave,
 }: UserEditDialogProps) {
     const form = useForm<UserEditFormData>({
         resolver: zodResolver(userEditSchema),
@@ -84,7 +87,7 @@ export function UserEditDialog({
 
     const handleSubmit = async (data: UserEditFormData) => {
         if (!user) return
-        
+
         try {
             await onSave(user.id, data)
             onOpenChange(false)
@@ -103,9 +106,12 @@ export function UserEditDialog({
                         Update user information and permissions
                     </DialogDescription>
                 </DialogHeader>
-                
+
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="space-y-3"
+                    >
                         <FormField
                             control={form.control}
                             name="email"
@@ -113,7 +119,11 @@ export function UserEditDialog({
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input {...field} type="email" disabled />
+                                        <Input
+                                            {...field}
+                                            type="email"
+                                            disabled
+                                        />
                                     </FormControl>
                                     <FormDescription>
                                         Email cannot be changed
@@ -122,7 +132,7 @@ export function UserEditDialog({
                                 </FormItem>
                             )}
                         />
-                        
+
                         <FormField
                             control={form.control}
                             name="full_name"
@@ -130,13 +140,16 @@ export function UserEditDialog({
                                 <FormItem>
                                     <FormLabel>Full Name</FormLabel>
                                     <FormControl>
-                                        <Input {...field} placeholder="Enter full name" />
+                                        <Input
+                                            {...field}
+                                            placeholder="Enter full name"
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        
+
                         <div className="space-y-3">
                             <FormField
                                 control={form.control}
@@ -158,7 +171,7 @@ export function UserEditDialog({
                                     </FormItem>
                                 )}
                             />
-                            
+
                             <FormField
                                 control={form.control}
                                 name="is_verified"
@@ -171,15 +184,18 @@ export function UserEditDialog({
                                             />
                                         </FormControl>
                                         <div className="space-y-1 leading-none">
-                                            <FormLabel>Email Verified</FormLabel>
+                                            <FormLabel>
+                                                Email Verified
+                                            </FormLabel>
                                             <FormDescription>
-                                                User has verified their email address
+                                                User has verified their email
+                                                address
                                             </FormDescription>
                                         </div>
                                     </FormItem>
                                 )}
                             />
-                            
+
                             <FormField
                                 control={form.control}
                                 name="is_superuser"
@@ -194,7 +210,8 @@ export function UserEditDialog({
                                         <div className="space-y-1 leading-none">
                                             <FormLabel>Administrator</FormLabel>
                                             <FormDescription>
-                                                Grant full admin privileges (supersedes role selection)
+                                                Grant full admin privileges
+                                                (supersedes role selection)
                                             </FormDescription>
                                         </div>
                                     </FormItem>
@@ -208,9 +225,13 @@ export function UserEditDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Role</FormLabel>
-                                    <Select 
-                                        onValueChange={(value) => field.onChange([value])}
-                                        defaultValue={field.value?.[0] || 'user'}
+                                    <Select
+                                        onValueChange={(value) =>
+                                            field.onChange([value])
+                                        }
+                                        defaultValue={
+                                            field.value?.[0] || 'user'
+                                        }
                                         disabled={form.watch('is_superuser')}
                                     >
                                         <FormControl>
@@ -219,22 +240,28 @@ export function UserEditDialog({
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="user">User</SelectItem>
-                                            <SelectItem value="staff">Staff</SelectItem>
-                                            <SelectItem value="admin">Admin</SelectItem>
+                                            <SelectItem value="user">
+                                                User
+                                            </SelectItem>
+                                            <SelectItem value="staff">
+                                                Staff
+                                            </SelectItem>
+                                            <SelectItem value="admin">
+                                                Admin
+                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormDescription>
-                                        User role determines access level. Admin checkbox overrides this setting.
+                                        User role determines access level. Admin
+                                        checkbox overrides this setting.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        
-                        <div className="space-y-3">
-                        </div>
-                        
+
+                        <div className="space-y-3"></div>
+
                         <DialogFooter>
                             <Button
                                 type="button"
@@ -243,9 +270,7 @@ export function UserEditDialog({
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit">
-                                Save Changes
-                            </Button>
+                            <Button type="submit">Save Changes</Button>
                         </DialogFooter>
                     </form>
                 </Form>

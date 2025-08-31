@@ -546,7 +546,7 @@ export function ProfileForm() {
                             <CardTitle>Account Information</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="space-y-2">
                                     <Label htmlFor="fullName">Full Name</Label>
                                     <Input

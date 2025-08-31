@@ -227,7 +227,7 @@ export function MarriageInformation({
                         </Button>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {sortedMarriages.map((marriage, index) => (
                             <div
                                 key={marriage.id || `marriage-${index}`}
@@ -576,7 +576,7 @@ function MarriageFormDialog({
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-3">
                     {/* Basic Marriage Information */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <h3 className="text-lg font-medium">
                             Marriage Details
                         </h3>
@@ -679,7 +679,7 @@ function MarriageFormDialog({
                     </div>
 
                     {/* Marriage Location */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <h3 className="text-lg font-medium">
                             Marriage Location
                         </h3>
@@ -778,7 +778,7 @@ function MarriageFormDialog({
                     {/* Separation and Divorce Dates */}
                     {(formData.current_status === 'separated' ||
                         formData.current_status === 'divorced') && (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <h3 className="text-lg font-medium">Timeline</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div className="space-y-2">

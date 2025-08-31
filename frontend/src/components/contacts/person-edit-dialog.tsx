@@ -528,7 +528,7 @@ export function PersonEditDialog({
 
                             <TabsContent
                                 value="basic"
-                                className="space-y-4 mt-6"
+                                className="space-y-3 mt-6"
                             >
                                 <div className="grid grid-cols-2 gap-3">
                                     <FormField
@@ -694,7 +694,7 @@ export function PersonEditDialog({
 
                             <TabsContent
                                 value="profile"
-                                className="space-y-4 mt-6"
+                                className="space-y-3 mt-6"
                             >
                                 <FormField
                                     control={form.control}
@@ -743,7 +743,7 @@ export function PersonEditDialog({
                                     )}
                                 />
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <FormLabel>
                                             Areas of Expertise
@@ -818,7 +818,7 @@ export function PersonEditDialog({
 
                                 <Separator />
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <h4 className="font-medium flex items-center gap-2">
                                         <MapPin className="h-4 w-4" />
                                         Location
@@ -918,7 +918,7 @@ export function PersonEditDialog({
                                 value="media"
                                 className="space-y-3 mt-6"
                             >
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <h4 className="font-medium flex items-center gap-2">
                                         <Upload className="h-4 w-4" />
                                         Profile Avatar
@@ -968,7 +968,7 @@ export function PersonEditDialog({
 
                                 <Separator />
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <h4 className="font-medium">
                                             Social Links
@@ -1065,7 +1065,7 @@ export function PersonEditDialog({
                                 value="companies"
                                 className="space-y-3 mt-6"
                             >
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center justify-between">
                                         <h4 className="font-medium flex items-center gap-2">
                                             <Building className="h-4 w-4" />
@@ -1083,12 +1083,12 @@ export function PersonEditDialog({
                                         </Button>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         {companyAssociations.map(
                                             (association, index) => (
                                                 <div
                                                     key={index}
-                                                    className="p-3 border rounded-md space-y-4"
+                                                    className="p-3 border rounded-md space-y-3"
                                                 >
                                                     <div className="flex items-center justify-between">
                                                         <h5 className="font-medium text-sm">

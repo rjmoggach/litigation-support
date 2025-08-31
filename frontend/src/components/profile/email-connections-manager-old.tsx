@@ -330,7 +330,7 @@ export function EmailConnectionsManager() {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {/* Connection Status */}
                         <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
                             <CheckCircle className="size-5 text-green-600" />
@@ -454,7 +454,7 @@ export function EmailConnectionsManager() {
                         collection
                     </p>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                     {connections.length === 0 ? (
                         <div className="text-center py-8">
                             <Mail className="size-12 text-muted-foreground mx-auto mb-4" />

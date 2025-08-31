@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, User } from 'lucide-react'
 
 interface AccountInformationProps {
     fullName: string
@@ -27,11 +27,16 @@ export function AccountInformation({
 }: AccountInformationProps) {
     return (
         <Card>
-            <CardHeader>
-                <CardTitle>Account Information</CardTitle>
+            <CardHeader className="my-0 py-0">
+                <CardTitle className="flex items-center justify-between text-lg font-medium">
+                    <div className="flex items-center gap-2">
+                        <User className="size-5" />
+                        Account Information
+                    </div>
+                </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="space-y-2">
                         <Label htmlFor="fullName">Full Name</Label>
                         <Input

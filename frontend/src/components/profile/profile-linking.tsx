@@ -250,7 +250,7 @@ export function ProfileLinking({
                                         system to link to your profile.
                                     </DialogDescription>
                                 </DialogHeader>
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="space-y-2">
                                         <Label>Search for Person</Label>
                                         <div className="border rounded-md">
@@ -500,7 +500,7 @@ export function ProfileLinking({
                                 </DialogHeader>
                                 <form
                                     onSubmit={handleCreateAndLink}
-                                    className="space-y-4"
+                                    className="space-y-3"
                                 >
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div className="space-y-2">

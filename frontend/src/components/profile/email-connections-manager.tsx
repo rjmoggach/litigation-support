@@ -5,10 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEmailConnections } from '@/hooks/use-email-connections'
 import { Mail, Plus } from 'lucide-react'
 import { useState } from 'react'
+import { AddEmailAccountDialog } from './add-email-account-dialog'
 import { ConnectionCard } from './connection-card'
 import { ConnectionTestDialog } from './connection-test-dialog'
-import { AddEmailAccountDialog } from './add-email-account-dialog'
-import { EmailConnectionsErrorBoundary, EmailConnectionsErrorFallback } from './email-connections-error-boundary'
+import {
+    EmailConnectionsErrorBoundary,
+    EmailConnectionsErrorFallback,
+} from './email-connections-error-boundary'
 
 interface TestResult {
     connection_id: number
@@ -104,7 +107,7 @@ export function EmailConnectionsManager() {
                     </p>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                     {connections.length === 0 ? (
                         <div className="text-center py-8">
                             <Mail className="size-12 text-muted-foreground mx-auto mb-4" />

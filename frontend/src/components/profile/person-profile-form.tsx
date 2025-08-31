@@ -33,6 +33,7 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import {
     CalendarIcon,
+    IdCard,
     Link as LinkIcon,
     Siren,
     Unlink,
@@ -94,7 +95,14 @@ export function PersonProfileForm({
 
     useEffect(() => {
         if (personProfile) {
-            setFormData(personProfile)
+            setFormData({
+                ...personProfile,
+                emergency_contact: personProfile.emergency_contact || {
+                    name: '',
+                    phone: '',
+                    relationship: '',
+                },
+            })
             if (personProfile.date_of_birth) {
                 const dob = parseLocalDate(personProfile.date_of_birth)
                 if (dob) {
@@ -111,11 +119,16 @@ export function PersonProfileForm({
         }))
     }
 
-    const handleEmergencyContactChange = (field: string, value: string) => {
+    const handleEmergencyContactChange = (
+        field: keyof NonNullable<PersonProfile['emergency_contact']>,
+        value: string,
+    ) => {
         setFormData((prev) => ({
             ...prev,
             emergency_contact: {
-                ...prev.emergency_contact,
+                name: prev.emergency_contact?.name || '',
+                phone: prev.emergency_contact?.phone || '',
+                relationship: prev.emergency_contact?.relationship || '',
                 [field]: value,
             },
         }))
@@ -151,7 +164,7 @@ export function PersonProfileForm({
             <>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <User className="size-5" />
+                        <IdCard className="size-5" />
                         Personal Information
                     </CardTitle>
                 </CardHeader>
@@ -180,7 +193,7 @@ export function PersonProfileForm({
             <CardHeader className="my-0 py-0">
                 <CardTitle className="flex items-center justify-between text-lg font-medium">
                     <div className="flex items-center gap-2">
-                        <User className="size-5" />
+                        <IdCard className="size-5" />
                         {formData.first_name && formData.last_name
                             ? `${formData.first_name} ${formData.last_name}`
                             : 'Personal Information'}
@@ -347,7 +360,7 @@ export function PersonProfileForm({
                     </div>
 
                     {/* Emergency Contact */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <h3 className=" font-medium flex items-center gap-2">
                             <Siren className="size-4" />
                             Emergency Contact

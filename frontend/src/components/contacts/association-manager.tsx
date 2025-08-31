@@ -347,7 +347,7 @@ function AssociationForm({
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {!isEditing && (
                 <div>
                     <Label>
@@ -532,7 +532,7 @@ export function AssociationManager({
     }
 
     return (
-        <div className={cn('space-y-4', className)}>
+        <div className={cn('space-y-3', className)}>
             <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
@@ -617,7 +617,7 @@ export function AssociationManager({
                             </Button>
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {associations.map((association) => {
                                 const linkedEntity =
                                     type === 'company'

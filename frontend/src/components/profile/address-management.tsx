@@ -534,7 +534,7 @@ function AddressFormDialog({
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-3">
                     {/* Address Information */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="space-y-2">
                             <Label htmlFor="street_address">
                                 Street Address *
@@ -688,7 +688,7 @@ function AddressFormDialog({
                     </div>
 
                     {/* Date Range */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <h3 className="text-lg font-medium">
                             Effective Period
                         </h3>

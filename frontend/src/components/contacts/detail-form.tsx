@@ -768,7 +768,7 @@ export function DetailForm({
 
                     {/* Companies Section */}
                     {selected.mode !== 'create' && (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <Separator />
                             <div>
                                 <div className="flex items-center justify-between mb-3">

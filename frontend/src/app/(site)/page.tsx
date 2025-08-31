@@ -16,7 +16,7 @@ import Link from 'next/link'
 export default function Dashboard() {
     return (
         <>
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex flex-col gap-2 items-center justify-center py-3">
                     <h1 className="text-2xl font-semibold text-accent-foreground text-center">
                         Welcome to Your Dashboard
@@ -45,7 +45,7 @@ export default function Dashboard() {
                                     </CardTitle>
                                 </div>
                             </CardHeader>
-                            <CardContent className="space-y-4 flex-1">
+                            <CardContent className="space-y-3 flex-1">
                                 <CardDescription className="text-sm leading-relaxed">
                                     {module.description}
                                 </CardDescription>

@@ -406,7 +406,7 @@ export function AvatarUploadDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {!imgSrc ? (
                         /* Drag and Drop Zone */
                         <div
@@ -441,7 +441,7 @@ export function AvatarUploadDialog({
                         </div>
                     ) : (
                         /* Crop Area - replaces drag zone */
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <Label>Crop Image</Label>
                                 <Button

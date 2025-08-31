@@ -165,7 +165,7 @@ export function GalleryFormDialog({
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(handleSubmit)}
-                        className="space-y-4"
+                        className="space-y-3"
                     >
                         {/* Gallery Info */}
                         {isEditing && (
