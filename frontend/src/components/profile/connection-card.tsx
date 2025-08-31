@@ -11,7 +11,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
     Tooltip,
@@ -19,14 +18,12 @@ import {
     TooltipTrigger,
 } from '@/components/ui/tooltip'
 import {
-    AlertCircle,
-    CheckCircle,
-    Clock,
     RefreshCw,
     TestTube,
     Trash2,
 } from 'lucide-react'
 import type { EmailConnection } from '@/types/email-connections'
+import { ConnectionStatusIndicator } from './connection-status-indicator'
 
 interface ConnectionCardProps {
     connection: EmailConnection
@@ -43,36 +40,10 @@ export function ConnectionCard({
     onDelete,
     actionLoading,
 }: ConnectionCardProps) {
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case 'active':
-                return <CheckCircle className="size-4 text-green-600" />
-            case 'expired':
-                return <Clock className="size-4 text-yellow-600" />
-            case 'error':
-                return <AlertCircle className="size-4 text-red-600" />
-            default:
-                return <AlertCircle className="size-4 text-gray-600" />
-        }
-    }
-
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'active':
-                return 'bg-green-100 text-green-800'
-            case 'expired':
-                return 'bg-yellow-100 text-yellow-800'
-            case 'error':
-                return 'bg-red-100 text-red-800'
-            default:
-                return 'bg-gray-100 text-gray-800'
-        }
-    }
 
     return (
         <div className="flex items-center justify-between p-2 px-4 border rounded-sm">
             <div className="flex items-center gap-3">
-                {getStatusIcon(connection.connection_status)}
                 <div>
                     <div className="font-medium">
                         {connection.connection_name || connection.email_address}
@@ -82,18 +53,19 @@ export function ConnectionCard({
                             {connection.email_address}
                         </div>
                     )}
-                    {connection.error_message && (
-                        <div className="text-sm text-red-600 mt-1">
-                            {connection.error_message}
-                        </div>
-                    )}
+                    <div className="mt-2">
+                        <ConnectionStatusIndicator
+                            status={connection.connection_status}
+                            lastSync={connection.last_sync_at}
+                            errorMessage={connection.error_message}
+                            compact={true}
+                            showLastSync={true}
+                        />
+                    </div>
                 </div>
             </div>
 
             <div className="flex items-center gap-2">
-                <Badge className={getStatusColor(connection.connection_status)}>
-                    {connection.connection_status}
-                </Badge>
 
                 <div className="flex gap-1">
                     {/* Test Button */}

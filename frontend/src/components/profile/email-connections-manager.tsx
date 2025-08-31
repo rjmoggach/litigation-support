@@ -7,6 +7,7 @@ import { Mail, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { ConnectionCard } from './connection-card'
 import { ConnectionTestDialog } from './connection-test-dialog'
+import { AddEmailAccountDialog } from './add-email-account-dialog'
 
 interface TestResult {
     connection_id: number
@@ -38,6 +39,7 @@ export function EmailConnectionsManager() {
 
     const [testDialogOpen, setTestDialogOpen] = useState(false)
     const [testResult, setTestResult] = useState<TestResult | null>(null)
+    const [addDialogOpen, setAddDialogOpen] = useState(false)
 
     const handleTestConnection = async (connection: any) => {
         const result = await testConnection(connection)
@@ -45,6 +47,11 @@ export function EmailConnectionsManager() {
             setTestResult(result)
             setTestDialogOpen(true)
         }
+    }
+
+    const handleAddConnection = async () => {
+        await addConnection()
+        setAddDialogOpen(false)
     }
 
     if (loading) {
@@ -73,6 +80,13 @@ export function EmailConnectionsManager() {
                 testResult={testResult}
             />
 
+            <AddEmailAccountDialog
+                open={addDialogOpen}
+                onOpenChange={setAddDialogOpen}
+                onConnect={handleAddConnection}
+                isConnecting={actionLoading.add}
+            />
+
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -93,14 +107,12 @@ export function EmailConnectionsManager() {
                                 No additional email accounts connected
                             </p>
                             <Button
-                                onClick={addConnection}
+                                onClick={() => setAddDialogOpen(true)}
                                 disabled={actionLoading.add}
                                 className="gap-2"
                             >
                                 <Plus className="size-4" />
-                                {actionLoading.add
-                                    ? 'Add Account...'
-                                    : 'Connect Email Account'}
+                                Connect Email Account
                             </Button>
                         </div>
                     ) : (
@@ -119,16 +131,14 @@ export function EmailConnectionsManager() {
                             </div>
 
                             <Button
-                                onClick={addConnection}
+                                onClick={() => setAddDialogOpen(true)}
                                 disabled={actionLoading.add}
                                 variant="outline"
                                 className="gap-2"
                                 size="sm"
                             >
                                 <Plus className="size-4" />
-                                {actionLoading.add
-                                    ? 'Add Another Account...'
-                                    : 'Add Another Account'}
+                                Add Another Account
                             </Button>
                         </>
                     )}
