@@ -5,9 +5,21 @@ from pydantic import BaseModel, EmailStr, Field, validator
 
 class EmailConnectionBase(BaseModel):
     """Base schema for EmailConnection"""
-    email_address: EmailStr
-    provider: str = "google"
-    connection_name: Optional[str] = None
+    email_address: EmailStr = Field(
+        ..., 
+        description="Email address of the connected account",
+        example="user@gmail.com"
+    )
+    provider: str = Field(
+        default="google",
+        description="OAuth provider (currently only 'google' is supported)",
+        example="google"
+    )
+    connection_name: Optional[str] = Field(
+        None,
+        description="User-friendly name for the connection",
+        example="Work Gmail Account"
+    )
 
 
 class EmailConnectionCreate(EmailConnectionBase):
@@ -73,20 +85,48 @@ class ConnectionStatus(BaseModel):
 
 class OAuthInitiateRequest(BaseModel):
     """Schema for initiating OAuth flow"""
-    provider: str = "google"
-    scopes: List[str] = Field(default_factory=lambda: [
-        "https://www.googleapis.com/auth/gmail.readonly",
-        "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/userinfo.profile"
-    ])
-    redirect_uri: Optional[str] = None
+    provider: str = Field(
+        default="google",
+        description="OAuth provider to use for authentication",
+        example="google"
+    )
+    scopes: List[str] = Field(
+        default_factory=lambda: [
+            "https://www.googleapis.com/auth/gmail.readonly",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile"
+        ],
+        description="List of OAuth scopes to request from the provider",
+        example=[
+            "https://www.googleapis.com/auth/gmail.readonly",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile"
+        ]
+    )
+    redirect_uri: Optional[str] = Field(
+        None,
+        description="Custom OAuth callback URL (defaults to backend callback if not provided)",
+        example="https://yourapp.com/oauth/callback"
+    )
 
 
 class OAuthInitiateResponse(BaseModel):
     """Schema for OAuth initiation response"""
-    authorization_url: str
-    state: str
-    provider: str
+    authorization_url: str = Field(
+        ...,
+        description="Complete OAuth authorization URL to redirect user to",
+        example="https://accounts.google.com/o/oauth2/auth?client_id=...&redirect_uri=...&scope=...&state=..."
+    )
+    state: str = Field(
+        ...,
+        description="Secure state parameter for CSRF protection (store this for validation)",
+        example="secure_random_state_string_123456"
+    )
+    provider: str = Field(
+        ...,
+        description="OAuth provider being used",
+        example="google"
+    )
 
 
 class OAuthCallbackRequest(BaseModel):
