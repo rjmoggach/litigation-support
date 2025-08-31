@@ -50,7 +50,7 @@
 
 ## Phase 3: Backend Auth Endpoints Verification
 
-- [ ] 6. Verify login endpoint functionality
+- [x] 6. Verify login endpoint functionality
   - File: backend/users/api.py (login endpoint)
   - Test with curl/Postman to ensure it works
   - Check token generation and response format
@@ -59,7 +59,7 @@
   - _Leverage: existing login endpoint_
   - _Requirements: 2.1, 2.2_
 
-- [ ] 7. Verify OAuth login endpoint
+- [x] 7. Verify OAuth login endpoint
   - File: backend/users/api.py (oauth-login endpoint)
   - Test OAuth user creation flow
   - Verify account linking for existing emails
@@ -68,7 +68,7 @@
   - _Leverage: existing oauth_login function_
   - _Requirements: 3.2, 3.3, 3.4_
 
-- [ ] 8. Test refresh token endpoint
+- [x] 8. Test refresh token endpoint
   - File: backend/users/api.py (refresh endpoint)
   - Verify refresh token validation
   - Check new token generation
@@ -116,7 +116,7 @@
 
 ## Phase 5: Session Management
 
-- [ ] 13. Implement logout functionality
+- [x] 13. Implement logout functionality
   - File: frontend/src/components/layout/header.tsx (or relevant component)
   - Add logout button that calls signOut
   - Clear local storage and cookies
@@ -125,7 +125,7 @@
   - _Leverage: next-auth signOut function_
   - _Requirements: 4.2, 4.4_
 
-- [ ] 14. Add session synchronization across tabs
+- [x] 14. Add session synchronization across tabs
   - File: frontend/src/providers/auth-provider.tsx
   - Listen for storage events
   - Sync session state across browser tabs
@@ -134,7 +134,7 @@
   - _Leverage: existing auth provider_
   - _Requirements: 4.4_
 
-- [ ] 15. Implement session timeout warnings
+- [x] 15. Implement session timeout warnings
   - File: frontend/src/components/auth/session-timeout.tsx
   - Create component to warn before token expiry
   - Add option to extend session
@@ -154,7 +154,7 @@
   - _Leverage: existing error patterns_
   - _Requirements: 5.2, 5.3_
 
-- [ ] 17. Update UI with auth status indicators
+- [x] 17. Update UI with auth status indicators
   - File: frontend/src/components/layout/user-menu.tsx
   - Display user name and avatar when logged in
   - Show login button when logged out

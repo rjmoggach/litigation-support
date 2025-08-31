@@ -72,27 +72,37 @@
   - _Leverage: existing DI patterns in backend/main.py_
   - _Requirements: All requirements_
 
+## API Client Generation
+
+- [ ] 9. Generate API client from OpenAPI specification
+  - Process: Run automated API generation after backend completion
+  - Update OpenAPI generator configuration to include Cases endpoints
+  - Generate TypeScript client with proper type definitions
+  - Purpose: Create type-safe API client that stays synchronized with backend
+  - _Leverage: existing OpenAPI generation pipeline and configuration_
+  - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
+
+- [ ] 10. Verify generated API client integration
+  - Files: Generated API client files (location depends on generation config)
+  - Test generated client functions with backend API
+  - Verify type definitions match backend schemas
+  - Update any custom API client extensions if needed
+  - Purpose: Ensure generated API client works correctly with Cases backend
+  - _Leverage: existing API client testing patterns_
+  - _Requirements: All API requirements_
+
 ## Frontend Implementation  
 
-- [ ] 9. Create Cases types in frontend/src/types/cases.ts
+- [ ] 11. Create Cases types in frontend/src/types/cases.ts
   - File: frontend/src/types/cases.ts
-  - Define TypeScript interfaces matching backend schemas
-  - Add Ontario event type enums and service status types
-  - Include nested types for case relationships and search results
-  - Purpose: Establish type safety for Cases frontend implementation
-  - _Leverage: frontend/src/lib/api.ts patterns, existing type definitions_
+  - Define additional TypeScript interfaces for UI-specific needs
+  - Extend generated API types for frontend state management
+  - Include UI-specific enums and utility types
+  - Purpose: Provide additional type safety for Cases frontend beyond generated types
+  - _Leverage: generated API types, existing type definitions_
   - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
 
-- [ ] 10. Create Cases API client in frontend/src/lib/api/cases.ts
-  - File: frontend/src/lib/api/cases.ts
-  - Implement API client functions for all Cases endpoints
-  - Add file upload functions with progress tracking
-  - Include search and filtering API functions
-  - Purpose: Provide typed API client for Cases backend integration
-  - _Leverage: frontend/src/lib/api.ts patterns, existing API client structure_
-  - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
-
-- [ ] 11. Create Cases dashboard component in frontend/src/components/cases/cases-dashboard.tsx
+- [ ] 12. Create Cases dashboard component in frontend/src/components/cases/cases-dashboard.tsx
   - File: frontend/src/components/cases/cases-dashboard.tsx
   - Implement cases list with summary information and search functionality
   - Add service status indicators and upcoming deadline highlights  
@@ -101,7 +111,7 @@
   - _Leverage: frontend/src/components/contacts/people-list.tsx patterns, existing dashboard components_
   - _Requirements: 7.1, 8.1_
 
-- [ ] 12. Create Case detail component in frontend/src/components/cases/case-detail.tsx
+- [ ] 13. Create Case detail component in frontend/src/components/cases/case-detail.tsx
   - File: frontend/src/components/cases/case-detail.tsx
   - Implement tabbed interface for case profile, events, documents, notes
   - Add case profile editing with rich text support
@@ -110,7 +120,7 @@
   - _Leverage: frontend/src/components/contacts/detail-form.tsx patterns, existing detail views_
   - _Requirements: 1.1, 2.1, 6.1, 7.1_
 
-- [ ] 13. Create Court events component in frontend/src/components/cases/court-events.tsx  
+- [ ] 14. Create Court events component in frontend/src/components/cases/court-events.tsx  
   - File: frontend/src/components/cases/court-events.tsx
   - Implement event creation with Ontario-specific event types
   - Add chronological event display with status tracking
@@ -119,7 +129,7 @@
   - _Leverage: existing form components, date/time pickers_
   - _Requirements: 2.1, 7.1_
 
-- [ ] 14. Create Document manager component in frontend/src/components/cases/document-manager.tsx
+- [ ] 15. Create Document manager component in frontend/src/components/cases/document-manager.tsx
   - File: frontend/src/components/cases/document-manager.tsx
   - Implement file upload with party selection and date prefixing
   - Add document list with party organization and service status
@@ -128,7 +138,7 @@
   - _Leverage: existing file upload components, frontend/src/components/dashboard/pages/drop-zone.tsx_
   - _Requirements: 3.1, 5.1_
 
-- [ ] 15. Create Service tracking component in frontend/src/components/cases/service-tracker.tsx
+- [ ] 16. Create Service tracking component in frontend/src/components/cases/service-tracker.tsx
   - File: frontend/src/components/cases/service-tracker.tsx
   - Implement service record creation with Ontario service types
   - Add service status tracking with deadline calculations  
@@ -137,7 +147,7 @@
   - _Leverage: existing form components, date pickers, status indicators_
   - _Requirements: 4.1, 7.1_
 
-- [ ] 16. Create Case notes component in frontend/src/components/cases/case-notes.tsx
+- [ ] 17. Create Case notes component in frontend/src/components/cases/case-notes.tsx
   - File: frontend/src/components/cases/case-notes.tsx
   - Implement rich text note editor using Tiptap integration
   - Add note categorization, priority setting, and linking capabilities
@@ -146,7 +156,7 @@
   - _Leverage: Tiptap editor integration, existing text components_
   - _Requirements: 6.1, 8.1_
 
-- [ ] 17. Create Cases forms in frontend/src/components/cases/case-forms.tsx
+- [ ] 18. Create Cases forms in frontend/src/components/cases/case-forms.tsx
   - File: frontend/src/components/cases/case-forms.tsx
   - Implement case creation form with court file number validation
   - Add case profile editing forms with structured information entry
@@ -155,7 +165,7 @@
   - _Leverage: frontend/src/components/contacts/person-edit-dialog.tsx patterns, form validation_
   - _Requirements: 1.1, 2.1_
 
-- [ ] 18. Add Tiptap editor integration in frontend/src/components/ui/rich-text-editor.tsx
+- [ ] 19. Add Tiptap editor integration in frontend/src/components/ui/rich-text-editor.tsx
   - File: frontend/src/components/ui/rich-text-editor.tsx
   - Implement Tiptap editor component with standard formatting options
   - Add JSON content serialization and plain text extraction
@@ -164,7 +174,7 @@
   - _Leverage: existing UI components, accessibility patterns_
   - _Requirements: 5.1, 6.1_
 
-- [ ] 19. Create Cases search component in frontend/src/components/cases/cases-search.tsx
+- [ ] 20. Create Cases search component in frontend/src/components/cases/cases-search.tsx
   - File: frontend/src/components/cases/cases-search.tsx  
   - Implement comprehensive search across cases, events, documents, notes
   - Add advanced filtering with multiple criteria and date ranges
@@ -173,7 +183,7 @@
   - _Leverage: existing search components, filtering patterns_
   - _Requirements: 8.1_
 
-- [ ] 20. Add Cases routes in frontend/src/app/(site)/cases/
+- [ ] 21. Add Cases routes in frontend/src/app/(site)/cases/
   - Files: frontend/src/app/(site)/cases/page.tsx, frontend/src/app/(site)/cases/[id]/page.tsx
   - Create Cases dashboard route and individual case detail routes
   - Add route protection and navigation integration
@@ -184,7 +194,7 @@
 
 ## Integration and Testing
 
-- [ ] 21. Create backend unit tests for Cases models
+- [ ] 22. Create backend unit tests for Cases models
   - File: backend/tests/test_cases_models.py
   - Write tests for model validation, relationships, and Ontario-specific logic
   - Test court file number validation and service deadline calculations
@@ -193,7 +203,7 @@
   - _Leverage: existing test patterns, pytest fixtures_
   - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1_
 
-- [ ] 22. Create backend API tests for Cases endpoints  
+- [ ] 23. Create backend API tests for Cases endpoints  
   - File: backend/tests/test_cases_api.py
   - Write integration tests for all API endpoints with authentication
   - Test file upload workflows with party organization
@@ -202,7 +212,7 @@
   - _Leverage: existing API test patterns, test client_
   - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
 
-- [ ] 23. Create frontend component tests for Cases components
+- [ ] 24. Create frontend component tests for Cases components
   - Files: frontend/src/components/cases/__tests__/
   - Write unit tests for all Cases components with mock API responses  
   - Test user interactions, form validation, and state management
@@ -211,7 +221,7 @@
   - _Leverage: existing component test patterns, testing utilities_
   - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1_
 
-- [ ] 24. Create end-to-end tests for Cases workflow
+- [ ] 25. Create end-to-end tests for Cases workflow
   - File: frontend/tests/e2e/cases-workflow.spec.ts
   - Write E2E tests for complete case management lifecycle
   - Test Ontario court event workflows and service tracking
@@ -220,7 +230,7 @@
   - _Leverage: existing E2E test patterns, test automation utilities_
   - _Requirements: All requirements_
 
-- [ ] 25. Add Cases navigation to main application
+- [ ] 26. Add Cases navigation to main application
   - Files: frontend/src/components/navigation/ (modify existing components)
   - Add Cases navigation links to main navigation menu
   - Include Cases in breadcrumb navigation and user menu
@@ -229,7 +239,7 @@
   - _Leverage: existing navigation components and patterns_
   - _Requirements: 7.1_
 
-- [ ] 26. Create Cases documentation and help content  
+- [ ] 27. Create Cases documentation and help content  
   - Files: frontend/src/components/cases/help/ or documentation system
   - Create user guides for Ontario family court case management
   - Add tooltips and help text for legal compliance features
@@ -238,7 +248,7 @@
   - _Leverage: existing help system patterns, legal content guidelines_
   - _Requirements: All requirements_
 
-- [ ] 27. Performance optimization and cleanup
+- [ ] 28. Performance optimization and cleanup
   - Files: Various (optimize existing implementation)
   - Optimize database queries with proper indexing and eager loading
   - Add caching for search results and frequently accessed case data  
@@ -247,7 +257,7 @@
   - _Leverage: existing performance optimization patterns_
   - _Requirements: Non-functional performance requirements_
 
-- [ ] 28. Final integration testing and deployment preparation
+- [ ] 29. Final integration testing and deployment preparation
   - Files: Various (integration testing and configuration)
   - Run complete integration test suite and fix any issues
   - Update database migrations and ensure proper deployment configuration

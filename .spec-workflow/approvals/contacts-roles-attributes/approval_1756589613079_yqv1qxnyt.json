@@ -3,8 +3,10 @@
   "title": "Updated Design: Contacts Roles & Attributes (Cases App Integration)",
   "filePath": ".spec-workflow/specs/contacts-roles-attributes/design.md",
   "type": "document",
-  "status": "pending",
+  "status": "approved",
   "createdAt": "2025-08-30T21:33:33.079Z",
   "category": "spec",
-  "categoryName": "contacts-roles-attributes"
+  "categoryName": "contacts-roles-attributes",
+  "response": "Approved via dashboard",
+  "respondedAt": "2025-08-30T23:33:54.724Z"
 }

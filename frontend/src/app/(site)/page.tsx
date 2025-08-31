@@ -6,6 +6,7 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
@@ -16,6 +17,7 @@ import {
     ChevronRight,
     FileText,
     LayoutDashboard,
+    UserCircle2,
     Users,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -25,6 +27,14 @@ export default function Dashboard() {
     useBreadcrumbUpdate([{ label: 'Dashboard', href: '/', active: true }])
 
     const modules = [
+        {
+            title: 'User Profile',
+            description: 'Manage your user profile and preferences',
+            icon: UserCircle2,
+            href: '/profile',
+            color: 'bg-violet-800',
+            stats: 'Manage cases, people, events, and documents',
+        },
         {
             title: 'Cases',
             description:
@@ -72,33 +82,30 @@ export default function Dashboard() {
             />
             <div className="space-y-4">
                 {/* Module Cards */}
-                <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
                     {modules.map((module, index) => (
                         <Card
                             key={index}
-                            className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                            className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.01] flex flex-col"
                         >
-                            <CardHeader className="pb-3">
+                            <CardHeader>
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className={`p-2 rounded-sm ${module.color} text-white`}
+                                        className={`p-2 rounded-lg ${module.color} text-white shadow-2xl`}
                                     >
-                                        <module.icon className="h-5 w-5" />
+                                        <module.icon className="h-6 w-6" />
                                     </div>
-                                    <CardTitle className="text-lg">
+                                    <CardTitle className="text-md md:text-base">
                                         {module.title}
                                     </CardTitle>
                                 </div>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-4 flex-1">
                                 <CardDescription className="text-sm leading-relaxed">
                                     {module.description}
                                 </CardDescription>
-
-                                <div className="text-xs text-muted-foreground">
-                                    {module.stats}
-                                </div>
-
+                            </CardContent>
+                            <CardFooter className="pt-0">
                                 <Button
                                     asChild
                                     className="w-full group-hover:bg-primary/90"
@@ -111,7 +118,7 @@ export default function Dashboard() {
                                         <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                     </Link>
                                 </Button>
-                            </CardContent>
+                            </CardFooter>
                         </Card>
                     ))}
                 </div>

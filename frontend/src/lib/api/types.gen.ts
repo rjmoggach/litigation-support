@@ -55,6 +55,32 @@ export type BodyUploadAvatarApiV1UsersMeAvatarPost = {
 };
 
 /**
+ * Body_upload_document_api_v1_cases__case_id__documents_upload_post
+ */
+export type BodyUploadDocumentApiV1CasesCaseIdDocumentsUploadPost = {
+    /**
+     * File
+     */
+    file: Blob | File;
+    /**
+     * Event Id
+     */
+    event_id?: number | null;
+    /**
+     * Party Type
+     */
+    party_type: string;
+    /**
+     * Document Type
+     */
+    document_type: string;
+    /**
+     * Document Date
+     */
+    document_date: string;
+};
+
+/**
  * Body_upload_file_api_v1_storage_upload_post
  */
 export type BodyUploadFileApiV1StorageUploadPost = {
@@ -145,6 +171,534 @@ export type BulkTagResponse = {
      * Tag names that failed to create
      */
     failed_tags?: Array<string>;
+};
+
+/**
+ * CaseCreate
+ */
+export type CaseCreate = {
+    /**
+     * Title
+     */
+    title: string;
+    case_type: CaseType;
+    /**
+     * Court Location
+     */
+    court_location: string;
+    /**
+     * Opposing Party
+     */
+    opposing_party: string;
+    status?: CaseStatus;
+    /**
+     * Court File Number
+     */
+    court_file_number: string;
+};
+
+/**
+ * CaseDashboard
+ */
+export type CaseDashboard = {
+    /**
+     * Total Cases
+     */
+    total_cases: number;
+    /**
+     * Active Cases
+     */
+    active_cases: number;
+    /**
+     * Upcoming Events
+     */
+    upcoming_events: number;
+    /**
+     * Overdue Services
+     */
+    overdue_services: number;
+    /**
+     * Urgent Notes
+     */
+    urgent_notes: number;
+    /**
+     * Recent Cases
+     */
+    recent_cases: Array<CaseSummary>;
+};
+
+/**
+ * CaseDocumentResponse
+ */
+export type CaseDocumentResponse = {
+    /**
+     * Original Filename
+     */
+    original_filename: string;
+    party_type: PartyType;
+    document_type: DocumentType;
+    /**
+     * Document Date
+     */
+    document_date: string;
+    /**
+     * File Size
+     */
+    file_size: number;
+    /**
+     * Mime Type
+     */
+    mime_type: string;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Case Id
+     */
+    case_id: number;
+    /**
+     * Event Id
+     */
+    event_id?: number | null;
+    /**
+     * Stored Filename
+     */
+    stored_filename: string;
+    /**
+     * File Path
+     */
+    file_path: string;
+    /**
+     * Smart Text Id
+     */
+    smart_text_id?: number | null;
+    /**
+     * Uploaded At
+     */
+    uploaded_at: string;
+};
+
+/**
+ * CaseFullResponse
+ */
+export type CaseFullResponse = {
+    /**
+     * Title
+     */
+    title: string;
+    case_type: CaseType;
+    /**
+     * Court Location
+     */
+    court_location: string;
+    /**
+     * Opposing Party
+     */
+    opposing_party: string;
+    status?: CaseStatus;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Court File Number
+     */
+    court_file_number: string;
+    /**
+     * User Id
+     */
+    user_id: number;
+    profile?: CaseProfileResponse | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Events
+     */
+    events?: Array<CourtEventResponse>;
+    /**
+     * Documents
+     */
+    documents?: Array<CaseDocumentResponse>;
+    /**
+     * Notes
+     */
+    notes?: Array<CaseNoteResponse>;
+};
+
+/**
+ * CaseNoteCreate
+ */
+export type CaseNoteCreate = {
+    note_type: NoteType;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Content
+     */
+    content?: string | null;
+    /**
+     * Tiptap Content
+     */
+    tiptap_content?: {
+        [key: string]: unknown;
+    } | null;
+    priority?: NotePriority;
+    /**
+     * Is Confidential
+     */
+    is_confidential?: boolean;
+    /**
+     * Event Id
+     */
+    event_id?: number | null;
+    /**
+     * Document Id
+     */
+    document_id?: number | null;
+    /**
+     * Service Id
+     */
+    service_id?: number | null;
+    /**
+     * Tags
+     */
+    tags?: Array<string> | null;
+    /**
+     * Reminder Date
+     */
+    reminder_date?: string | null;
+    /**
+     * Is Completed
+     */
+    is_completed?: boolean;
+    /**
+     * Case Id
+     */
+    case_id: number;
+};
+
+/**
+ * CaseNoteResponse
+ */
+export type CaseNoteResponse = {
+    note_type: NoteType;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Content
+     */
+    content?: string | null;
+    /**
+     * Tiptap Content
+     */
+    tiptap_content?: {
+        [key: string]: unknown;
+    } | null;
+    priority?: NotePriority;
+    /**
+     * Is Confidential
+     */
+    is_confidential?: boolean;
+    /**
+     * Event Id
+     */
+    event_id?: number | null;
+    /**
+     * Document Id
+     */
+    document_id?: number | null;
+    /**
+     * Service Id
+     */
+    service_id?: number | null;
+    /**
+     * Tags
+     */
+    tags?: Array<string> | null;
+    /**
+     * Reminder Date
+     */
+    reminder_date?: string | null;
+    /**
+     * Is Completed
+     */
+    is_completed?: boolean;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Case Id
+     */
+    case_id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * CaseNoteUpdate
+ */
+export type CaseNoteUpdate = {
+    note_type?: NoteType | null;
+    /**
+     * Title
+     */
+    title?: string | null;
+    /**
+     * Content
+     */
+    content?: string | null;
+    /**
+     * Tiptap Content
+     */
+    tiptap_content?: {
+        [key: string]: unknown;
+    } | null;
+    priority?: NotePriority | null;
+    /**
+     * Is Confidential
+     */
+    is_confidential?: boolean | null;
+    /**
+     * Event Id
+     */
+    event_id?: number | null;
+    /**
+     * Document Id
+     */
+    document_id?: number | null;
+    /**
+     * Service Id
+     */
+    service_id?: number | null;
+    /**
+     * Tags
+     */
+    tags?: Array<string> | null;
+    /**
+     * Reminder Date
+     */
+    reminder_date?: string | null;
+    /**
+     * Is Completed
+     */
+    is_completed?: boolean | null;
+};
+
+/**
+ * CaseProfileCreate
+ */
+export type CaseProfileCreate = {
+    /**
+     * Case History
+     */
+    case_history?: string | null;
+    /**
+     * Key Issues
+     */
+    key_issues?: string | null;
+    /**
+     * Opposing Counsel
+     */
+    opposing_counsel?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Case Strategy
+     */
+    case_strategy?: string | null;
+    /**
+     * Important Dates
+     */
+    important_dates?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    /**
+     * Settlement Discussions
+     */
+    settlement_discussions?: string | null;
+    /**
+     * Is Public
+     */
+    is_public?: boolean;
+};
+
+/**
+ * CaseProfileResponse
+ */
+export type CaseProfileResponse = {
+    /**
+     * Case History
+     */
+    case_history?: string | null;
+    /**
+     * Key Issues
+     */
+    key_issues?: string | null;
+    /**
+     * Opposing Counsel
+     */
+    opposing_counsel?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Case Strategy
+     */
+    case_strategy?: string | null;
+    /**
+     * Important Dates
+     */
+    important_dates?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    /**
+     * Settlement Discussions
+     */
+    settlement_discussions?: string | null;
+    /**
+     * Is Public
+     */
+    is_public?: boolean;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Case Id
+     */
+    case_id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * CaseStatus
+ */
+export type CaseStatus = 'active' | 'closed' | 'on_hold';
+
+/**
+ * CaseSummary
+ */
+export type CaseSummary = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Court File Number
+     */
+    court_file_number: string;
+    /**
+     * Title
+     */
+    title: string;
+    case_type: CaseType;
+    status: CaseStatus;
+    /**
+     * Upcoming Events
+     */
+    upcoming_events: number;
+    /**
+     * Pending Services
+     */
+    pending_services: number;
+    /**
+     * Urgent Notes
+     */
+    urgent_notes: number;
+    /**
+     * Last Activity
+     */
+    last_activity?: string | null;
+};
+
+/**
+ * CaseType
+ */
+export type CaseType = 'custody' | 'access' | 'support' | 'property' | 'divorce' | 'separation' | 'adoption' | 'child_protection' | 'other';
+
+/**
+ * CaseUpdate
+ */
+export type CaseUpdate = {
+    /**
+     * Title
+     */
+    title?: string | null;
+    case_type?: CaseType | null;
+    /**
+     * Court Location
+     */
+    court_location?: string | null;
+    /**
+     * Opposing Party
+     */
+    opposing_party?: string | null;
+    status?: CaseStatus | null;
+};
+
+/**
+ * CaseWithProfileResponse
+ */
+export type CaseWithProfileResponse = {
+    /**
+     * Title
+     */
+    title: string;
+    case_type: CaseType;
+    /**
+     * Court Location
+     */
+    court_location: string;
+    /**
+     * Opposing Party
+     */
+    opposing_party: string;
+    status?: CaseStatus;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Court File Number
+     */
+    court_file_number: string;
+    /**
+     * User Id
+     */
+    user_id: number;
+    profile?: CaseProfileResponse | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
 };
 
 /**
@@ -559,6 +1113,427 @@ export type ConnectionStatus = {
 };
 
 /**
+ * CourtEventCreate
+ */
+export type CourtEventCreate = {
+    event_type: EventType;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Scheduled Date
+     */
+    scheduled_date?: string | null;
+    /**
+     * Courtroom
+     */
+    courtroom?: string | null;
+    /**
+     * Judge
+     */
+    judge?: string | null;
+    status?: EventStatus;
+    /**
+     * Outcome
+     */
+    outcome?: string | null;
+    /**
+     * Event Metadata
+     */
+    event_metadata?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Case Id
+     */
+    case_id: number;
+    event_category?: EventCategory | null;
+};
+
+/**
+ * CourtEventResponse
+ */
+export type CourtEventResponse = {
+    event_type: EventType;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Scheduled Date
+     */
+    scheduled_date?: string | null;
+    /**
+     * Courtroom
+     */
+    courtroom?: string | null;
+    /**
+     * Judge
+     */
+    judge?: string | null;
+    status?: EventStatus;
+    /**
+     * Outcome
+     */
+    outcome?: string | null;
+    /**
+     * Event Metadata
+     */
+    event_metadata?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Case Id
+     */
+    case_id: number;
+    event_category: EventCategory;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * CourtEventUpdate
+ */
+export type CourtEventUpdate = {
+    event_type?: EventType | null;
+    /**
+     * Title
+     */
+    title?: string | null;
+    /**
+     * Scheduled Date
+     */
+    scheduled_date?: string | null;
+    /**
+     * Courtroom
+     */
+    courtroom?: string | null;
+    /**
+     * Judge
+     */
+    judge?: string | null;
+    status?: EventStatus | null;
+    /**
+     * Outcome
+     */
+    outcome?: string | null;
+    /**
+     * Event Metadata
+     */
+    event_metadata?: {
+        [key: string]: unknown;
+    } | null;
+};
+
+/**
+ * DocumentServiceCreate
+ */
+export type DocumentServiceCreate = {
+    service_type: ServiceType;
+    /**
+     * Service Date
+     */
+    service_date: string;
+    /**
+     * Served On
+     */
+    served_on: string;
+    /**
+     * Service Address
+     */
+    service_address?: {
+        [key: string]: string;
+    } | null;
+    /**
+     * Received Date
+     */
+    received_date?: string | null;
+    /**
+     * Receipt Method
+     */
+    receipt_method?: string | null;
+    service_status?: ServiceStatus;
+    /**
+     * Service Notes
+     */
+    service_notes?: string | null;
+    /**
+     * Attempts
+     */
+    attempts?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    /**
+     * Affidavit Of Service Id
+     */
+    affidavit_of_service_id?: number | null;
+    /**
+     * Days For Response
+     */
+    days_for_response?: number | null;
+    /**
+     * Response Deadline
+     */
+    response_deadline?: string | null;
+    /**
+     * Is Urgent
+     */
+    is_urgent?: boolean;
+    /**
+     * Court Ordered Service
+     */
+    court_ordered_service?: boolean;
+    /**
+     * Document Id
+     */
+    document_id: number;
+};
+
+/**
+ * DocumentServiceResponse
+ */
+export type DocumentServiceResponse = {
+    service_type: ServiceType;
+    /**
+     * Service Date
+     */
+    service_date: string;
+    /**
+     * Served On
+     */
+    served_on: string;
+    /**
+     * Service Address
+     */
+    service_address?: {
+        [key: string]: string;
+    } | null;
+    /**
+     * Received Date
+     */
+    received_date?: string | null;
+    /**
+     * Receipt Method
+     */
+    receipt_method?: string | null;
+    service_status?: ServiceStatus;
+    /**
+     * Service Notes
+     */
+    service_notes?: string | null;
+    /**
+     * Attempts
+     */
+    attempts?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    /**
+     * Affidavit Of Service Id
+     */
+    affidavit_of_service_id?: number | null;
+    /**
+     * Days For Response
+     */
+    days_for_response?: number | null;
+    /**
+     * Response Deadline
+     */
+    response_deadline?: string | null;
+    /**
+     * Is Urgent
+     */
+    is_urgent?: boolean;
+    /**
+     * Court Ordered Service
+     */
+    court_ordered_service?: boolean;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Document Id
+     */
+    document_id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * DocumentServiceUpdate
+ */
+export type DocumentServiceUpdate = {
+    service_type?: ServiceType | null;
+    /**
+     * Service Date
+     */
+    service_date?: string | null;
+    /**
+     * Served On
+     */
+    served_on?: string | null;
+    /**
+     * Service Address
+     */
+    service_address?: {
+        [key: string]: string;
+    } | null;
+    /**
+     * Received Date
+     */
+    received_date?: string | null;
+    /**
+     * Receipt Method
+     */
+    receipt_method?: string | null;
+    service_status?: ServiceStatus | null;
+    /**
+     * Service Notes
+     */
+    service_notes?: string | null;
+    /**
+     * Attempts
+     */
+    attempts?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    /**
+     * Affidavit Of Service Id
+     */
+    affidavit_of_service_id?: number | null;
+    /**
+     * Days For Response
+     */
+    days_for_response?: number | null;
+    /**
+     * Response Deadline
+     */
+    response_deadline?: string | null;
+    /**
+     * Is Urgent
+     */
+    is_urgent?: boolean | null;
+    /**
+     * Court Ordered Service
+     */
+    court_ordered_service?: boolean | null;
+};
+
+/**
+ * DocumentSmartTextCreate
+ */
+export type DocumentSmartTextCreate = {
+    /**
+     * Tiptap Content
+     */
+    tiptap_content: {
+        [key: string]: unknown;
+    };
+    /**
+     * Plain Text
+     */
+    plain_text: string;
+    /**
+     * Extraction Method
+     */
+    extraction_method: string;
+    /**
+     * Confidence Score
+     */
+    confidence_score?: number | null;
+    /**
+     * Document Id
+     */
+    document_id: number;
+};
+
+/**
+ * DocumentSmartTextResponse
+ */
+export type DocumentSmartTextResponse = {
+    /**
+     * Tiptap Content
+     */
+    tiptap_content: {
+        [key: string]: unknown;
+    };
+    /**
+     * Plain Text
+     */
+    plain_text: string;
+    /**
+     * Extraction Method
+     */
+    extraction_method: string;
+    /**
+     * Confidence Score
+     */
+    confidence_score?: number | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Document Id
+     */
+    document_id: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+};
+
+/**
+ * DocumentSmartTextUpdate
+ */
+export type DocumentSmartTextUpdate = {
+    /**
+     * Tiptap Content
+     */
+    tiptap_content?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Plain Text
+     */
+    plain_text?: string | null;
+    /**
+     * Extraction Method
+     */
+    extraction_method?: string | null;
+    /**
+     * Confidence Score
+     */
+    confidence_score?: number | null;
+};
+
+/**
+ * DocumentType
+ */
+export type DocumentType = 'affidavit' | 'financial_statement' | 'correspondence' | 'court_order' | 'notice_of_motion' | 'case_conference_brief' | 'settlement_conference_brief' | 'trial_record' | 'evidence' | 'other';
+
+/**
  * EmailConnectionResponse
  * Schema for email connection responses
  */
@@ -639,6 +1614,21 @@ export type EmailVerification = {
 };
 
 /**
+ * EventCategory
+ */
+export type EventCategory = 'conference' | 'motion' | 'trial' | 'hearing' | 'administrative';
+
+/**
+ * EventStatus
+ */
+export type EventStatus = 'scheduled' | 'completed' | 'adjourned' | 'cancelled' | 'rescheduled';
+
+/**
+ * EventType
+ */
+export type EventType = 'case_conference' | 'settlement_conference' | 'trial_management_conference' | 'regular_motion' | 'urgent_motion' | 'emergency_motion' | 'trial' | 'summary_judgment_motion' | 'show_cause_hearing' | 'enforcement_hearing' | 'status_review' | 'uncontested_hearing' | 'first_appearance' | 'scheduling_conference';
+
+/**
  * FileInfo
  */
 export type FileInfo = {
@@ -696,60 +1686,6 @@ export type FileListResponse = {
      * Per Page
      */
     per_page: number;
-};
-
-/**
- * FileUploadResponse
- */
-export type FileUploadResponse = {
-    /**
-     * Id
-     */
-    id: number;
-    /**
-     * Filename
-     */
-    filename: string;
-    /**
-     * Original Filename
-     */
-    original_filename: string;
-    /**
-     * File Path
-     */
-    file_path: string;
-    /**
-     * File Size
-     */
-    file_size: number;
-    /**
-     * Content Type
-     */
-    content_type: string;
-    /**
-     * Dropbox Path
-     */
-    dropbox_path?: string | null;
-    /**
-     * Dropbox Id
-     */
-    dropbox_id?: string | null;
-    /**
-     * Uploaded At
-     */
-    uploaded_at: string;
-    /**
-     * User Profile Id
-     */
-    user_profile_id: number;
-    /**
-     * Category
-     */
-    category: string;
-    /**
-     * Image Id
-     */
-    image_id?: number | null;
 };
 
 /**
@@ -903,54 +1839,14 @@ export type Message = {
 };
 
 /**
- * OAuthCallbackRequest
- * Schema for OAuth callback processing
+ * NotePriority
  */
-export type OAuthCallbackRequest = {
-    /**
-     * Code
-     */
-    code: string;
-    /**
-     * State
-     */
-    state: string;
-    /**
-     * Provider
-     */
-    provider?: string;
-    /**
-     * Redirect Uri
-     */
-    redirect_uri?: string | null;
-};
+export type NotePriority = 'low' | 'normal' | 'high' | 'urgent';
 
 /**
- * OAuthCallbackResponse
- * Schema for OAuth callback response
+ * NoteType
  */
-export type OAuthCallbackResponse = {
-    /**
-     * Connection Id
-     */
-    connection_id: number;
-    /**
-     * Email Address
-     */
-    email_address: string;
-    /**
-     * Connection Name
-     */
-    connection_name: string;
-    /**
-     * Status
-     */
-    status: string;
-    /**
-     * Message
-     */
-    message: string;
-};
+export type NoteType = 'general' | 'strategy' | 'event' | 'document' | 'service' | 'settlement';
 
 /**
  * OAuthInitiateRequest
@@ -1030,6 +1926,11 @@ export type ObjectTagsResponse = {
      */
     tags: Array<TagResponse>;
 };
+
+/**
+ * PartyType
+ */
+export type PartyType = 'court' | 'respondent' | 'applicant';
 
 /**
  * PasswordReset
@@ -1340,6 +2241,16 @@ export type RecentUserResponse = {
      */
     created_at: string;
 };
+
+/**
+ * ServiceStatus
+ */
+export type ServiceStatus = 'pending' | 'served' | 'acknowledged' | 'disputed' | 'failed';
+
+/**
+ * ServiceType
+ */
+export type ServiceType = 'personal' | 'mail' | 'email' | 'courier' | 'substituted' | 'deemed';
 
 /**
  * ShareLinkResponse
@@ -1946,6 +2857,28 @@ export type ValidationError = {
 };
 
 /**
+ * FileUploadResponse
+ */
+export type CasesSchemasFileUploadResponse = {
+    /**
+     * Document Id
+     */
+    document_id: number;
+    /**
+     * Stored Filename
+     */
+    stored_filename: string;
+    /**
+     * File Path
+     */
+    file_path: string;
+    /**
+     * Message
+     */
+    message?: string;
+};
+
+/**
  * TokenRefreshResponse
  * Schema for token refresh responses
  */
@@ -1966,6 +2899,60 @@ export type EmailConnectionsSchemasTokenRefreshResponse = {
      * Error Message
      */
     error_message?: string | null;
+};
+
+/**
+ * FileUploadResponse
+ */
+export type StorageSchemasFileUploadResponse = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Filename
+     */
+    filename: string;
+    /**
+     * Original Filename
+     */
+    original_filename: string;
+    /**
+     * File Path
+     */
+    file_path: string;
+    /**
+     * File Size
+     */
+    file_size: number;
+    /**
+     * Content Type
+     */
+    content_type: string;
+    /**
+     * Dropbox Path
+     */
+    dropbox_path?: string | null;
+    /**
+     * Dropbox Id
+     */
+    dropbox_id?: string | null;
+    /**
+     * Uploaded At
+     */
+    uploaded_at: string;
+    /**
+     * User Profile Id
+     */
+    user_profile_id: number;
+    /**
+     * Category
+     */
+    category: string;
+    /**
+     * Image Id
+     */
+    image_id?: number | null;
 };
 
 /**
@@ -2727,7 +3714,7 @@ export type UploadFileApiV1StorageUploadPostResponses = {
     /**
      * Successful Response
      */
-    200: FileUploadResponse;
+    200: StorageSchemasFileUploadResponse;
 };
 
 export type UploadFileApiV1StorageUploadPostResponse = UploadFileApiV1StorageUploadPostResponses[keyof UploadFileApiV1StorageUploadPostResponses];
@@ -4623,23 +5610,23 @@ export type GetImageStatsApiV1ImagesAdminStatsGetResponses = {
     200: unknown;
 };
 
-export type ListConnectionsApiV1EmailConnectionsConnectionsGetData = {
+export type ListConnectionsApiV1EmailConnectionsGetData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/v1/email-connections/connections';
+    url: '/api/v1/email-connections';
 };
 
-export type ListConnectionsApiV1EmailConnectionsConnectionsGetResponses = {
+export type ListConnectionsApiV1EmailConnectionsGetResponses = {
     /**
      * Successful Response
      */
     200: ConnectionListResponse;
 };
 
-export type ListConnectionsApiV1EmailConnectionsConnectionsGetResponse = ListConnectionsApiV1EmailConnectionsConnectionsGetResponses[keyof ListConnectionsApiV1EmailConnectionsConnectionsGetResponses];
+export type ListConnectionsApiV1EmailConnectionsGetResponse = ListConnectionsApiV1EmailConnectionsGetResponses[keyof ListConnectionsApiV1EmailConnectionsGetResponses];
 
-export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteData = {
+export type DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteData = {
     body?: never;
     path: {
         /**
@@ -4648,28 +5635,28 @@ export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteDa
         connection_id: number;
     };
     query?: never;
-    url: '/api/v1/email-connections/connections/{connection_id}';
+    url: '/api/v1/email-connections/{connection_id}';
 };
 
-export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteErrors = {
+export type DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteError = DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteErrors[keyof DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteErrors];
+export type DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteError = DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteErrors[keyof DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteErrors];
 
-export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponses = {
+export type DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteResponses = {
     /**
      * Successful Response
      */
     200: ConnectionDeleteResponse;
 };
 
-export type DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponse = DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponses[keyof DeleteConnectionApiV1EmailConnectionsConnectionsConnectionIdDeleteResponses];
+export type DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteResponse = DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteResponses[keyof DeleteConnectionApiV1EmailConnectionsConnectionIdDeleteResponses];
 
-export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetData = {
+export type GetConnectionApiV1EmailConnectionsConnectionIdGetData = {
     body?: never;
     path: {
         /**
@@ -4678,28 +5665,28 @@ export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetData = {
         connection_id: number;
     };
     query?: never;
-    url: '/api/v1/email-connections/connections/{connection_id}';
+    url: '/api/v1/email-connections/{connection_id}';
 };
 
-export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetErrors = {
+export type GetConnectionApiV1EmailConnectionsConnectionIdGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetError = GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetErrors[keyof GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetErrors];
+export type GetConnectionApiV1EmailConnectionsConnectionIdGetError = GetConnectionApiV1EmailConnectionsConnectionIdGetErrors[keyof GetConnectionApiV1EmailConnectionsConnectionIdGetErrors];
 
-export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponses = {
+export type GetConnectionApiV1EmailConnectionsConnectionIdGetResponses = {
     /**
      * Successful Response
      */
     200: EmailConnectionResponse;
 };
 
-export type GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponse = GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponses[keyof GetConnectionApiV1EmailConnectionsConnectionsConnectionIdGetResponses];
+export type GetConnectionApiV1EmailConnectionsConnectionIdGetResponse = GetConnectionApiV1EmailConnectionsConnectionIdGetResponses[keyof GetConnectionApiV1EmailConnectionsConnectionIdGetResponses];
 
-export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutData = {
+export type UpdateConnectionApiV1EmailConnectionsConnectionIdPutData = {
     body: EmailConnectionUpdate;
     path: {
         /**
@@ -4708,28 +5695,28 @@ export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutData 
         connection_id: number;
     };
     query?: never;
-    url: '/api/v1/email-connections/connections/{connection_id}';
+    url: '/api/v1/email-connections/{connection_id}';
 };
 
-export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutErrors = {
+export type UpdateConnectionApiV1EmailConnectionsConnectionIdPutErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutError = UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutErrors[keyof UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutErrors];
+export type UpdateConnectionApiV1EmailConnectionsConnectionIdPutError = UpdateConnectionApiV1EmailConnectionsConnectionIdPutErrors[keyof UpdateConnectionApiV1EmailConnectionsConnectionIdPutErrors];
 
-export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponses = {
+export type UpdateConnectionApiV1EmailConnectionsConnectionIdPutResponses = {
     /**
      * Successful Response
      */
     200: EmailConnectionResponse;
 };
 
-export type UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponse = UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponses[keyof UpdateConnectionApiV1EmailConnectionsConnectionsConnectionIdPutResponses];
+export type UpdateConnectionApiV1EmailConnectionsConnectionIdPutResponse = UpdateConnectionApiV1EmailConnectionsConnectionIdPutResponses[keyof UpdateConnectionApiV1EmailConnectionsConnectionIdPutResponses];
 
-export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetData = {
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetData = {
     body?: never;
     path: {
         /**
@@ -4738,26 +5725,26 @@ export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHea
         connection_id: number;
     };
     query?: never;
-    url: '/api/v1/email-connections/connections/{connection_id}/health';
+    url: '/api/v1/email-connections/{connection_id}/health';
 };
 
-export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetErrors = {
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetError = CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetErrors[keyof CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetErrors];
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetError = CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetErrors[keyof CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetErrors];
 
-export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponses = {
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetResponses = {
     /**
      * Successful Response
      */
     200: ConnectionHealthCheck;
 };
 
-export type CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponse = CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponses[keyof CheckConnectionHealthApiV1EmailConnectionsConnectionsConnectionIdHealthGetResponses];
+export type CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetResponse = CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetResponses[keyof CheckConnectionHealthApiV1EmailConnectionsConnectionIdHealthGetResponses];
 
 export type GetConnectionStatusApiV1EmailConnectionsStatusGetData = {
     body?: never;
@@ -4800,32 +5787,43 @@ export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses = {
 
 export type InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponse = InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses[keyof InitiateOauthFlowApiV1EmailConnectionsOauthInitiatePostResponses];
 
-export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostData = {
-    body: OAuthCallbackRequest;
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetData = {
+    body?: never;
     path?: never;
-    query?: never;
+    query: {
+        /**
+         * State
+         */
+        state: string;
+        /**
+         * Code
+         */
+        code: string;
+        /**
+         * Scope
+         */
+        scope?: string;
+    };
     url: '/api/v1/email-connections/oauth/callback';
 };
 
-export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostErrors = {
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostError = HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostErrors[keyof HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostErrors];
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetError = HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetErrors[keyof HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetErrors];
 
-export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponses = {
+export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackGetResponses = {
     /**
      * Successful Response
      */
-    200: OAuthCallbackResponse;
+    200: unknown;
 };
 
-export type HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponse = HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponses[keyof HandleOauthCallbackApiV1EmailConnectionsOauthCallbackPostResponses];
-
-export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostData = {
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostData = {
     body?: never;
     path: {
         /**
@@ -4834,28 +5832,28 @@ export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdR
         connection_id: number;
     };
     query?: never;
-    url: '/api/v1/email-connections/connections/{connection_id}/refresh';
+    url: '/api/v1/email-connections/{connection_id}/refresh';
 };
 
-export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostErrors = {
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostError = RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostErrors[keyof RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostErrors];
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostError = RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostErrors[keyof RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostErrors];
 
-export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponses = {
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostResponses = {
     /**
      * Successful Response
      */
     200: EmailConnectionsSchemasTokenRefreshResponse;
 };
 
-export type RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponse = RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponses[keyof RefreshConnectionTokensApiV1EmailConnectionsConnectionsConnectionIdRefreshPostResponses];
+export type RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostResponse = RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostResponses[keyof RefreshConnectionTokensApiV1EmailConnectionsConnectionIdRefreshPostResponses];
 
-export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostData = {
+export type DebugConnectionScopesApiV1EmailConnectionsConnectionIdDebugGetData = {
     body?: never;
     path: {
         /**
@@ -4864,24 +5862,878 @@ export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostDa
         connection_id: number;
     };
     query?: never;
-    url: '/api/v1/email-connections/connections/{connection_id}/test';
+    url: '/api/v1/email-connections/{connection_id}/debug';
 };
 
-export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostErrors = {
+export type DebugConnectionScopesApiV1EmailConnectionsConnectionIdDebugGetErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostError = TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostErrors[keyof TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostErrors];
+export type DebugConnectionScopesApiV1EmailConnectionsConnectionIdDebugGetError = DebugConnectionScopesApiV1EmailConnectionsConnectionIdDebugGetErrors[keyof DebugConnectionScopesApiV1EmailConnectionsConnectionIdDebugGetErrors];
 
-export type TestConnectionApiV1EmailConnectionsConnectionsConnectionIdTestPostResponses = {
+export type DebugConnectionScopesApiV1EmailConnectionsConnectionIdDebugGetResponses = {
     /**
      * Successful Response
      */
     200: unknown;
 };
+
+export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostData = {
+    body?: never;
+    path: {
+        /**
+         * Connection Id
+         */
+        connection_id: number;
+    };
+    query?: never;
+    url: '/api/v1/email-connections/{connection_id}/test';
+};
+
+export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostError = TestConnectionApiV1EmailConnectionsConnectionIdTestPostErrors[keyof TestConnectionApiV1EmailConnectionsConnectionIdTestPostErrors];
+
+export type TestConnectionApiV1EmailConnectionsConnectionIdTestPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetDashboardApiV1CasesDashboardGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/cases/dashboard';
+};
+
+export type GetDashboardApiV1CasesDashboardGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CaseDashboard;
+};
+
+export type GetDashboardApiV1CasesDashboardGetResponse = GetDashboardApiV1CasesDashboardGetResponses[keyof GetDashboardApiV1CasesDashboardGetResponses];
+
+export type GetCasesApiV1CasesGetData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Q
+         */
+        q?: string | null;
+        /**
+         * Case Type
+         */
+        case_type?: string | null;
+        /**
+         * Status
+         */
+        status?: string | null;
+        /**
+         * Court Location
+         */
+        court_location?: string | null;
+        /**
+         * From Date
+         */
+        from_date?: string | null;
+        /**
+         * To Date
+         */
+        to_date?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
+    };
+    url: '/api/v1/cases';
+};
+
+export type GetCasesApiV1CasesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCasesApiV1CasesGetError = GetCasesApiV1CasesGetErrors[keyof GetCasesApiV1CasesGetErrors];
+
+export type GetCasesApiV1CasesGetResponses = {
+    /**
+     * Response Get Cases Api V1 Cases Get
+     * Successful Response
+     */
+    200: Array<CaseWithProfileResponse>;
+};
+
+export type GetCasesApiV1CasesGetResponse = GetCasesApiV1CasesGetResponses[keyof GetCasesApiV1CasesGetResponses];
+
+export type CreateCaseApiV1CasesPostData = {
+    body: CaseCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/cases';
+};
+
+export type CreateCaseApiV1CasesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateCaseApiV1CasesPostError = CreateCaseApiV1CasesPostErrors[keyof CreateCaseApiV1CasesPostErrors];
+
+export type CreateCaseApiV1CasesPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: CaseWithProfileResponse;
+};
+
+export type CreateCaseApiV1CasesPostResponse = CreateCaseApiV1CasesPostResponses[keyof CreateCaseApiV1CasesPostResponses];
+
+export type DeleteCaseApiV1CasesCaseIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}';
+};
+
+export type DeleteCaseApiV1CasesCaseIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteCaseApiV1CasesCaseIdDeleteError = DeleteCaseApiV1CasesCaseIdDeleteErrors[keyof DeleteCaseApiV1CasesCaseIdDeleteErrors];
+
+export type DeleteCaseApiV1CasesCaseIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteCaseApiV1CasesCaseIdDeleteResponse = DeleteCaseApiV1CasesCaseIdDeleteResponses[keyof DeleteCaseApiV1CasesCaseIdDeleteResponses];
+
+export type GetCaseApiV1CasesCaseIdGetData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}';
+};
+
+export type GetCaseApiV1CasesCaseIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCaseApiV1CasesCaseIdGetError = GetCaseApiV1CasesCaseIdGetErrors[keyof GetCaseApiV1CasesCaseIdGetErrors];
+
+export type GetCaseApiV1CasesCaseIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CaseWithProfileResponse;
+};
+
+export type GetCaseApiV1CasesCaseIdGetResponse = GetCaseApiV1CasesCaseIdGetResponses[keyof GetCaseApiV1CasesCaseIdGetResponses];
+
+export type UpdateCaseApiV1CasesCaseIdPutData = {
+    body: CaseUpdate;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}';
+};
+
+export type UpdateCaseApiV1CasesCaseIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateCaseApiV1CasesCaseIdPutError = UpdateCaseApiV1CasesCaseIdPutErrors[keyof UpdateCaseApiV1CasesCaseIdPutErrors];
+
+export type UpdateCaseApiV1CasesCaseIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: CaseWithProfileResponse;
+};
+
+export type UpdateCaseApiV1CasesCaseIdPutResponse = UpdateCaseApiV1CasesCaseIdPutResponses[keyof UpdateCaseApiV1CasesCaseIdPutResponses];
+
+export type GetCaseFullApiV1CasesCaseIdFullGetData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}/full';
+};
+
+export type GetCaseFullApiV1CasesCaseIdFullGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCaseFullApiV1CasesCaseIdFullGetError = GetCaseFullApiV1CasesCaseIdFullGetErrors[keyof GetCaseFullApiV1CasesCaseIdFullGetErrors];
+
+export type GetCaseFullApiV1CasesCaseIdFullGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CaseFullResponse;
+};
+
+export type GetCaseFullApiV1CasesCaseIdFullGetResponse = GetCaseFullApiV1CasesCaseIdFullGetResponses[keyof GetCaseFullApiV1CasesCaseIdFullGetResponses];
+
+export type GetCaseProfileApiV1CasesCaseIdProfileGetData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}/profile';
+};
+
+export type GetCaseProfileApiV1CasesCaseIdProfileGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCaseProfileApiV1CasesCaseIdProfileGetError = GetCaseProfileApiV1CasesCaseIdProfileGetErrors[keyof GetCaseProfileApiV1CasesCaseIdProfileGetErrors];
+
+export type GetCaseProfileApiV1CasesCaseIdProfileGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: CaseProfileResponse;
+};
+
+export type GetCaseProfileApiV1CasesCaseIdProfileGetResponse = GetCaseProfileApiV1CasesCaseIdProfileGetResponses[keyof GetCaseProfileApiV1CasesCaseIdProfileGetResponses];
+
+export type CreateCaseProfileApiV1CasesCaseIdProfilePostData = {
+    body: CaseProfileCreate;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}/profile';
+};
+
+export type CreateCaseProfileApiV1CasesCaseIdProfilePostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateCaseProfileApiV1CasesCaseIdProfilePostError = CreateCaseProfileApiV1CasesCaseIdProfilePostErrors[keyof CreateCaseProfileApiV1CasesCaseIdProfilePostErrors];
+
+export type CreateCaseProfileApiV1CasesCaseIdProfilePostResponses = {
+    /**
+     * Successful Response
+     */
+    201: CaseProfileResponse;
+};
+
+export type CreateCaseProfileApiV1CasesCaseIdProfilePostResponse = CreateCaseProfileApiV1CasesCaseIdProfilePostResponses[keyof CreateCaseProfileApiV1CasesCaseIdProfilePostResponses];
+
+export type CreateCourtEventApiV1CasesEventsPostData = {
+    body: CourtEventCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/cases/events';
+};
+
+export type CreateCourtEventApiV1CasesEventsPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateCourtEventApiV1CasesEventsPostError = CreateCourtEventApiV1CasesEventsPostErrors[keyof CreateCourtEventApiV1CasesEventsPostErrors];
+
+export type CreateCourtEventApiV1CasesEventsPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: CourtEventResponse;
+};
+
+export type CreateCourtEventApiV1CasesEventsPostResponse = CreateCourtEventApiV1CasesEventsPostResponses[keyof CreateCourtEventApiV1CasesEventsPostResponses];
+
+export type GetCourtEventsApiV1CasesCaseIdEventsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}/events';
+};
+
+export type GetCourtEventsApiV1CasesCaseIdEventsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCourtEventsApiV1CasesCaseIdEventsGetError = GetCourtEventsApiV1CasesCaseIdEventsGetErrors[keyof GetCourtEventsApiV1CasesCaseIdEventsGetErrors];
+
+export type GetCourtEventsApiV1CasesCaseIdEventsGetResponses = {
+    /**
+     * Response Get Court Events Api V1 Cases  Case Id  Events Get
+     * Successful Response
+     */
+    200: Array<CourtEventResponse>;
+};
+
+export type GetCourtEventsApiV1CasesCaseIdEventsGetResponse = GetCourtEventsApiV1CasesCaseIdEventsGetResponses[keyof GetCourtEventsApiV1CasesCaseIdEventsGetResponses];
+
+export type UpdateCourtEventApiV1CasesEventsEventIdPutData = {
+    body: CourtEventUpdate;
+    path: {
+        /**
+         * Event Id
+         */
+        event_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/events/{event_id}';
+};
+
+export type UpdateCourtEventApiV1CasesEventsEventIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateCourtEventApiV1CasesEventsEventIdPutError = UpdateCourtEventApiV1CasesEventsEventIdPutErrors[keyof UpdateCourtEventApiV1CasesEventsEventIdPutErrors];
+
+export type UpdateCourtEventApiV1CasesEventsEventIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: CourtEventResponse;
+};
+
+export type UpdateCourtEventApiV1CasesEventsEventIdPutResponse = UpdateCourtEventApiV1CasesEventsEventIdPutResponses[keyof UpdateCourtEventApiV1CasesEventsEventIdPutResponses];
+
+export type UploadDocumentApiV1CasesCaseIdDocumentsUploadPostData = {
+    body: BodyUploadDocumentApiV1CasesCaseIdDocumentsUploadPost;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/{case_id}/documents/upload';
+};
+
+export type UploadDocumentApiV1CasesCaseIdDocumentsUploadPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UploadDocumentApiV1CasesCaseIdDocumentsUploadPostError = UploadDocumentApiV1CasesCaseIdDocumentsUploadPostErrors[keyof UploadDocumentApiV1CasesCaseIdDocumentsUploadPostErrors];
+
+export type UploadDocumentApiV1CasesCaseIdDocumentsUploadPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: CasesSchemasFileUploadResponse;
+};
+
+export type UploadDocumentApiV1CasesCaseIdDocumentsUploadPostResponse = UploadDocumentApiV1CasesCaseIdDocumentsUploadPostResponses[keyof UploadDocumentApiV1CasesCaseIdDocumentsUploadPostResponses];
+
+export type GetDocumentsApiV1CasesCaseIdDocumentsGetData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: {
+        /**
+         * Q
+         */
+        q?: string | null;
+        /**
+         * Party Type
+         */
+        party_type?: string | null;
+        /**
+         * Document Type
+         */
+        document_type?: string | null;
+        /**
+         * From Date
+         */
+        from_date?: string | null;
+        /**
+         * To Date
+         */
+        to_date?: string | null;
+        /**
+         * Has Service
+         */
+        has_service?: boolean | null;
+        /**
+         * Service Status
+         */
+        service_status?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
+    };
+    url: '/api/v1/cases/{case_id}/documents';
+};
+
+export type GetDocumentsApiV1CasesCaseIdDocumentsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDocumentsApiV1CasesCaseIdDocumentsGetError = GetDocumentsApiV1CasesCaseIdDocumentsGetErrors[keyof GetDocumentsApiV1CasesCaseIdDocumentsGetErrors];
+
+export type GetDocumentsApiV1CasesCaseIdDocumentsGetResponses = {
+    /**
+     * Response Get Documents Api V1 Cases  Case Id  Documents Get
+     * Successful Response
+     */
+    200: Array<CaseDocumentResponse>;
+};
+
+export type GetDocumentsApiV1CasesCaseIdDocumentsGetResponse = GetDocumentsApiV1CasesCaseIdDocumentsGetResponses[keyof GetDocumentsApiV1CasesCaseIdDocumentsGetResponses];
+
+export type DownloadDocumentApiV1CasesDocumentsDocumentIdDownloadGetData = {
+    body?: never;
+    path: {
+        /**
+         * Document Id
+         */
+        document_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/documents/{document_id}/download';
+};
+
+export type DownloadDocumentApiV1CasesDocumentsDocumentIdDownloadGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DownloadDocumentApiV1CasesDocumentsDocumentIdDownloadGetError = DownloadDocumentApiV1CasesDocumentsDocumentIdDownloadGetErrors[keyof DownloadDocumentApiV1CasesDocumentsDocumentIdDownloadGetErrors];
+
+export type DownloadDocumentApiV1CasesDocumentsDocumentIdDownloadGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetData = {
+    body?: never;
+    path: {
+        /**
+         * Document Id
+         */
+        document_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/documents/{document_id}/service';
+};
+
+export type GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetError = GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetErrors[keyof GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetErrors];
+
+export type GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetResponses = {
+    /**
+     * Response Get Document Services Api V1 Cases Documents  Document Id  Service Get
+     * Successful Response
+     */
+    200: Array<DocumentServiceResponse>;
+};
+
+export type GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetResponse = GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetResponses[keyof GetDocumentServicesApiV1CasesDocumentsDocumentIdServiceGetResponses];
+
+export type CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostData = {
+    body: DocumentServiceCreate;
+    path: {
+        /**
+         * Document Id
+         */
+        document_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/documents/{document_id}/service';
+};
+
+export type CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostError = CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostErrors[keyof CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostErrors];
+
+export type CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostResponses = {
+    /**
+     * Successful Response
+     */
+    201: DocumentServiceResponse;
+};
+
+export type CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostResponse = CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostResponses[keyof CreateDocumentServiceApiV1CasesDocumentsDocumentIdServicePostResponses];
+
+export type UpdateDocumentServiceApiV1CasesServiceServiceIdPutData = {
+    body: DocumentServiceUpdate;
+    path: {
+        /**
+         * Service Id
+         */
+        service_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/service/{service_id}';
+};
+
+export type UpdateDocumentServiceApiV1CasesServiceServiceIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateDocumentServiceApiV1CasesServiceServiceIdPutError = UpdateDocumentServiceApiV1CasesServiceServiceIdPutErrors[keyof UpdateDocumentServiceApiV1CasesServiceServiceIdPutErrors];
+
+export type UpdateDocumentServiceApiV1CasesServiceServiceIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: DocumentServiceResponse;
+};
+
+export type UpdateDocumentServiceApiV1CasesServiceServiceIdPutResponse = UpdateDocumentServiceApiV1CasesServiceServiceIdPutResponses[keyof UpdateDocumentServiceApiV1CasesServiceServiceIdPutResponses];
+
+export type CreateCaseNoteApiV1CasesNotesPostData = {
+    body: CaseNoteCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/cases/notes';
+};
+
+export type CreateCaseNoteApiV1CasesNotesPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateCaseNoteApiV1CasesNotesPostError = CreateCaseNoteApiV1CasesNotesPostErrors[keyof CreateCaseNoteApiV1CasesNotesPostErrors];
+
+export type CreateCaseNoteApiV1CasesNotesPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: CaseNoteResponse;
+};
+
+export type CreateCaseNoteApiV1CasesNotesPostResponse = CreateCaseNoteApiV1CasesNotesPostResponses[keyof CreateCaseNoteApiV1CasesNotesPostResponses];
+
+export type GetCaseNotesApiV1CasesCaseIdNotesGetData = {
+    body?: never;
+    path: {
+        /**
+         * Case Id
+         */
+        case_id: number;
+    };
+    query?: {
+        /**
+         * Q
+         */
+        q?: string | null;
+        /**
+         * Note Type
+         */
+        note_type?: string | null;
+        /**
+         * Priority
+         */
+        priority?: string | null;
+        /**
+         * Is Completed
+         */
+        is_completed?: boolean | null;
+        /**
+         * Has Reminder
+         */
+        has_reminder?: boolean | null;
+        /**
+         * From Date
+         */
+        from_date?: string | null;
+        /**
+         * To Date
+         */
+        to_date?: string | null;
+        /**
+         * Limit
+         */
+        limit?: number;
+        /**
+         * Offset
+         */
+        offset?: number;
+    };
+    url: '/api/v1/cases/{case_id}/notes';
+};
+
+export type GetCaseNotesApiV1CasesCaseIdNotesGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetCaseNotesApiV1CasesCaseIdNotesGetError = GetCaseNotesApiV1CasesCaseIdNotesGetErrors[keyof GetCaseNotesApiV1CasesCaseIdNotesGetErrors];
+
+export type GetCaseNotesApiV1CasesCaseIdNotesGetResponses = {
+    /**
+     * Response Get Case Notes Api V1 Cases  Case Id  Notes Get
+     * Successful Response
+     */
+    200: Array<CaseNoteResponse>;
+};
+
+export type GetCaseNotesApiV1CasesCaseIdNotesGetResponse = GetCaseNotesApiV1CasesCaseIdNotesGetResponses[keyof GetCaseNotesApiV1CasesCaseIdNotesGetResponses];
+
+export type DeleteCaseNoteApiV1CasesNotesNoteIdDeleteData = {
+    body?: never;
+    path: {
+        /**
+         * Note Id
+         */
+        note_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/notes/{note_id}';
+};
+
+export type DeleteCaseNoteApiV1CasesNotesNoteIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteCaseNoteApiV1CasesNotesNoteIdDeleteError = DeleteCaseNoteApiV1CasesNotesNoteIdDeleteErrors[keyof DeleteCaseNoteApiV1CasesNotesNoteIdDeleteErrors];
+
+export type DeleteCaseNoteApiV1CasesNotesNoteIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteCaseNoteApiV1CasesNotesNoteIdDeleteResponse = DeleteCaseNoteApiV1CasesNotesNoteIdDeleteResponses[keyof DeleteCaseNoteApiV1CasesNotesNoteIdDeleteResponses];
+
+export type UpdateCaseNoteApiV1CasesNotesNoteIdPutData = {
+    body: CaseNoteUpdate;
+    path: {
+        /**
+         * Note Id
+         */
+        note_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/notes/{note_id}';
+};
+
+export type UpdateCaseNoteApiV1CasesNotesNoteIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateCaseNoteApiV1CasesNotesNoteIdPutError = UpdateCaseNoteApiV1CasesNotesNoteIdPutErrors[keyof UpdateCaseNoteApiV1CasesNotesNoteIdPutErrors];
+
+export type UpdateCaseNoteApiV1CasesNotesNoteIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: CaseNoteResponse;
+};
+
+export type UpdateCaseNoteApiV1CasesNotesNoteIdPutResponse = UpdateCaseNoteApiV1CasesNotesNoteIdPutResponses[keyof UpdateCaseNoteApiV1CasesNotesNoteIdPutResponses];
+
+export type GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetData = {
+    body?: never;
+    path: {
+        /**
+         * Document Id
+         */
+        document_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/documents/{document_id}/smart-text';
+};
+
+export type GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetError = GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetErrors[keyof GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetErrors];
+
+export type GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: DocumentSmartTextResponse;
+};
+
+export type GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetResponse = GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetResponses[keyof GetSmartTextApiV1CasesDocumentsDocumentIdSmartTextGetResponses];
+
+export type CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostData = {
+    body: DocumentSmartTextCreate;
+    path: {
+        /**
+         * Document Id
+         */
+        document_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/documents/{document_id}/smart-text';
+};
+
+export type CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostError = CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostErrors[keyof CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostErrors];
+
+export type CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: DocumentSmartTextResponse;
+};
+
+export type CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostResponse = CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostResponses[keyof CreateSmartTextApiV1CasesDocumentsDocumentIdSmartTextPostResponses];
+
+export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutData = {
+    body: DocumentSmartTextUpdate;
+    path: {
+        /**
+         * Smart Text Id
+         */
+        smart_text_id: number;
+    };
+    query?: never;
+    url: '/api/v1/cases/smart-text/{smart_text_id}';
+};
+
+export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutError = UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutErrors[keyof UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutErrors];
+
+export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: DocumentSmartTextResponse;
+};
+
+export type UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponse = UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponses[keyof UpdateSmartTextApiV1CasesSmartTextSmartTextIdPutResponses];
 
 export type RootGetData = {
     body?: never;

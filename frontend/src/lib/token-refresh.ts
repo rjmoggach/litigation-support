@@ -57,15 +57,9 @@ export function validateToken(accessToken: string | null | undefined): TokenVali
     
     // Add minimal logging for debugging (only when action needed)
     if (process.env.NODE_ENV === 'development' && (isExpired || needsRefresh)) {
-      const timestamp = new Date().toISOString()
-      console.log(`[${timestamp}] Token validation:`, {
-        expiresAt: new Date(expiresAt * 1000).toISOString(),
-        currentTime: new Date(currentTime * 1000).toISOString(),
-        expiresIn,
-        isExpired,
-        needsRefresh,
-        clockSkewTolerance
-      })
+      // Token validation logging disabled to reduce console noise
+      // const timestamp = new Date().toISOString()
+      // console.log(`[${timestamp}] Token validation:`, { ... })
     }
     
     return {
@@ -128,7 +122,7 @@ export async function refreshAccessToken(refreshToken: string, retryAttempt: num
         // Rate limited - try again with exponential backoff
         if (retryAttempt < maxRetries) {
           const delay = baseDelay * Math.pow(2, retryAttempt)
-          console.log(`Rate limited. Retrying in ${delay}ms...`)
+          // console.log(`Rate limited. Retrying in ${delay}ms...`)
           
           await new Promise(resolve => setTimeout(resolve, delay))
           return refreshAccessToken(refreshToken, retryAttempt + 1)
@@ -143,7 +137,7 @@ export async function refreshAccessToken(refreshToken: string, retryAttempt: num
       if (response.status >= 500 && retryAttempt < maxRetries) {
         // Server error - retry with exponential backoff
         const delay = baseDelay * Math.pow(2, retryAttempt)
-        console.log(`Server error. Retrying in ${delay}ms...`)
+        // console.log(`Server error. Retrying in ${delay}ms...`)
         
         await new Promise(resolve => setTimeout(resolve, delay))
         return refreshAccessToken(refreshToken, retryAttempt + 1)
@@ -163,10 +157,7 @@ export async function refreshAccessToken(refreshToken: string, retryAttempt: num
     }
     
     const timestamp = new Date().toISOString()
-    console.log(`[${timestamp}] Token refresh successful`, {
-      attempt: retryAttempt + 1,
-      expiresIn: data.expires_in
-    })
+    // console.log(`[${timestamp}] Token refresh successful`, { ... })
     
     return {
       success: true,
@@ -190,7 +181,7 @@ export async function refreshAccessToken(refreshToken: string, retryAttempt: num
       (error instanceof Error && error.message.includes('fetch'))
     )) {
       const delay = baseDelay * Math.pow(2, retryAttempt)
-      console.log(`Network error. Retrying in ${delay}ms...`)
+      // console.log(`Network error. Retrying in ${delay}ms...`)
       
       await new Promise(resolve => setTimeout(resolve, delay))
       return refreshAccessToken(refreshToken, retryAttempt + 1)
@@ -214,7 +205,7 @@ export async function getValidAccessToken(): Promise<string | null> {
     const session = await getSession()
     
     if (!session?.accessToken) {
-      console.log(`[${timestamp}] No access token in session`)
+      // console.log(`[${timestamp}] No access token in session`)
       return null
     }
 
@@ -227,35 +218,35 @@ export async function getValidAccessToken(): Promise<string | null> {
     }
 
     if (!validation.isValid) {
-      console.log(`[${timestamp}] Access token is expired`)
+      // console.log(`[${timestamp}] Access token is expired`)
     } else if (validation.needsRefresh) {
-      console.log(`[${timestamp}] Access token expires soon (${validation.expiresIn}s), refreshing proactively`)
+      // console.log(`[${timestamp}] Access token expires soon (${validation.expiresIn}s), refreshing proactively`)
     }
 
     // Try to refresh the token
     if (session.refreshToken) {
-      console.log(`[${timestamp}] Attempting token refresh...`)
+      // console.log(`[${timestamp}] Attempting token refresh...`)
       const refreshResult = await refreshAccessToken(session.refreshToken)
       
       if (refreshResult.success && refreshResult.accessToken) {
         // Update the session with new tokens
         // Note: NextAuth will handle this automatically through the JWT callback
         // We just return the new token for immediate use
-        console.log(`[${timestamp}] Token refresh successful, returning new token`)
+        // console.log(`[${timestamp}] Token refresh successful, returning new token`)
         return refreshResult.accessToken
       } else {
         console.error(`[${timestamp}] Token refresh failed:`, refreshResult.error)
         
         // If refresh failed due to invalid refresh token, sign out
         if (refreshResult.error?.includes('expired') || refreshResult.error?.includes('invalid')) {
-          console.log(`[${timestamp}] Refresh token invalid, signing out`)
+          // console.log(`[${timestamp}] Refresh token invalid, signing out`)
           await signOut({ redirect: false })
         }
         
         return null
       }
     } else {
-      console.log(`[${timestamp}] No refresh token available, signing out`)
+      // console.log(`[${timestamp}] No refresh token available, signing out`)
       await signOut({ redirect: false })
       return null
     }

@@ -44,19 +44,6 @@ export function UserMenu() {
         signOut({ callbackUrl: '/' })
     }
 
-    // Debug session data
-    React.useEffect(() => {
-        if (session?.user) {
-            const user = session.user as ExtendedUser
-            console.log('UserMenu session data:', session.user)
-            console.log('Avatar fields:', {
-                avatar_url: user.avatar_url,
-                avatar_cloudfront_url: user.avatar_cloudfront_url,
-                avatar_file_id: user.avatar_file_id,
-                image: user.image,
-            })
-        }
-    }, [session])
 
     const getUserInitials = (
         fullName: string | null | undefined,
@@ -119,31 +106,6 @@ export function UserMenu() {
                                 session.user.email ||
                                 'User'
                             }
-                            onError={(error) => {
-                                const user = session.user as ExtendedUser
-                                const attemptedSrc =
-                                    user.avatar_cloudfront_url ||
-                                    user.avatar_url
-                                console.warn('Avatar image failed to load:', {
-                                    attempted_src: attemptedSrc,
-                                    avatar_cloudfront_url:
-                                        user.avatar_cloudfront_url,
-                                    avatar_url: user.avatar_url,
-                                    avatar_file_id: user.avatar_file_id,
-                                    error: error,
-                                })
-                            }}
-                            onLoad={() => {
-                                const user = session.user as ExtendedUser
-                                console.log(
-                                    'Avatar image loaded successfully:',
-                                    {
-                                        src:
-                                            user.avatar_cloudfront_url ||
-                                            user.avatar_url,
-                                    },
-                                )
-                            }}
                         />
                         <AvatarFallback className="text-xs">
                             {getUserInitials(
