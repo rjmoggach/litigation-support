@@ -1,0 +1,779 @@
+openapi: 3.0.3
+info:
+  title: Litigation Support API - Email Connections
+  description: |
+    Email Connections API provides secure OAuth-based integration with Gmail and Google Workspace accounts 
+    for evidence collection and email harvesting in litigation support workflows.
+    
+    ## Key Features
+    
+    * **OAuth2 Integration**: Secure connection to Google/Gmail accounts
+    * **Token Management**: Automatic token refresh and secure storage
+    * **Health Monitoring**: Real-time connection status and validation
+    * **Multi-Account Support**: Connect and manage multiple email accounts
+    * **Comprehensive Security**: State validation, CSRF protection, encrypted storage
+    
+    ## Authentication
+    
+    All endpoints require JWT bearer token authentication obtained from `/api/v1/auth/login`.
+    
+  version: 1.0.0
+  contact:
+    name: Litigation Support API Team
+    email: api-support@litigation-support.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.litigation-support.com/api/v1
+    description: Production server
+  - url: https://staging.litigation-support.com/api/v1
+    description: Staging server  
+  - url: http://localhost:8000/api/v1
+    description: Development server
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: connections
+    description: Email connection management operations
+  - name: oauth
+    description: OAuth2 authentication flow endpoints
+  - name: health
+    description: Connection health monitoring and status
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication endpoint
+
+  schemas:
+    EmailConnection:
+      type: object
+      required:
+        - id
+        - user_id
+        - email_address
+        - provider
+        - provider_account_id
+        - connection_status
+        - created_at
+        - scopes_granted
+      properties:
+        id:
+          type: integer
+          description: Unique connection identifier
+          example: 123
+        user_id:
+          type: integer
+          description: ID of the user who owns this connection
+          example: 456
+        email_address:
+          type: string
+          format: email
+          description: Email address of the connected account
+          example: "user@gmail.com"
+        provider:
+          type: string
+          description: OAuth provider name
+          enum: [google]
+          example: "google"
+        provider_account_id:
+          type: string
+          description: Unique identifier from the OAuth provider
+          example: "google_user_id_123456"
+        connection_name:
+          type: string
+          nullable: true
+          description: User-friendly name for the connection
+          example: "Work Gmail Account"
+        connection_status:
+          type: string
+          description: Current status of the connection
+          enum: [active, expired, error, revoked]
+          example: "active"
+        last_sync_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp of the last successful sync
+          example: "2024-01-15T10:30:00Z"
+        error_message:
+          type: string
+          nullable: true
+          description: Error details if connection is in error state
+          example: "Token revoked by user"
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when connection was created
+          example: "2024-01-01T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Timestamp of last update
+          example: "2024-01-15T10:30:00Z"
+        scopes_granted:
+          type: array
+          items:
+            type: string
+          description: List of OAuth scopes granted by the user
+          example: 
+            - "https://www.googleapis.com/auth/gmail.readonly"
+            - "https://www.googleapis.com/auth/userinfo.email"
+            - "https://www.googleapis.com/auth/userinfo.profile"
+
+    ConnectionList:
+      type: object
+      required:
+        - connections
+        - total
+        - active
+        - expired
+        - error
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailConnection'
+          description: Array of email connections
+        total:
+          type: integer
+          description: Total number of connections
+          example: 3
+        active:
+          type: integer
+          description: Number of active connections
+          example: 2
+        expired:
+          type: integer
+          description: Number of expired connections
+          example: 1
+        error:
+          type: integer
+          description: Number of connections with errors
+          example: 0
+
+    ConnectionUpdate:
+      type: object
+      properties:
+        connection_name:
+          type: string
+          description: Update the user-friendly name
+          example: "Updated Account Name"
+        connection_status:
+          type: string
+          description: Update connection status
+          enum: [active, expired, error, revoked]
+          example: "active"
+
+    OAuthInitiateRequest:
+      type: object
+      required:
+        - provider
+      properties:
+        provider:
+          type: string
+          description: OAuth provider to use
+          enum: [google]
+          default: "google"
+          example: "google"
+        scopes:
+          type: array
+          items:
+            type: string
+          description: List of OAuth scopes to request
+          default:
+            - "https://www.googleapis.com/auth/gmail.readonly"
+            - "https://www.googleapis.com/auth/userinfo.email"
+            - "https://www.googleapis.com/auth/userinfo.profile"
+          example:
+            - "https://www.googleapis.com/auth/gmail.readonly"
+            - "https://www.googleapis.com/auth/userinfo.email"
+            - "https://www.googleapis.com/auth/userinfo.profile"
+        redirect_uri:
+          type: string
+          format: uri
+          description: Custom OAuth callback URL (optional)
+          example: "https://yourapp.com/oauth/callback"
+
+    OAuthInitiateResponse:
+      type: object
+      required:
+        - authorization_url
+        - state
+        - provider
+      properties:
+        authorization_url:
+          type: string
+          format: uri
+          description: Complete OAuth authorization URL for user redirection
+          example: "https://accounts.google.com/o/oauth2/auth?client_id=...&redirect_uri=...&scope=...&state=..."
+        state:
+          type: string
+          description: Secure state parameter for CSRF protection
+          example: "secure_random_state_string_123456"
+        provider:
+          type: string
+          description: OAuth provider being used
+          example: "google"
+
+    ConnectionHealth:
+      type: object
+      required:
+        - connection_id
+        - is_healthy
+        - status
+        - last_checked
+        - needs_reauth
+      properties:
+        connection_id:
+          type: integer
+          description: ID of the connection being checked
+          example: 123
+        is_healthy:
+          type: boolean
+          description: Whether the connection is functioning properly
+          example: true
+        status:
+          type: string
+          description: Current connection status
+          enum: [active, expired, error, revoked]
+          example: "active"
+        last_checked:
+          type: string
+          format: date-time
+          description: Timestamp of the health check
+          example: "2024-01-15T10:30:00Z"
+        error_details:
+          type: string
+          nullable: true
+          description: Details about any errors found
+          example: null
+        token_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the access token expires
+          example: "2024-01-15T11:30:00Z"
+        needs_reauth:
+          type: boolean
+          description: Whether the connection needs re-authorization
+          example: false
+
+    BulkConnectionStatus:
+      type: object
+      required:
+        - user_id
+        - total_connections
+        - active_connections
+        - expired_connections
+        - error_connections
+        - connections
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user
+          example: 456
+        total_connections:
+          type: integer
+          description: Total number of connections
+          example: 3
+        active_connections:
+          type: integer
+          description: Number of active connections
+          example: 2
+        expired_connections:
+          type: integer
+          description: Number of expired connections
+          example: 1
+        error_connections:
+          type: integer
+          description: Number of error connections
+          example: 0
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionStatus'
+          description: Array of connection status objects
+
+    ConnectionStatus:
+      type: object
+      required:
+        - connection_id
+        - email_address
+        - status
+        - is_active
+        - is_expired
+      properties:
+        connection_id:
+          type: integer
+          description: ID of the connection
+          example: 123
+        email_address:
+          type: string
+          format: email
+          description: Email address of the connection
+          example: "user@gmail.com"
+        status:
+          type: string
+          description: Current connection status
+          enum: [active, expired, error, revoked]
+          example: "active"
+        is_active:
+          type: boolean
+          description: Whether connection is active
+          example: true
+        is_expired:
+          type: boolean
+          description: Whether connection is expired
+          example: false
+        last_sync_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last sync timestamp
+          example: "2024-01-15T10:30:00Z"
+        error_message:
+          type: string
+          nullable: true
+          description: Error message if any
+          example: null
+
+    DeleteResponse:
+      type: object
+      required:
+        - message
+        - connection_id
+        - email_address
+      properties:
+        message:
+          type: string
+          description: Confirmation message
+          example: "Connection deleted successfully"
+        connection_id:
+          type: integer
+          description: ID of deleted connection
+          example: 123
+        email_address:
+          type: string
+          format: email
+          description: Email address of deleted connection
+          example: "user@gmail.com"
+
+    Error:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Email connection not found"
+
+paths:
+  /email-connections:
+    get:
+      tags:
+        - connections
+      summary: List Email Connections
+      description: |
+        Retrieve all email account connections for the authenticated user.
+        
+        Returns a list of connections with summary statistics including counts
+        by status (active, expired, error).
+      operationId: listConnections
+      responses:
+        '200':
+          description: List of email connections with summary statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionList'
+              example:
+                connections:
+                  - id: 1
+                    user_id: 123
+                    email_address: "user@gmail.com"
+                    provider: "google"
+                    provider_account_id: "google_user_id_123"
+                    connection_name: "Work Gmail Account"
+                    connection_status: "active"
+                    last_sync_at: "2024-01-15T10:30:00Z"
+                    error_message: null
+                    created_at: "2024-01-01T10:00:00Z"
+                    updated_at: "2024-01-15T10:30:00Z"
+                    scopes_granted:
+                      - "https://www.googleapis.com/auth/gmail.readonly"
+                      - "https://www.googleapis.com/auth/userinfo.email"
+                total: 1
+                active: 1
+                expired: 0
+                error: 0
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /email-connections/{connection_id}:
+    get:
+      tags:
+        - connections
+      summary: Get Single Connection
+      description: Retrieve details for a specific email connection
+      operationId: getConnection
+      parameters:
+        - name: connection_id
+          in: path
+          required: true
+          description: ID of the connection to retrieve
+          schema:
+            type: integer
+            minimum: 1
+          example: 123
+      responses:
+        '200':
+          description: Connection details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConnection'
+        '404':
+          description: Connection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - connections
+      summary: Update Connection
+      description: Update connection settings like name or status
+      operationId: updateConnection
+      parameters:
+        - name: connection_id
+          in: path
+          required: true
+          description: ID of the connection to update
+          schema:
+            type: integer
+            minimum: 1
+          example: 123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionUpdate'
+            example:
+              connection_name: "Updated Account Name"
+              connection_status: "active"
+      responses:
+        '200':
+          description: Connection updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConnection'
+        '404':
+          description: Connection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - connections
+      summary: Delete Connection
+      description: |
+        Remove an email connection and revoke OAuth tokens.
+        
+        This operation will:
+        1. Attempt to revoke OAuth tokens with Google
+        2. Delete the connection record from the database
+        3. Return confirmation with connection details
+      operationId: deleteConnection
+      parameters:
+        - name: connection_id
+          in: path
+          required: true
+          description: ID of the connection to delete
+          schema:
+            type: integer
+            minimum: 1
+          example: 123
+      responses:
+        '200':
+          description: Connection deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+              example:
+                message: "Connection deleted successfully"
+                connection_id: 123
+                email_address: "user@gmail.com"
+        '404':
+          description: Connection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /email-connections/oauth/initiate:
+    post:
+      tags:
+        - oauth
+      summary: Initiate OAuth Flow
+      description: |
+        Start OAuth2 flow to connect a new Google/Gmail account.
+        
+        This endpoint generates a secure OAuth2 authorization URL that the client
+        can use to redirect the user to Google's consent screen.
+        
+        **Security Features:**
+        - Generates cryptographically secure state parameter for CSRF protection
+        - Validates redirect URIs against allowed origins
+        - Associates OAuth state with authenticated user
+        
+        **Typical Flow:**
+        1. Call this endpoint to get authorization URL
+        2. Redirect user to authorization_url (typically in popup)
+        3. User grants permission on Google's consent screen
+        4. Google redirects to callback URL with authorization code
+        5. Backend processes callback and creates connection
+      operationId: initiateOAuthFlow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthInitiateRequest'
+            example:
+              provider: "google"
+              scopes:
+                - "https://www.googleapis.com/auth/gmail.readonly"
+                - "https://www.googleapis.com/auth/userinfo.email"
+                - "https://www.googleapis.com/auth/userinfo.profile"
+      responses:
+        '200':
+          description: OAuth authorization URL generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthInitiateResponse'
+              example:
+                authorization_url: "https://accounts.google.com/o/oauth2/auth?client_id=...&redirect_uri=...&scope=...&state=..."
+                state: "secure_random_state_string_123456"
+                provider: "google"
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /email-connections/oauth/callback:
+    get:
+      tags:
+        - oauth
+      summary: OAuth Callback Handler
+      description: |
+        Process OAuth2 callback from Google and create email connection.
+        
+        This endpoint is typically called automatically by Google's OAuth redirect
+        and not directly by client applications.
+        
+        **Process:**
+        1. Validates state parameter against stored OAuth state
+        2. Exchanges authorization code for access/refresh tokens
+        3. Retrieves Google user profile information
+        4. Creates encrypted connection record in database
+        5. Returns HTML page that notifies parent window and closes popup
+        
+        **Security:**
+        - State parameter validation prevents CSRF attacks
+        - Tokens are encrypted before database storage
+        - State can only be used once and expires after 1 hour
+      operationId: handleOAuthCallback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Authorization code from Google OAuth
+          schema:
+            type: string
+          example: "4/0AX4XfWh7..."
+        - name: state
+          in: query
+          required: true
+          description: State parameter for CSRF protection
+          schema:
+            type: string
+          example: "secure_random_state_string_123456"
+        - name: scope
+          in: query
+          required: false
+          description: Space-separated list of granted scopes
+          schema:
+            type: string
+          example: "email profile https://www.googleapis.com/auth/gmail.readonly"
+      responses:
+        '200':
+          description: OAuth callback processed successfully - returns HTML page
+          content:
+            text/html:
+              example: "<!DOCTYPE html><html>...OAuth success page with JavaScript to close popup...</html>"
+        '400':
+          description: Invalid OAuth state or authorization code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                detail: "Invalid or expired OAuth state"
+        '500':
+          description: Failed to create connection or exchange tokens
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                detail: "Failed to create connection: Token exchange failed"
+
+  /email-connections/{connection_id}/health:
+    get:
+      tags:
+        - health
+      summary: Check Connection Health
+      description: |
+        Verify that a connection is working and tokens are valid.
+        
+        This endpoint performs a live check of the connection by:
+        1. Validating stored tokens
+        2. Making a test API call to Google
+        3. Checking token expiration times
+        4. Determining if re-authorization is needed
+      operationId: checkConnectionHealth
+      parameters:
+        - name: connection_id
+          in: path
+          required: true
+          description: ID of the connection to check
+          schema:
+            type: integer
+            minimum: 1
+          example: 123
+      responses:
+        '200':
+          description: Connection health check results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionHealth'
+              example:
+                connection_id: 123
+                is_healthy: true
+                status: "active"
+                last_checked: "2024-01-15T10:30:00Z"
+                error_details: null
+                token_expires_at: "2024-01-15T11:30:00Z"
+                needs_reauth: false
+        '404':
+          description: Connection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /email-connections/status:
+    get:
+      tags:
+        - health
+      summary: Get Bulk Connection Status
+      description: |
+        Get health status for all user connections.
+        
+        This endpoint provides a comprehensive overview of all connections
+        including counts by status and individual connection details.
+      operationId: getBulkConnectionStatus
+      responses:
+        '200':
+          description: Bulk connection status information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkConnectionStatus'
+              example:
+                user_id: 123
+                total_connections: 3
+                active_connections: 2
+                expired_connections: 1
+                error_connections: 0
+                connections:
+                  - connection_id: 1
+                    email_address: "user1@gmail.com"
+                    status: "active"
+                    is_active: true
+                    is_expired: false
+                    last_sync_at: "2024-01-15T10:30:00Z"
+                    error_message: null
+                  - connection_id: 2
+                    email_address: "user2@gmail.com"
+                    status: "expired"
+                    is_active: false
+                    is_expired: true
+                    last_sync_at: "2024-01-14T08:15:00Z"
+                    error_message: null
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

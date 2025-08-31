@@ -1129,3 +1129,84 @@ async def delete_profile_picture(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to delete profile picture: {str(e)}")
+
+
+# Person management endpoints
+
+
+@router.put("/users/me/profile/person", response_model=schemas.UserProfileResponse)
+def link_user_to_person(
+    person_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+):
+    """Link user profile to a person record"""
+    from contacts.models import Person
+    
+    # Verify person exists
+    person = db.query(Person).filter(Person.id == person_id).first()
+    if not person:
+        raise HTTPException(status_code=404, detail="Person not found")
+    
+    # Get or create user profile
+    user_profile = get_or_create_user_profile(db, current_user)
+    
+    # Check if person is already linked to another user
+    existing_link = db.query(models.UserProfile).filter(
+        models.UserProfile.person_id == person_id,
+        models.UserProfile.id != user_profile.id
+    ).first()
+    
+    if existing_link:
+        raise HTTPException(
+            status_code=400, 
+            detail="This person is already linked to another user profile"
+        )
+    
+    # Link the person to this user profile
+    user_profile.person_id = person_id
+    db.commit()
+    db.refresh(user_profile)
+    
+    return user_profile
+
+
+@router.delete("/users/me/profile/person")
+def unlink_user_from_person(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+):
+    """Unlink user profile from person record"""
+    user_profile = get_or_create_user_profile(db, current_user)
+    
+    if not user_profile.person_id:
+        raise HTTPException(status_code=400, detail="No person is linked to this profile")
+    
+    # Unlink the person
+    user_profile.person_id = None
+    db.commit()
+    
+    return {"message": "Person unlinked from profile successfully"}
+
+
+@router.get("/users/me/profile/person")
+def get_linked_person(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(deps.get_current_active_user),
+):
+    """Get person record linked to current user"""
+    from contacts.models import Person
+    
+    user_profile = get_or_create_user_profile(db, current_user)
+    
+    if not user_profile.person_id:
+        return {"person": None, "message": "No person linked to this profile"}
+    
+    person = db.query(Person).filter(Person.id == user_profile.person_id).first()
+    if not person:
+        # Clean up broken link
+        user_profile.person_id = None
+        db.commit()
+        return {"person": None, "message": "Linked person not found, link removed"}
+    
+    return {"person": person}

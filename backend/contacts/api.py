@@ -269,6 +269,8 @@ def create_person(
             slug=slug,
             email=person_data.email,
             phone=person_data.phone,
+            date_of_birth=person_data.date_of_birth,
+            gender=person_data.gender,
             is_active=person_data.is_active,
             is_public=person_data.is_public,
         )
@@ -1507,3 +1509,134 @@ def list_associations(
     )
 
     return associations
+
+
+# PersonAddress CRUD endpoints (admin only)
+
+
+@router.post("/people/{person_id}/addresses", response_model=schemas.PersonAddressResponse)
+def create_person_address(
+    person_id: int,
+    address_data: schemas.PersonAddressCreate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_active_superuser),
+):
+    """Create a new address for a person (admin only)"""
+    # Verify person exists
+    person = db.query(models.Person).filter(models.Person.id == person_id).first()
+    if not person:
+        raise HTTPException(status_code=404, detail="Person not found")
+    
+    # Validate address_data.person_id matches person_id
+    if address_data.person_id != person_id:
+        raise HTTPException(status_code=400, detail="Person ID mismatch")
+    
+    # If this is marked as current, unset other current addresses
+    if address_data.is_current:
+        db.query(models.PersonAddress).filter(
+            models.PersonAddress.person_id == person_id,
+            models.PersonAddress.is_current == True
+        ).update({"is_current": False})
+    
+    # Create address
+    db_address = models.PersonAddress(
+        person_id=address_data.person_id,
+        street_address=address_data.street_address,
+        city=address_data.city,
+        state=address_data.state,
+        zip_code=address_data.zip_code,
+        country=address_data.country,
+        effective_start_date=address_data.effective_start_date,
+        effective_end_date=address_data.effective_end_date,
+        is_current=address_data.is_current,
+        address_type=address_data.address_type,
+    )
+    
+    db.add(db_address)
+    db.commit()
+    db.refresh(db_address)
+    
+    return db_address
+
+
+@router.get("/people/{person_id}/addresses", response_model=list[schemas.PersonAddressResponse])
+def list_person_addresses(
+    person_id: int,
+    current_only: bool = Query(False, description="Only return current addresses"),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_active_superuser),
+):
+    """List addresses for a person (admin only)"""
+    # Verify person exists
+    person = db.query(models.Person).filter(models.Person.id == person_id).first()
+    if not person:
+        raise HTTPException(status_code=404, detail="Person not found")
+    
+    query = db.query(models.PersonAddress).filter(models.PersonAddress.person_id == person_id)
+    
+    if current_only:
+        query = query.filter(models.PersonAddress.is_current == True)
+    
+    addresses = query.order_by(models.PersonAddress.effective_start_date.desc()).all()
+    return addresses
+
+
+@router.put("/people/{person_id}/addresses/{address_id}", response_model=schemas.PersonAddressResponse)
+def update_person_address(
+    person_id: int,
+    address_id: int,
+    address_update: schemas.PersonAddressUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_active_superuser),
+):
+    """Update a person's address (admin only)"""
+    # Get address and verify it belongs to the person
+    address = db.query(models.PersonAddress).filter(
+        models.PersonAddress.id == address_id,
+        models.PersonAddress.person_id == person_id
+    ).first()
+    
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    
+    # Update fields if provided
+    update_data = address_update.model_dump(exclude_unset=True)
+    
+    # If setting as current, unset other current addresses
+    if update_data.get("is_current"):
+        db.query(models.PersonAddress).filter(
+            models.PersonAddress.person_id == person_id,
+            models.PersonAddress.id != address_id,
+            models.PersonAddress.is_current == True
+        ).update({"is_current": False})
+    
+    for field, value in update_data.items():
+        setattr(address, field, value)
+    
+    db.commit()
+    db.refresh(address)
+    
+    return address
+
+
+@router.delete("/people/{person_id}/addresses/{address_id}")
+def delete_person_address(
+    person_id: int,
+    address_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_active_superuser),
+):
+    """Delete a person's address (admin only)"""
+    # Get address and verify it belongs to the person
+    address = db.query(models.PersonAddress).filter(
+        models.PersonAddress.id == address_id,
+        models.PersonAddress.person_id == person_id
+    ).first()
+    
+    if not address:
+        raise HTTPException(status_code=404, detail="Address not found")
+    
+    db.delete(address)
+    db.commit()
+    
+    return {"message": "Address deleted successfully"}

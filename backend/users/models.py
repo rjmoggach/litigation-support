@@ -105,6 +105,9 @@ class UserProfile(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False)
     
+    # Link to Person record for family relationships
+    person_id = Column(Integer, ForeignKey("people.id"), nullable=True)
+    
     # Profile information
     bio = Column(Text, nullable=True)
     avatar_url = Column(String, nullable=True)  # URL to profile picture
@@ -128,6 +131,7 @@ class UserProfile(Base):
     
     # Relationships
     user = relationship("User", back_populates="profile")
+    person = relationship("Person", foreign_keys=[person_id])
     # Note: StoredFile is in storage.models, imported separately to avoid circular imports
     stored_files = relationship(
         "StoredFile",

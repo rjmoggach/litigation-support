@@ -1,0 +1,468 @@
+{
+  "info": {
+    "name": "Email Connections API",
+    "description": "Comprehensive Postman collection for testing the Email Connections API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "connection_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.access_token);",
+                  "    pm.test('JWT token received', function () {",
+                  "        pm.expect(jsonData.access_token).to.be.a('string');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "test@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "testpassword123",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Authenticate and obtain JWT token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Connection Management",
+      "item": [
+        {
+          "name": "List All Connections",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has connections array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('connections');",
+                  "    pm.expect(jsonData).to.have.property('total');",
+                  "    pm.expect(jsonData).to.have.property('active');",
+                  "    pm.expect(jsonData).to.have.property('expired');",
+                  "    pm.expect(jsonData).to.have.property('error');",
+                  "});",
+                  "",
+                  "// Store first connection ID for other tests",
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.connections && jsonData.connections.length > 0) {",
+                  "    pm.collectionVariables.set('connection_id', jsonData.connections[0].id.toString());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/email-connections",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections"]
+            },
+            "description": "Retrieve all email connections for the authenticated user"
+          }
+        },
+        {
+          "name": "Get Single Connection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 404', function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response has connection details', function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('id');",
+                  "        pm.expect(jsonData).to.have.property('email_address');",
+                  "        pm.expect(jsonData).to.have.property('provider');",
+                  "        pm.expect(jsonData).to.have.property('connection_status');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/email-connections/{{connection_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "{{connection_id}}"]
+            },
+            "description": "Get details for a specific email connection"
+          }
+        },
+        {
+          "name": "Update Connection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 404', function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Connection updated successfully', function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('connection_name');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"connection_name\": \"Updated Test Connection\",\n  \"connection_status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/email-connections/{{connection_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "{{connection_id}}"]
+            },
+            "description": "Update connection settings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "OAuth Flow",
+      "item": [
+        {
+          "name": "Initiate OAuth Flow",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('OAuth response has required fields', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('authorization_url');",
+                  "    pm.expect(jsonData).to.have.property('state');",
+                  "    pm.expect(jsonData).to.have.property('provider');",
+                  "});",
+                  "",
+                  "// Store OAuth state for callback testing",
+                  "const jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('oauth_state', jsonData.state);",
+                  "",
+                  "console.log('OAuth Authorization URL:', jsonData.authorization_url);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"provider\": \"google\",\n  \"scopes\": [\n    \"https://www.googleapis.com/auth/gmail.readonly\",\n    \"https://www.googleapis.com/auth/userinfo.email\",\n    \"https://www.googleapis.com/auth/userinfo.profile\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/email-connections/oauth/initiate",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "oauth", "initiate"]
+            },
+            "description": "Start OAuth flow to connect new Gmail account"
+          }
+        },
+        {
+          "name": "OAuth Callback (Test)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// This endpoint typically returns HTML, not JSON",
+                  "pm.test('Status code indicates processing', function () {",
+                  "    pm.expect([200, 400, 500]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response contains HTML', function () {",
+                  "        pm.expect(pm.response.text()).to.include('html');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/email-connections/oauth/callback?code=test_auth_code&state={{oauth_state}}&scope=email%20profile%20gmail.readonly",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "oauth", "callback"],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "test_auth_code",
+                  "description": "Authorization code from Google (use test value)"
+                },
+                {
+                  "key": "state",
+                  "value": "{{oauth_state}}",
+                  "description": "State parameter from initiate step"
+                },
+                {
+                  "key": "scope",
+                  "value": "email%20profile%20gmail.readonly",
+                  "description": "Granted scopes"
+                }
+              ]
+            },
+            "description": "Test OAuth callback processing (normally called by Google redirect)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Monitoring",
+      "item": [
+        {
+          "name": "Check Connection Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 404', function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Health response has required fields', function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('connection_id');",
+                  "        pm.expect(jsonData).to.have.property('is_healthy');",
+                  "        pm.expect(jsonData).to.have.property('status');",
+                  "        pm.expect(jsonData).to.have.property('last_checked');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/email-connections/{{connection_id}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "{{connection_id}}", "health"]
+            },
+            "description": "Check health status of a specific connection"
+          }
+        },
+        {
+          "name": "Get Bulk Connection Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Bulk status has required fields', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('user_id');",
+                  "    pm.expect(jsonData).to.have.property('total_connections');",
+                  "    pm.expect(jsonData).to.have.property('active_connections');",
+                  "    pm.expect(jsonData).to.have.property('connections');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/email-connections/status",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "status"]
+            },
+            "description": "Get health status for all user connections"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cleanup",
+      "item": [
+        {
+          "name": "Delete Connection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 404', function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Delete response has confirmation', function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('message');",
+                  "        pm.expect(jsonData).to.have.property('connection_id');",
+                  "        pm.expect(jsonData).to.have.property('email_address');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/email-connections/{{connection_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["email-connections", "{{connection_id}}"]
+            },
+            "description": "Delete an email connection"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Add timestamp to requests for debugging",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test to check response time",
+          "pm.test('Response time is reasonable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "// Log response details for debugging",
+          "console.log('Request:', pm.request.url.toString());",
+          "console.log('Status:', pm.response.code, pm.response.status);",
+          "console.log('Response Time:', pm.response.responseTime + 'ms');"
+        ]
+      }
+    }
+  ]
+}

@@ -153,6 +153,7 @@ class UserProfileBase(BaseModel):
     linkedin: str | None = None
     github: str | None = None
     public_profile: bool = True
+    person_id: int | None = None
 
 
 class UserProfileCreate(UserProfileBase):

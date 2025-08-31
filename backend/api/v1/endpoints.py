@@ -3,6 +3,7 @@ from contacts.api import router as contacts_router
 from email_connections.api import router as email_connections_router
 from fastapi import APIRouter
 from images.api import router as images_router
+from marriages.api import router as marriages_router
 from storage.api import router as storage_router
 from tags.api import router as tags_router
 from users.api import router as users_router
@@ -32,3 +33,6 @@ api_router.include_router(
 
 # cases endpoints
 api_router.include_router(cases_router, prefix="/cases", tags=["cases"])
+
+# marriages endpoints
+api_router.include_router(marriages_router, prefix="/marriages", tags=["marriages"])

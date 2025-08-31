@@ -73,6 +73,11 @@ class Person(Base):
     slug = Column(String(100), unique=True, index=True, nullable=False)
     email = Column(String(255), nullable=True)
     phone = Column(String(50), nullable=True)
+    
+    # Personal information fields for legal proceedings
+    date_of_birth = Column(Date, nullable=True)
+    gender = Column(String(50), nullable=True)
+    
     is_active = Column(Boolean, default=True, index=True)
     is_public = Column(Boolean, default=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -81,6 +86,7 @@ class Person(Base):
     # Relationships
     profile = relationship("PersonProfile", back_populates="person", uselist=False, cascade="all, delete-orphan")
     associations = relationship("CompanyPersonAssociation", back_populates="person", cascade="all, delete-orphan")
+    addresses = relationship("PersonAddress", back_populates="person", cascade="all, delete-orphan")
     
     @property
     def companies(self):
@@ -103,12 +109,46 @@ class PersonProfile(Base):
     expertise = Column(JSON, nullable=True)  # Array of expertise areas
     location = Column(JSON, nullable=True)  # {city: "", state: "", country: ""}
     social_links = Column(JSON, nullable=True)  # {twitter: "", linkedin: "", github: ""}
+    
+    # Legal proceeding specific information
+    ssn_last_four = Column(String(4), nullable=True)  # Optional, will be encrypted
+    preferred_name = Column(String(100), nullable=True)
+    emergency_contact = Column(JSON, nullable=True)
+    
     is_public = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationships
     person = relationship("Person", back_populates="profile")
+
+
+class PersonAddress(Base):
+    __tablename__ = "person_addresses"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    person_id = Column(Integer, ForeignKey("people.id", ondelete="CASCADE"), nullable=False)
+    
+    # Address fields
+    street_address = Column(String(500), nullable=False)
+    city = Column(String(100), nullable=False)
+    state = Column(String(50), nullable=False)
+    zip_code = Column(String(20), nullable=False)
+    country = Column(String(100), nullable=True, default="United States")
+    
+    # Temporal fields
+    effective_start_date = Column(Date, nullable=False)
+    effective_end_date = Column(Date, nullable=True)
+    is_current = Column(Boolean, default=False)
+    
+    # Address type
+    address_type = Column(String(50), default="residence")  # residence, mailing, work, etc.
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # Relationships
+    person = relationship("Person", back_populates="addresses")
 
 
 class CompanyPersonAssociation(Base):

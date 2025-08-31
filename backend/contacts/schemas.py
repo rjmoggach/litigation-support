@@ -70,6 +70,8 @@ class PersonBase(BaseModel):
     last_name: str = Field(..., min_length=1, max_length=100)
     email: Optional[EmailStr] = None
     phone: Optional[str] = Field(None, max_length=50)
+    date_of_birth: Optional[date] = None
+    gender: Optional[str] = Field(None, max_length=50)
     is_active: bool = True
     is_public: bool = True
 
@@ -83,6 +85,8 @@ class PersonUpdate(BaseModel):
     last_name: Optional[str] = Field(None, min_length=1, max_length=100)
     email: Optional[EmailStr] = None
     phone: Optional[str] = Field(None, max_length=50)
+    date_of_birth: Optional[date] = None
+    gender: Optional[str] = Field(None, max_length=50)
     is_active: Optional[bool] = None
     is_public: Optional[bool] = None
 
@@ -93,6 +97,9 @@ class PersonProfileBase(BaseModel):
     expertise: Optional[List[str]] = None
     location: Optional[Dict[str, Any]] = None
     social_links: Optional[Dict[str, str]] = None
+    ssn_last_four: Optional[str] = Field(None, max_length=4, pattern=r'^\d{4}$')
+    preferred_name: Optional[str] = Field(None, max_length=100)
+    emergency_contact: Optional[Dict[str, Any]] = None
     is_public: bool = True
 
 
@@ -173,6 +180,43 @@ class PersonWithCompaniesResponse(PersonResponse):
 # - MediaUploadResponse: Response for successful media upload
 # - MediaListResponse: List of media files for a profile
 # - ProfileMediaUpdate: Schema for updating profile media references
+
+
+class PersonAddressBase(BaseModel):
+    street_address: str = Field(..., min_length=1, max_length=500)
+    city: str = Field(..., min_length=1, max_length=100)
+    state: str = Field(..., min_length=1, max_length=50)
+    zip_code: str = Field(..., min_length=1, max_length=20)
+    country: Optional[str] = Field(None, max_length=100)
+    effective_start_date: date
+    effective_end_date: Optional[date] = None
+    is_current: bool = True
+    address_type: Optional[str] = Field(None, max_length=50)
+
+
+class PersonAddressCreate(PersonAddressBase):
+    person_id: int
+
+
+class PersonAddressUpdate(BaseModel):
+    street_address: Optional[str] = Field(None, min_length=1, max_length=500)
+    city: Optional[str] = Field(None, min_length=1, max_length=100)
+    state: Optional[str] = Field(None, min_length=1, max_length=50)
+    zip_code: Optional[str] = Field(None, min_length=1, max_length=20)
+    country: Optional[str] = Field(None, max_length=100)
+    effective_start_date: Optional[date] = None
+    effective_end_date: Optional[date] = None
+    is_current: Optional[bool] = None
+    address_type: Optional[str] = Field(None, max_length=50)
+
+
+class PersonAddressResponse(PersonAddressBase):
+    id: int
+    person_id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 # TODO: Implement common validators
