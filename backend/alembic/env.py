@@ -21,6 +21,9 @@ from tags.models import Tag
 from images.models import Image
 from storage.models import StoredFile
 from galleries.models import Gallery
+from cases.models import Case, CaseProfile, CourtEvent, CaseDocument, DocumentService, CaseNote, DocumentSmartText
+from email_connections.models import EmailConnection
+from marriages.models import Marriage, MarriageChildren
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
