@@ -7,6 +7,9 @@ from pydantic import BaseModel, EmailStr, field_validator
 
 class UserBase(BaseModel):
     email: EmailStr
+    first_name: str | None = None
+    middle_name: str | None = None
+    last_name: str | None = None
     full_name: str | None = None
     is_active: bool = True
     is_superuser: bool = False
@@ -18,6 +21,9 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     email: EmailStr | None = None
+    first_name: str | None = None
+    middle_name: str | None = None
+    last_name: str | None = None
     full_name: str | None = None
     password: str | None = None
     is_active: bool | None = None
@@ -188,6 +194,9 @@ class ProfilePictureUploadResponse(BaseModel):
 
 # Admin-specific schemas
 class UserAdminUpdate(BaseModel):
+    first_name: str | None = None
+    middle_name: str | None = None
+    last_name: str | None = None
     full_name: str | None = None
     is_active: bool | None = None
     is_superuser: bool | None = None

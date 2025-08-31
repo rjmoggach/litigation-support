@@ -1,6 +1,6 @@
 'use client'
 
-import { DynamicBreadcrumb } from '@/components/dashboard/dynamic-breadcrumb'
+import { DynamicBreadcrumb } from '@/components/blocks/dynamic-breadcrumb'
 import { SiteMenuBar } from '@/components/navigation/site-menu-bar'
 import { usePathname } from 'next/navigation'
 

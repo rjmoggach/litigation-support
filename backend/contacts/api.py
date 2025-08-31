@@ -251,22 +251,11 @@ def create_person(
 ):
     """Create a new person (admin only)"""
     try:
-        # Compute full name
-        full_name = f"{person_data.first_name} {person_data.last_name}".strip()
-
-        # Validate the full name is not empty
-        if not full_name.strip():
-            raise HTTPException(status_code=400, detail="Person name cannot be empty")
-
-        # Generate unique slug from full name
-        slug = generate_slug(full_name, db, models.Person)
-
         # Create person
         db_person = models.Person(
             first_name=person_data.first_name,
+            middle_name=person_data.middle_name,
             last_name=person_data.last_name,
-            full_name=full_name,
-            slug=slug,
             email=person_data.email,
             phone=person_data.phone,
             date_of_birth=person_data.date_of_birth,
@@ -274,6 +263,11 @@ def create_person(
             is_active=person_data.is_active,
             is_public=person_data.is_public,
         )
+        
+        # Compute full name and slug
+        db_person.compute_full_name()
+        db_person.slug = generate_slug(db_person.full_name, db, models.Person)
+        
         db.add(db_person)
         db.commit()
         db.refresh(db_person)
@@ -374,21 +368,26 @@ def update_person(
         update_data = person_update.model_dump(exclude_unset=True)
 
         # Handle name changes - recompute full_name and slug if needed
-        if "first_name" in update_data or "last_name" in update_data:
-            first_name = update_data.get("first_name", person.first_name)
-            last_name = update_data.get("last_name", person.last_name)
-            full_name = f"{first_name} {last_name}".strip()
-
+        if "first_name" in update_data or "middle_name" in update_data or "last_name" in update_data:
+            # Update the person object with new values
+            for field, value in update_data.items():
+                setattr(person, field, value)
+            
+            # Compute new full name
+            old_full_name = person.full_name
+            person.compute_full_name()
+            
             # Validate the new full name is not empty
-            if not full_name.strip():
+            if not person.full_name.strip():
                 raise HTTPException(status_code=400, detail="Person name cannot be empty")
 
-            if full_name != person.full_name:
-                update_data["full_name"] = full_name
-                update_data["slug"] = generate_slug(full_name, db, models.Person, person.id)
-
-        for field, value in update_data.items():
-            setattr(person, field, value)
+            # Generate new slug if full name changed
+            if person.full_name != old_full_name:
+                person.slug = generate_slug(person.full_name, db, models.Person, person.id)
+        else:
+            # If no name changes, just update other fields
+            for field, value in update_data.items():
+                setattr(person, field, value)
 
         db.commit()
         db.refresh(person)

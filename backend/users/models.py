@@ -11,6 +11,9 @@ class User(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
+    first_name = Column(String, nullable=True)
+    middle_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
     full_name = Column(String)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
@@ -97,6 +100,11 @@ class User(Base):
             return json.loads(self.roles) if self.roles else ["user"]
         except:
             return ["user"]
+    
+    def compute_full_name(self):
+        """Compute and set the full_name field"""
+        name_parts = [self.first_name, self.middle_name, self.last_name]
+        self.full_name = " ".join(part for part in name_parts if part and part.strip()).strip()
 
 
 class UserProfile(Base):

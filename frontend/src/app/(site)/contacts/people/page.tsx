@@ -1,24 +1,24 @@
 'use client'
 
+import { PageHeader } from '@/components/blocks/page-header'
 import {
     createPersonColumns,
     personStatusOptions,
     personVisibilityOptions,
 } from '@/components/contacts/people/person-columns'
 import { PersonEditDialog } from '@/components/contacts/people/person-edit-dialog'
-import { PageHeader } from '@/components/dashboard/page-header'
 import { FlexibleDataTable } from '@/components/data-table/flexible-data-table'
 import { Button } from '@/components/ui/button'
 import type { PersonResponse } from '@/lib/api'
 import {
     createPersonApiV1ContactsPeoplePost,
     deletePersonApiV1ContactsPeoplePersonIdDelete,
-    listPeopleApiV1ContactsPeopleGet,
-    updatePersonApiV1ContactsPeoplePersonIdPut,
     getMyProfileApiV1UsersMeProfileGet,
     getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet,
     listMarriageChildrenApiV1MarriagesMarriageIdChildrenGet,
+    listPeopleApiV1ContactsPeopleGet,
     listPersonAddressesApiV1ContactsPeoplePersonIdAddressesGet,
+    updatePersonApiV1ContactsPeoplePersonIdPut,
 } from '@/lib/api'
 import { useBreadcrumbUpdate } from '@/providers/breadcrumb-provider'
 import { Plus, RefreshCw, User } from 'lucide-react'
@@ -70,42 +70,53 @@ export default function PeoplePage() {
                     response.data.map(async (person: PersonResponse) => {
                         try {
                             // Load addresses and marriages for each person
-                            const [addressesResponse, marriagesResponse] = await Promise.all([
-                                listPersonAddressesApiV1ContactsPeoplePersonIdAddressesGet({
-                                    path: { person_id: person.id },
-                                    headers: {
-                                        Authorization: `Bearer ${session.accessToken}`,
-                                    },
-                                }).catch(() => ({ data: [] })),
-                                getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet({
-                                    path: { person_id: person.id },
-                                    headers: {
-                                        Authorization: `Bearer ${session.accessToken}`,
-                                    },
-                                }).catch(() => ({ data: [] }))
-                            ])
-                            
+                            const [addressesResponse, marriagesResponse] =
+                                await Promise.all([
+                                    listPersonAddressesApiV1ContactsPeoplePersonIdAddressesGet(
+                                        {
+                                            path: { person_id: person.id },
+                                            headers: {
+                                                Authorization: `Bearer ${session.accessToken}`,
+                                            },
+                                        },
+                                    ).catch(() => ({ data: [] })),
+                                    getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet(
+                                        {
+                                            path: { person_id: person.id },
+                                            headers: {
+                                                Authorization: `Bearer ${session.accessToken}`,
+                                            },
+                                        },
+                                    ).catch(() => ({ data: [] })),
+                                ])
+
                             const addresses = addressesResponse?.data || []
                             const marriages = marriagesResponse?.data || []
-                            
+
                             // Add spouse names to marriages
-                            const enrichedMarriages = marriages.map((marriage: any) => ({
-                                ...marriage,
-                                spouse_name: marriage.person_1_id === person.id 
-                                    ? marriage.person_2_full_name 
-                                    : marriage.person_1_full_name
-                            }))
-                            
+                            const enrichedMarriages = marriages.map(
+                                (marriage: any) => ({
+                                    ...marriage,
+                                    spouse_name:
+                                        marriage.person_1_id === person.id
+                                            ? marriage.person_2_full_name
+                                            : marriage.person_1_full_name,
+                                }),
+                            )
+
                             return {
                                 ...person,
                                 addresses,
-                                marriages: enrichedMarriages
+                                marriages: enrichedMarriages,
                             }
                         } catch (error) {
-                            console.error(`Failed to enrich person ${person.id}:`, error)
+                            console.error(
+                                `Failed to enrich person ${person.id}:`,
+                                error,
+                            )
                             return person
                         }
-                    })
+                    }),
                 )
                 setPeople(enrichedPeople)
             }
@@ -148,33 +159,49 @@ export default function PeoplePage() {
     // Load relationship data (marriages and children)
     const loadRelationshipData = async (personId: number) => {
         try {
-            const marriagesResponse = await getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet({
-                path: { person_id: personId },
-                headers: {
-                    Authorization: `Bearer ${session?.accessToken}`,
-                },
-            })
-            
+            const marriagesResponse =
+                await getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet(
+                    {
+                        path: { person_id: personId },
+                        query: { include_all: true }, // Include marriages where person is spouse too
+                        headers: {
+                            Authorization: `Bearer ${session?.accessToken}`,
+                        },
+                    },
+                )
+
             const marriagesData = marriagesResponse?.data || marriagesResponse
-            const marriagesArray = Array.isArray(marriagesData) ? marriagesData : []
+            const marriagesArray = Array.isArray(marriagesData)
+                ? marriagesData
+                : []
             setMarriages(marriagesArray)
-            
+
             // Load all children from all marriages
             const childIds: number[] = []
             for (const marriage of marriagesArray) {
                 try {
-                    const childrenResponse = await listMarriageChildrenApiV1MarriagesMarriageIdChildrenGet({
-                        path: { marriage_id: marriage.id },
-                        headers: {
-                            Authorization: `Bearer ${session?.accessToken}`,
-                        },
-                    })
+                    const childrenResponse =
+                        await listMarriageChildrenApiV1MarriagesMarriageIdChildrenGet(
+                            {
+                                path: { marriage_id: marriage.id },
+                                headers: {
+                                    Authorization: `Bearer ${session?.accessToken}`,
+                                },
+                            },
+                        )
                     const children = childrenResponse?.data || childrenResponse
                     if (Array.isArray(children)) {
-                        childIds.push(...children.map(child => child.child_id || child.id))
+                        childIds.push(
+                            ...children.map(
+                                (child) => child.child_id || child.id,
+                            ),
+                        )
                     }
                 } catch (error) {
-                    console.error(`Failed to load children for marriage ${marriage.id}:`, error)
+                    console.error(
+                        `Failed to load children for marriage ${marriage.id}:`,
+                        error,
+                    )
                 }
             }
             setAllChildren(childIds)
@@ -283,10 +310,10 @@ export default function PeoplePage() {
     const getSpouseIds = useCallback(() => {
         if (!linkedPersonId) return []
         return marriages
-            .map(marriage => 
-                marriage.person_1_id === linkedPersonId 
-                    ? marriage.person_2_id 
-                    : marriage.person_1_id
+            .map((marriage) =>
+                marriage.person_id === linkedPersonId
+                    ? marriage.spouse_id
+                    : marriage.person_id,
             )
             .filter(Boolean)
     }, [marriages, linkedPersonId])
@@ -302,7 +329,14 @@ export default function PeoplePage() {
                 getSpouseIds(),
                 allChildren,
             ),
-        [handlePersonEdit, handlePersonDelete, people.length, linkedPersonId, getSpouseIds, allChildren],
+        [
+            handlePersonEdit,
+            handlePersonDelete,
+            people.length,
+            linkedPersonId,
+            getSpouseIds,
+            allChildren,
+        ],
     )
 
     // Configure the toolbar (memoized to prevent re-renders)

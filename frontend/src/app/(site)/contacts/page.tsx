@@ -1,13 +1,10 @@
 'use client'
 
+import { PageHeader } from '@/components/blocks/page-header'
 import { CompanyList } from '@/components/contacts/company-list'
-import {
-    DetailForm,
-    SelectedItem,
-    SelectedType,
-} from '@/components/contacts/detail-form'
+import { DetailForm } from '@/components/contacts/detail-form'
 import { PeopleList } from '@/components/contacts/people-list'
-import { PageHeader } from '@/components/dashboard/page-header'
+import type { SelectedItem, SelectedType } from '@/components/contacts/types'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,7 +20,10 @@ import {
     deleteCompanyApiV1ContactsCompaniesCompanyIdDelete,
     deletePersonApiV1ContactsPeoplePersonIdDelete,
     getCompanyPeopleApiV1ContactsCompaniesCompanyIdPeopleGet,
+    getMyProfileApiV1UsersMeProfileGet,
+    getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet,
     listCompaniesApiV1ContactsCompaniesGet,
+    listMarriageChildrenApiV1MarriagesMarriageIdChildrenGet,
     listPeopleApiV1ContactsPeopleGet,
 } from '@/lib/api'
 import { useBreadcrumbUpdate } from '@/providers/breadcrumb-provider'
@@ -56,6 +56,11 @@ export default function ContactsPage() {
         item: null,
         type: null,
     })
+
+    // Relationship data for badges and icons
+    const [linkedPersonId, setLinkedPersonId] = useState<number | null>(null)
+    const [marriages, setMarriages] = useState<any[]>([])
+    const [allChildren, setAllChildren] = useState<number[]>([])
 
     // Update breadcrumb when this page loads
     useBreadcrumbUpdate([
@@ -101,9 +106,98 @@ export default function ContactsPage() {
         }
     }, [session])
 
+    // Fetch linked person ID and relationship data
+    const fetchRelationshipData = useCallback(async () => {
+        if (!session?.accessToken) return
+
+        try {
+            const profile = await getMyProfileApiV1UsersMeProfileGet({
+                headers: {
+                    Authorization: `Bearer ${session.accessToken}`,
+                },
+            })
+
+            if (profile.data && profile.data.person_id) {
+                setLinkedPersonId(profile.data.person_id)
+                // Load marriages and children for relationship identification
+                await loadRelationshipData(profile.data.person_id)
+            } else {
+                setLinkedPersonId(null)
+                setMarriages([])
+                setAllChildren([])
+            }
+        } catch (error) {
+            console.error('Failed to fetch linked person ID:', error)
+            setLinkedPersonId(null)
+            setMarriages([])
+            setAllChildren([])
+        }
+    }, [session])
+
+    // Load relationship data (marriages and children)
+    const loadRelationshipData = async (personId: number) => {
+        try {
+            const marriagesResponse =
+                await getPersonMarriagesApiV1MarriagesPeoplePersonIdMarriagesGet(
+                    {
+                        path: { person_id: personId },
+                        query: { include_all: true }, // Include marriages where person is spouse too
+                        headers: {
+                            Authorization: `Bearer ${session?.accessToken}`,
+                        },
+                    },
+                )
+
+            const marriagesData = marriagesResponse?.data || marriagesResponse
+            const marriagesArray = Array.isArray(marriagesData)
+                ? marriagesData
+                : []
+            console.log(
+                'Loaded marriages for relationship identification:',
+                marriagesArray,
+            )
+            setMarriages(marriagesArray)
+
+            // Load all children from all marriages
+            const childIds: number[] = []
+            for (const marriage of marriagesArray) {
+                try {
+                    const childrenResponse =
+                        await listMarriageChildrenApiV1MarriagesMarriageIdChildrenGet(
+                            {
+                                path: { marriage_id: marriage.id },
+                                headers: {
+                                    Authorization: `Bearer ${session?.accessToken}`,
+                                },
+                            },
+                        )
+                    const children = childrenResponse?.data || childrenResponse
+                    if (Array.isArray(children)) {
+                        childIds.push(
+                            ...children.map(
+                                (child) => child.child_id || child.id,
+                            ),
+                        )
+                    }
+                } catch (error) {
+                    console.error(
+                        `Failed to load children for marriage ${marriage.id}:`,
+                        error,
+                    )
+                }
+            }
+            setAllChildren(childIds)
+        } catch (error) {
+            console.error('Failed to load relationship data:', error)
+            setMarriages([])
+            setAllChildren([])
+        }
+    }
+
     useEffect(() => {
         fetchData()
-    }, [fetchData])
+        fetchRelationshipData()
+    }, [fetchData, fetchRelationshipData])
 
     // Fetch company people when a company is selected
     const fetchCompanyPeople = useCallback(
@@ -349,6 +443,27 @@ export default function ContactsPage() {
         }
     }
 
+    // Get spouse IDs from marriages
+    const getSpouseIds = useCallback(() => {
+        if (!linkedPersonId) return []
+        const spouseIds = marriages
+            .map((marriage) =>
+                marriage.person_id === linkedPersonId
+                    ? marriage.spouse_id
+                    : marriage.person_id,
+            )
+            .filter(Boolean)
+        console.log(
+            'Spouse IDs calculated:',
+            spouseIds,
+            'from marriages:',
+            marriages,
+            'linkedPersonId:',
+            linkedPersonId,
+        )
+        return spouseIds
+    }, [marriages, linkedPersonId])
+
     return (
         <div className="flex flex-col flex-1 h-full">
             <PageHeader
@@ -390,6 +505,9 @@ export default function ContactsPage() {
                         loading={loading}
                         selected={selected}
                         companyFilter={selected.companyContext}
+                        linkedPersonId={linkedPersonId}
+                        spouseIds={getSpouseIds()}
+                        childIds={allChildren}
                         onSearchChange={handlePeopleSearchChange}
                         onPersonSelect={handlePersonSelect}
                         onPersonDelete={(person) =>
@@ -430,6 +548,9 @@ export default function ContactsPage() {
                                     setDeleteDialog({ open: true, item, type })
                                 }
                                 session={session}
+                                linkedPersonId={linkedPersonId}
+                                spouseIds={getSpouseIds()}
+                                childIds={allChildren}
                             />
                         )}
                     </div>

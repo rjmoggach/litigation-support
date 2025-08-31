@@ -515,8 +515,17 @@ def update_user_me(
 ):
     if user_in.email is not None:
         current_user.email = user_in.email
+    if user_in.first_name is not None:
+        current_user.first_name = user_in.first_name
+    if user_in.middle_name is not None:
+        current_user.middle_name = user_in.middle_name
+    if user_in.last_name is not None:
+        current_user.last_name = user_in.last_name
     if user_in.full_name is not None:
         current_user.full_name = user_in.full_name
+    elif any(field is not None for field in [user_in.first_name, user_in.middle_name, user_in.last_name]):
+        # Recompute full name if name parts changed
+        current_user.compute_full_name()
     if user_in.password is not None:
         current_user.hashed_password = get_password_hash(user_in.password)
 
@@ -678,8 +687,17 @@ def admin_update_user(
         raise HTTPException(status_code=404, detail="User not found")
     
     # Update user fields
+    if user_update.first_name is not None:
+        user.first_name = user_update.first_name
+    if user_update.middle_name is not None:
+        user.middle_name = user_update.middle_name
+    if user_update.last_name is not None:
+        user.last_name = user_update.last_name
     if user_update.full_name is not None:
         user.full_name = user_update.full_name
+    elif any(field is not None for field in [user_update.first_name, user_update.middle_name, user_update.last_name]):
+        # Recompute full name if name parts changed
+        user.compute_full_name()
     
     if user_update.is_active is not None:
         user.is_active = user_update.is_active

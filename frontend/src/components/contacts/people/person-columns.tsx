@@ -2,6 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table'
 import { formatDistanceToNow } from 'date-fns'
+import { formatLocalDate, parseLocalDate } from '@/lib/date-utils'
 
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header'
 import {
@@ -297,6 +298,40 @@ export function createPersonColumns(
                 )
             },
             enableSorting: false,
+        },
+        {
+            accessorKey: 'date_of_birth',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Date of Birth" />
+            ),
+            cell: ({ row }) => {
+                const dob = row.getValue('date_of_birth') as string
+                if (!dob) {
+                    return <span className="text-muted-foreground text-sm">—</span>
+                }
+                
+                try {
+                    const parsedDate = parseLocalDate(dob)
+                    if (!parsedDate) {
+                        return <span className="text-muted-foreground text-sm">Invalid</span>
+                    }
+                    
+                    const today = new Date()
+                    const age = today.getFullYear() - parsedDate.getFullYear()
+                    const monthDiff = today.getMonth() - parsedDate.getMonth()
+                    const finalAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < parsedDate.getDate()) ? age - 1 : age
+                    
+                    return (
+                        <div className="text-sm">
+                            <div>{formatLocalDate(parsedDate)}</div>
+                            <div className="text-xs text-muted-foreground">Age {finalAge}</div>
+                        </div>
+                    )
+                } catch {
+                    return <span className="text-muted-foreground text-sm">Invalid</span>
+                }
+            },
+            enableSorting: true,
         },
         {
             id: 'status',

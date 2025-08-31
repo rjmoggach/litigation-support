@@ -68,6 +68,7 @@ class Person(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(100), nullable=False, index=True)
+    middle_name = Column(String(100), nullable=True, index=True)
     last_name = Column(String(100), nullable=False, index=True)
     full_name = Column(String(255), nullable=False, index=True)  # Computed on save
     slug = Column(String(100), unique=True, index=True, nullable=False)
@@ -95,7 +96,8 @@ class Person(Base):
     
     def compute_full_name(self):
         """Compute and set the full_name field"""
-        self.full_name = f"{self.first_name} {self.last_name}".strip()
+        name_parts = [self.first_name, self.middle_name, self.last_name]
+        self.full_name = " ".join(part for part in name_parts if part and part.strip()).strip()
 
 
 class PersonProfile(Base):

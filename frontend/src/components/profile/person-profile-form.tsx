@@ -45,6 +45,7 @@ import { toast } from 'sonner'
 interface PersonProfile {
     id?: number
     first_name: string
+    middle_name?: string
     last_name: string
     email?: string
     phone?: string
@@ -78,6 +79,7 @@ export function PersonProfileForm({
 }: PersonProfileFormProps) {
     const [formData, setFormData] = useState<PersonProfile>({
         first_name: '',
+        middle_name: '',
         last_name: '',
         email: '',
         phone: '',
@@ -195,7 +197,7 @@ export function PersonProfileForm({
                     <div className="flex items-center gap-2">
                         <IdCard className="size-5" />
                         {formData.first_name && formData.last_name
-                            ? `${formData.first_name} ${formData.last_name}`
+                            ? `${formData.first_name} ${formData.middle_name ? formData.middle_name + ' ' : ''}${formData.last_name}`
                             : 'Personal Information'}
                     </div>
                     <AlertDialog>
@@ -236,7 +238,7 @@ export function PersonProfileForm({
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-3">
                     {/* Basic Information */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <div className="space-y-2">
                             <Label htmlFor="first_name">First Name *</Label>
                             <Input
@@ -250,6 +252,20 @@ export function PersonProfileForm({
                                 }
                                 placeholder="Enter first name"
                                 required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="middle_name">Middle Name</Label>
+                            <Input
+                                id="middle_name"
+                                value={formData.middle_name || ''}
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        'middle_name',
+                                        e.target.value,
+                                    )
+                                }
+                                placeholder="Enter middle name (optional)"
                             />
                         </div>
                         <div className="space-y-2">

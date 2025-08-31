@@ -29,7 +29,7 @@ export function SiteMenuBar() {
                             >
                                 <div
                                     className={cn(
-                                        'flex items-center justify-center w-6 h-6 rounded-sm transition-colors',
+                                        'flex items-center justify-center w-8 h-8 rounded-md transition-colors',
                                         item.iconColorClasses,
                                     )}
                                 >

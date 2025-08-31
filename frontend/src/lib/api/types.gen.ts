@@ -2406,6 +2406,10 @@ export type PersonCreate = {
      */
     first_name: string;
     /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
      * Last Name
      */
     last_name: string;
@@ -2560,6 +2564,10 @@ export type PersonResponse = {
      */
     first_name: string;
     /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
      * Last Name
      */
     last_name: string;
@@ -2618,6 +2626,10 @@ export type PersonUpdate = {
      * First Name
      */
     first_name?: string | null;
+    /**
+     * Middle Name
+     */
+    middle_name?: string | null;
     /**
      * Last Name
      */
@@ -3068,6 +3080,18 @@ export type User = {
      */
     email: string;
     /**
+     * First Name
+     */
+    first_name?: string | null;
+    /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
+     * Last Name
+     */
+    last_name?: string | null;
+    /**
      * Full Name
      */
     full_name?: string | null;
@@ -3110,6 +3134,18 @@ export type User = {
  */
 export type UserAdminUpdate = {
     /**
+     * First Name
+     */
+    first_name?: string | null;
+    /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
+     * Last Name
+     */
+    last_name?: string | null;
+    /**
      * Full Name
      */
     full_name?: string | null;
@@ -3135,6 +3171,18 @@ export type UserCreate = {
      * Email
      */
     email: string;
+    /**
+     * First Name
+     */
+    first_name?: string | null;
+    /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
+     * Last Name
+     */
+    last_name?: string | null;
     /**
      * Full Name
      */
@@ -3321,6 +3369,18 @@ export type UserUpdate = {
      * Email
      */
     email?: string | null;
+    /**
+     * First Name
+     */
+    first_name?: string | null;
+    /**
+     * Middle Name
+     */
+    middle_name?: string | null;
+    /**
+     * Last Name
+     */
+    last_name?: string | null;
     /**
      * Full Name
      */

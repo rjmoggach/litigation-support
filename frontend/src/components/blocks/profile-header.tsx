@@ -26,7 +26,7 @@ export function ProfileHeader({
     return (
         <div
             className={cn(
-                'flex items-center justify-between py-3 pt-0',
+                'flex items-center justify-between py-6 pt-0',
                 className,
             )}
         >
