@@ -7,6 +7,7 @@ from marriages.api import router as marriages_router
 from storage.api import router as storage_router
 from tags.api import router as tags_router
 from users.api import router as users_router
+from vectordb.api import router as weaviate_router
 
 api_router = APIRouter()
 
@@ -36,3 +37,6 @@ api_router.include_router(cases_router, prefix="/cases", tags=["cases"])
 
 # marriages endpoints
 api_router.include_router(marriages_router, prefix="/marriages", tags=["marriages"])
+
+# weaviate endpoints
+api_router.include_router(weaviate_router, prefix="/weaviate", tags=["weaviate"])

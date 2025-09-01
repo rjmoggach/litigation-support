@@ -39,7 +39,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # Override for hot reload
+    command: sh -c "sleep 10 && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     env_file:
       - backend/.env
     environment:
@@ -73,15 +73,22 @@ services:
       # Security (relaxed for local dev)
       ALLOWED_HOSTS: '["localhost", "127.0.0.1", "0.0.0.0"]'
       
+      # Weaviate connection
+      WEAVIATE_HOST: "weaviate"
+      WEAVIATE_PORT: "8080"
+      
     volumes:
       - ./backend:/app:cached  # Mount source code for hot reload
       - backend_local_uploads:/app/uploads
       - backend_local_logs:/app/logs
+      - ./models:/app/models  # Mount models directory for ML model caching
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
+      weaviate:
+        condition: service_started
     deploy:
       resources:
         limits:
@@ -139,7 +146,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -200,6 +208,71 @@ services:
           memory: 64M
     networks:
       - app-network
+
+  # Weaviate vector database with text2vec modules
+  weaviate:
+    container_name: litigation-support-weaviate
+    image: semitechnologies/weaviate:1.23.7
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "8080:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      DEFAULT_VECTORIZER_MODULE: "none"
+      CLUSTER_HOSTNAME: "node1"
+      # Enable multiple embedding modules
+      ENABLE_MODULES: "text2vec-transformers,text2vec-openai,text2vec-cohere,text2vec-huggingface,backup-filesystem,offload-s3"
+      # Text2vec transformers module
+      TRANSFORMERS_INFERENCE_API: "http://t2v-transformers:8080"
+      # OpenAI module settings (API key set via env or at runtime)
+      # OPENAI_APIKEY: "" # Will be set via backend API calls
+      # Cohere module settings
+      # COHERE_APIKEY: "" # Will be set via backend API calls
+      # HuggingFace module settings  
+      # HUGGINGFACE_APIKEY: "" # Optional, for private models
+    volumes:
+      - ./embeddings:/var/lib/weaviate
+    networks:
+      - app-network
+    restart: on-failure:0
+    # Temporarily disabled healthcheck
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/v1"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
+    depends_on:
+      - t2v-transformers
+
+  # Text2vec transformers inference API
+  t2v-transformers:
+    container_name: litigation-support-t2v-transformers
+    image: semitechnologies/transformers-inference:sentence-transformers-all-MiniLM-L6-v2
+    environment:
+      ENABLE_CUDA: "0"  # Set to 1 if you have GPU support
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
+        reservations:
+          memory: 1024M
 
 # Local volumes for development data persistence
 volumes:
