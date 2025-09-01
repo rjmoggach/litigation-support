@@ -108,3 +108,9 @@ deployment/ansible/retry/
 *.tgz
 *.tar.gz
 .vault_pass
+
+# Weaviate embeddings data
+embeddings/
+
+# ML Models cache
+models/

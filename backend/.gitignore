@@ -59,3 +59,9 @@ dmypy.json
 .ruff_cache/
 
 
+
+# Weaviate embeddings data
+embeddings/
+
+# ML Models cache
+models/
